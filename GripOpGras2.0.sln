@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Server", "GripOpGras2\Server\GripOpGras2.Server.csproj", "{C3664B6E-5A78-4CE3-BED6-39334C16B1C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Server", "GripOpGras2.Server\GripOpGras2.Server.csproj", "{C3664B6E-5A78-4CE3-BED6-39334C16B1C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Client", "GripOpGras2\Client\GripOpGras2.Client.csproj", "{229F0AFF-32B1-4FED-A248-0C0B6F8690E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Client", "GripOpGras2.Client\GripOpGras2.Client.csproj", "{229F0AFF-32B1-4FED-A248-0C0B6F8690E2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Domain", "GripOpGras2\Shared\GripOpGras2.Domain.csproj", "{1FF3705D-A05A-4AEB-983B-E8C2FD1BF151}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Domain", "GripOpGras2.Domain\GripOpGras2.Domain.csproj", "{1FF3705D-A05A-4AEB-983B-E8C2FD1BF151}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Specs", "GripOpGras2.Specs\GripOpGras2.Specs.csproj", "{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}"
 EndProject
