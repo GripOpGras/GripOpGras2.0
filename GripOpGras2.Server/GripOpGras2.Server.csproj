@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\GripOpGras2.Client.csproj" />
-    <ProjectReference Include="..\Shared\GripOpGras2.Shared.csproj" />
+    <ProjectReference Include="..\GripOpGras2.Client\GripOpGras2.Client.csproj" />
+    <ProjectReference Include="..\GripOpGras2.Domain\GripOpGras2.Domain.csproj" />
   </ItemGroup>
 
 
