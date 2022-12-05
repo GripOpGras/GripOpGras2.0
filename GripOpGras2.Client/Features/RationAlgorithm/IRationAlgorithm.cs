@@ -2,11 +2,9 @@
 {
 	public interface IRationAlgorithm
 	{
-
 	}
 
 	public class RationAlgorithmV1 : IRationAlgorithm
 	{
-
 	}
 }

@@ -3,19 +3,24 @@
 	public class Plot
 	{
 		public string? Name { get; set; }
-		public DateTime LastMeasured { get; set; }
+
+		public DateTime LastMeasurement { get; set; }
+
 		/// <summary>
-		/// In hectares.
+		///     In hectares.
 		/// </summary>
 		public float Area { get; set; }
+
 		/// <summary>
-		/// In kg DM/ha.
+		///     In kg DM/ha.
 		/// </summary>
 		public float NetDryMatter { get; set; }
+
 		/// <summary>
-		/// In kg DM/ha.
+		///     In kg DM/ha.
 		/// </summary>
 		public float DryMatterGrowth { get; set; }
+
 		public FeedAnalysis? FeedAnalysis { get; set; }
 	}
 }
