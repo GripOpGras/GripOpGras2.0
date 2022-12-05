@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\GripOpGras2.Client.csproj" />
-    <ProjectReference Include="..\Shared\GripOpGras2.Shared.csproj" />
+    <ProjectReference Include="..\Shared\GripOpGras2.Domain.csproj" />
   </ItemGroup>
 
 
