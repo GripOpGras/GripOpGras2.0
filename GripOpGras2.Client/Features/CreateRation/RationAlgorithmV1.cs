@@ -4,6 +4,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class RationAlgorithmV1 : IRationAlgorithm
 	{
+		public readonly string GrassName = "Versgras";
+
 		/// <summary>
 		/// The standerd VEM needs of a cow
 		/// </summary>
@@ -13,14 +15,20 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		private const float OptimalVEMCoverage = 1.05f;
 
-		private const float OptimalRECoverage = 1.50f;
+		private const float OptimalRECoverage = 0.15f;
 
 		private const float MaxRE = 1.70f;
 
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
 			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
+			float totalDryMatterIntake = totalGrassIntake;
+			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
+			float reIntake = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake);
+
 			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
+
+
 
 			// TODO bereken hoeveel 
 
