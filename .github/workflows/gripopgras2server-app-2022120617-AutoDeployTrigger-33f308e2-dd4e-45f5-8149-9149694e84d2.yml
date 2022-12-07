@@ -7,6 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
+    - '/**'
     - 'GripOpGras2.Server/**'
     - '.github/workflows/gripopgras2server-app-2022120617-AutoDeployTrigger-33f308e2-dd4e-45f5-8149-9149694e84d2.yml'
 
