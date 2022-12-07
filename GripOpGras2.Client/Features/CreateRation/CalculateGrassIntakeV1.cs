@@ -7,7 +7,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		private const float GrazingLosses = 0.15f;
 
-		public async Task<float> CalculateGrassIntakeAsync(Grazing grazingActivity)
+		public async Task<float> CalculateGrassIntakeAsync(GrazingActivity grazingActivity)
 		{
 			float totalDryMatter = grazingActivity.Plot.NetDryMatter * grazingActivity.Plot.Area;
 			totalDryMatter -= totalDryMatter * GrazingLosses;

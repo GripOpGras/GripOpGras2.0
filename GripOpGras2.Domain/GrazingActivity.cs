@@ -1,6 +1,6 @@
 ﻿namespace GripOpGras2.Domain
 {
-	public class Grazing : GrasslandCalendarActivity
+	public class GrazingActivity : GrasslandCalendarActivity
 	{
 		public Herd? Herd { get; set; }
 

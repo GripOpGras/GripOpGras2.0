@@ -8,6 +8,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// Calculates the total grass intake during the grazing activity.
 		/// </summary>
 		/// <returns>The total dry matter intake of the herd in kg</returns>
-		public Task<float> CalculateGrassIntakeAsync(Grazing grazingActivity);
+		public Task<float> CalculateGrassIntakeAsync(GrazingActivity grazingActivity);
 	}
 }

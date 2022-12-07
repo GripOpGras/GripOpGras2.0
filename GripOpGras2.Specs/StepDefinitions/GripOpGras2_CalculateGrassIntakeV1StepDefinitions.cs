@@ -28,7 +28,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I calculate the total grass intake")]
 		public void WhenICalculateTheTotalGrassIntake()
 		{
-			Grazing grazingActivity = new()
+			GrazingActivity grazingActivity = new()
 			{
 				From = default,
 				To = default,

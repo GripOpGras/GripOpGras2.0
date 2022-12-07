@@ -18,7 +18,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		private const float MaxRE = 1.70f;
 
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
-			float totalGrassIntake, Grazing grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
+			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
 			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
 

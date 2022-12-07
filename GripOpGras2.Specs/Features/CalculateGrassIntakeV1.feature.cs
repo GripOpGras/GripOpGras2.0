@@ -77,8 +77,8 @@ namespace GripOpGras2.Specs.Features
         [NUnit.Framework.DescriptionAttribute("Calculate grass intake of a herd")]
         [NUnit.Framework.TestCaseAttribute("10", "2000", "17000", null)]
         [NUnit.Framework.TestCaseAttribute("10", "3000", "25500", null)]
-        [NUnit.Framework.TestCaseAttribute("10", "0", "0", null)]
         [NUnit.Framework.TestCaseAttribute("0", "0", "0", null)]
+        [NUnit.Framework.TestCaseAttribute("10", "0", "0", null)]
         [NUnit.Framework.TestCaseAttribute("0", "3000", "0", null)]
         public void CalculateGrassIntakeOfAHerd(string plotArea, string netDryMatter, string totalGrassIntake, string[] exampleTags)
         {
