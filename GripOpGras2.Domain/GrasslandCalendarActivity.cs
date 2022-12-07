@@ -5,5 +5,7 @@
 		public DateTime From { get; set; }
 
 		public DateTime To { get; set; }
+
+		public TimeSpan Duration => To - From;
 	}
 }
