@@ -9,5 +9,8 @@ Scenario: Calculate grass intake of a herd
 	Then the total grass intake of the herd should be <totalGrassIntake> kg dm
 Examples:
 | plotArea | netDryMatter | totalGrassIntake |
-| 10 | 2000 | 17000 |
-| 10 | 3000 | 25500 |
+| 10       | 2000         | 17000            |
+| 10       | 3000         | 25500            |
+| 0        | 0            | 0                |
+| 10       | 0            | 0                |
+| 0        | 3000         | 0                |

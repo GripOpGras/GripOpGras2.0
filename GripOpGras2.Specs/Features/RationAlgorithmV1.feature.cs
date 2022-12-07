@@ -20,22 +20,22 @@ namespace GripOpGras2.Specs.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("GripOpGras2.CalculateGrassIntakeV1")]
-    public partial class GripOpGras2_CalculateGrassIntakeV1Feature
+    [NUnit.Framework.DescriptionAttribute("GripOpGras2.RationAlgorithmV1")]
+    public partial class GripOpGras2_RationAlgorithmV1Feature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-#line 1 "CalculateGrassIntakeV1.feature"
+#line 1 "RationAlgorithmV1.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GripOpGras2.CalculateGrassIntakeV1", "The first approach devised to calculate the total grass intake of a herd", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GripOpGras2.RationAlgorithmV1", "A short summary of the feature", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -74,21 +74,15 @@ namespace GripOpGras2.Specs.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Calculate grass intake of a herd")]
-        [NUnit.Framework.TestCaseAttribute("10", "2000", "17000", null)]
-        [NUnit.Framework.TestCaseAttribute("10", "3000", "25500", null)]
-        [NUnit.Framework.TestCaseAttribute("10", "0", "0", null)]
-        [NUnit.Framework.TestCaseAttribute("0", "0", "0", null)]
-        [NUnit.Framework.TestCaseAttribute("0", "3000", "0", null)]
-        public void CalculateGrassIntakeOfAHerd(string plotArea, string netDryMatter, string totalGrassIntake, string[] exampleTags)
+        [NUnit.Framework.DescriptionAttribute("[scenario name]")]
+        [NUnit.Framework.CategoryAttribute("tag1")]
+        public void ScenarioName()
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] tagsOfScenario = new string[] {
+                    "tag1"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("plotArea", plotArea);
-            argumentsOfScenario.Add("netDryMatter", netDryMatter);
-            argumentsOfScenario.Add("totalGrassIntake", totalGrassIntake);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Calculate grass intake of a herd", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 5
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("[scenario name]", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 6
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -98,17 +92,14 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 6
- testRunner.Given(string.Format("my plot has a size of {0} ha", plotArea), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
 #line 7
- testRunner.And(string.Format("my plot has {0} net kg dm/ha", netDryMatter), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.Given("[context]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 8
- testRunner.When("I calculate the total grass intake", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("[action]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
- testRunner.Then(string.Format("the total grass intake of the herd should be {0} kg dm", totalGrassIntake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("[outcome]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

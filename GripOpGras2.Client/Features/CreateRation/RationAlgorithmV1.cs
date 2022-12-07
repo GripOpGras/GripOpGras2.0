@@ -13,11 +13,16 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		private const float OptimalVEMCoverage = 1.05f;
 
+		private const float OptimalRECoverage = 1.50f;
+
+		private const float MaxRE = 1.70f;
+
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
 			float totalGrassIntake, Grazing grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
 			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
 
+			// TODO bereken hoeveel 
 
 			throw new NotImplementedException();
 		}
@@ -28,6 +33,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			return herd.NumberOfAnimals *
 				   ((milkProductionForEachCow * VemNeedsPerLiterMilk + DefaultVEMNeeds) * OptimalVEMCoverage);
+		}
+
+		public float CalculateProteinNeedsOfTheHerd(float totalDryMatterIntake)
+		{
+			return totalDryMatterIntake * OptimalRECoverage;
 		}
 	}
 }
