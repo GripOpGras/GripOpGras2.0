@@ -38,7 +38,7 @@ jobs:
           push: true
           tags: gripopgras2server20221206172906.azurecr.io/gripopgrasapp:${{ github.sha }}
           file: GripOpGras2.Server/Dockerfile
-          context: /
+          context: .
 
 
   deploy:
