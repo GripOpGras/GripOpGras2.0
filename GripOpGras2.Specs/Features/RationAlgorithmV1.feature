@@ -8,10 +8,10 @@ Scenario: Create an rantion for a herd, when having two 2 roughage products
 	And I have a herd with <herd-size> cows in it, which have taken in <grass-intake> kg dm grass
 	And each kg dm grass contains <vem-grass> VEM and <protein-grass> protein
 	And my herd has produced <lmilk-produced> liters of milk
-	When I let Grip op Gras 2.0 create a ration
+	When I let Grip op Gras 2 create a ration
 	Then the ration should contain <kg-roaghage1> kg dm of <roaghage1>
 	And the ration should contain <kg-roaghage2> kg dm of <roaghage2>
-	And the ration should contain <grass-intake> kg dm of grass
+	And the ration must contain the <grass-intake> kg of grass that the cows received during grazing
 Examples: 
 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | roaghage1 | dm-roaghage1 | re-roaghage1 | vem-roaghage1 | roaghage2 | dm-roaghage2 | re-roaghage2 | vem-roaghage2 | kg-roaghage1 | kg-roaghage2 |
 | 20        | 240          | 000       | 000           | 000            | corn      | 000          | 000          | 000           | straw     | 000          | 000          | 000           | 000          | 000          |
