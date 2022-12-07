@@ -7,7 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
-    - 'GripOpGras2.Server/**'
+    - '/**'
     - '.github/workflows/gripopgras2server-app-2022120617-AutoDeployTrigger-d8ae62b6-4bfb-432d-ba8a-5ad62d81d087.yml'
 
   # Allow mannually trigger 
@@ -37,7 +37,7 @@ jobs:
           push: true
           tags: registry.hub.docker.com/gripopgras/gripopgras2server-app-2022120617:${{ github.sha }}
           file: GripOpGras2.Server/Dockerfile
-          context: GripOpGras2.Server/
+          context: .
 
 
   deploy:
