@@ -7,7 +7,8 @@ on:
     branches: 
       [ main ]
     paths:
-    - '/**'
+    - 'GripOpGras2.Server/**'
+    - 'GripOpGras2.Client/**'
     - '.github/workflows/gripopgras2server-app-2022120617-AutoDeployTrigger-d8ae62b6-4bfb-432d-ba8a-5ad62d81d087.yml'
 
   # Allow mannually trigger 
@@ -35,7 +36,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: registry.hub.docker.com/gripopgras/gripopgras2server-app-2022120617:${{ github.sha }}
+          tags: |
+            registry.hub.docker.com/gripopgras/gripopgras2server-app-2022120617:${{ github.sha }}
+            registry.hub.docker.com/gripopgras/gripopgras2server-app-2022120617:latest
           file: GripOpGras2.Server/Dockerfile
           context: .
 
