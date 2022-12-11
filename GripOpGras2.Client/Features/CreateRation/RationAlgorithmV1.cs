@@ -15,59 +15,66 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		private const float OptimalRECoverage = 0.15f;
 
-		private const float MaxRE = 1.70f;
+		private const float MaxRECoverage = 0.17f;
 
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
 			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
+			// TODO test de konditie wanneer een ruwvoerproduct niet beschikbaar is maar wel aan de functie wordt gegeven.
+			List<Roughage> availableRoughages = roughages.Where(r => r.Available).ToList();
 			float totalDryMatterIntakeInKg = totalGrassIntake;
 			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
 			float proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
 			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
-			float proteinNeedsInKg = CalculateProteinNeedsOfTheHerd(totalDryMatterIntakeInKg);
 
 			Dictionary<Roughage, float> rationRoughages = new();
 
-			if (vemIntake > vemNeeds)
+			if (vemIntake < vemNeeds)
 			{
-				if (proteinIntakeInKg > proteinNeedsInKg)
-				{
-					return await Task.FromResult(new FeedRation
-					{
-						Herd = herd,
-						Date = DateTime.Now,
-						Plot = grazingActivity.Plot,
-						Roughages = rationRoughages,
-						GrassIntake = totalGrassIntake
-					});
-				}
+				Roughage roughageWithHighestVEM = availableRoughages.OrderByDescending(r => r.FeedAnalysis.VEM).First();
 
-				//TODO add RE rich products
+				float amountOfVemToAdd = vemNeeds - vemIntake;
+				float amountOfRoughageToAdd = (float)(amountOfVemToAdd / roughageWithHighestVEM.FeedAnalysis.VEM);
+
+				rationRoughages.Add(roughageWithHighestVEM, amountOfRoughageToAdd);
+
+				totalDryMatterIntakeInKg += amountOfRoughageToAdd;
+
+				vemIntake += amountOfVemToAdd;
+				proteinIntakeInKg += (float)(amountOfRoughageToAdd * roughageWithHighestVEM.FeedAnalysis.RE / 1000);
+			}
+
+			if (proteinIntakeInKg > totalDryMatterIntakeInKg * MaxRECoverage)
+			{
+				Roughage roaghageWithLowestRE = availableRoughages.OrderBy(r => r.FeedAnalysis.RE).First();
+				// TODO check of het RE gehalte van het ruwvoer product laag genoeg is, zodat dit gebruikt kan worden om te verdunnen.
+				// TODO Het rantsoen bevat te veel eiwit en moet dus worden verdund
 				throw new NotImplementedException();
 			}
-
-
-			//TODO add VEM rich products
-			throw new NotImplementedException();
-
-
-
-
-			if (proteinIntakeInKg > proteinNeedsInKg)
+			else if (proteinIntakeInKg < CalculateProteinNeedsOfTheHerd(totalDryMatterIntakeInKg))
 			{
-				return new FeedRation
+				Roughage roughageWithHighestRE = availableRoughages.OrderByDescending(r => r.FeedAnalysis.RE).First();
+
+				// The protein contant needs to be at least 10% more then the optimal coverage. 
+				// TODO bespreek met de studenten wat de beste aanpak is
+				if (roughageWithHighestRE.FeedAnalysis.RE > OptimalRECoverage * 100 * 1.10)
 				{
-					Roughages = rationRoughages,
-					Date = DateTime.Now,
-					GrassIntake = totalGrassIntake,
-					Herd = herd,
-					Plot = grazingActivity.Plot
-				};
+					// The roughageWithHighestRE can be used in a realistic situation
+
+					//TODO add RE rich products
+
+					throw new NotImplementedException();
+				}
 			}
 
-			//TODO add RE rich products
-			throw new NotImplementedException();
-
+			return await Task.FromResult(new FeedRation
+			{
+				Herd = herd,
+				Date = DateTime.Now,
+				Plot = grazingActivity.Plot,
+				Roughages = rationRoughages,
+				GrassIntake = totalGrassIntake
+			});
 		}
 
 		//TODO hier tests voor opstellen
