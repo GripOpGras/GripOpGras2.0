@@ -14,9 +14,9 @@ Scenario: Create an rantion for a herd, when having two 2 roughage products
 	And the ration must contain the <grass-intake> kg of grass that the cows received during grazing
 Examples: 
 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | roaghage1 | dm-roaghage1 | re-roaghage1 | vem-roaghage1 | roaghage2 | dm-roaghage2 | re-roaghage2 | vem-roaghage2 | kg-roaghage1 | kg-roaghage2 |
-| 20        | 240          | 000       | 000           | 000            | corn      | 000          | 000          | 000           | straw     | 000          | 000          | 000           | 000          | 000          |
+| 120       | 720          | 720000    | 144000        | 27.14285713    | Graskuil  | 320          | 149          | 857           | Maïskuil  | 352          | 57           | 938           | 1300         | 900          |
 
-Scenario: Create an rantion for a herd, when having zero roughage products
+Scenario: Create an rantion for a herd, without having any roughage products
 	Given [context]
 	When [action]
 	Then [outcome]

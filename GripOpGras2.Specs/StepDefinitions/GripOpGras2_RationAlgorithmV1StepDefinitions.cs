@@ -22,11 +22,11 @@ namespace GripOpGras2.Specs.StepDefinitions
 		private FeedRation? _result;
 
 		[Given(@"I have (.*) that contains (.*) dm, (.*) protein, and (.*) VEM")]
-		public void GivenIHavProductThatContainsDmProteinAndVEM(string product, float dm, float protein, float vem)
+		public void GivenIHavProductThatContainsDmProteinAndVEM(string productName, float dm, float protein, float vem)
 		{
 			_roughages.Add(new Roughage
 			{
-				Name = product,
+				Name = productName,
 				FeedAnalysis = new FeedAnalysis
 				{
 					DryMatter = dm,
@@ -73,15 +73,15 @@ namespace GripOpGras2.Specs.StepDefinitions
 		}
 
 		[Then(@"the ration should contain (.*) kg dm of (.*)")]
-		public void ThenTheRationShouldContainKgDmOfProduct(float amount, string product)
+		public void ThenTheRationShouldContainKgDmOfProduct(float amount, string productName)
 		{
 			_result.Should().NotBeNull();
 
-			Roughage? roughage = _roughages.FirstOrDefault(r => r.Name == product);
+			Roughage? roughage = _roughages.FirstOrDefault(r => r.Name == productName);
 
 			if (roughage == null)
 			{
-				throw new Exception($"Roughage {product} could not be found");
+				throw new Exception($"Roughage {productName} could not be found");
 			}
 
 			//TODO mogelijk dit opdelen in twee checks!
@@ -92,8 +92,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void ThenTheRationMustContainTheKgOfGrassThatTheCowsReceivedDuringGrazing(int amount)
 		{
 			_result.Should().NotBeNull();
-			_result!.Roughages.Should()
-				.ContainSingle(r => r.Key.Name == _rationAlgorithmV1.GrassName && r.Value == amount);
+			_result!.GrassIntake.Should().Be(amount);
 		}
 	}
 }

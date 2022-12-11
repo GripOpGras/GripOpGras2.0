@@ -12,5 +12,10 @@
 		/// The value is in kg dm roughage.
 		/// </summary>
 		public Dictionary<Roughage, float>? Roughages { get; set; }
+
+		/// <summary>
+		/// In kg dm.
+		/// </summary>
+		public float? GrassIntake { get; set; }
 	}
 }
