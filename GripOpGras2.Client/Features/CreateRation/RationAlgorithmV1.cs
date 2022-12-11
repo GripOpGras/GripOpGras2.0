@@ -20,8 +20,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
 			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
-			// TODO test de konditie wanneer een ruwvoerproduct niet beschikbaar is maar wel aan de functie wordt gegeven.
-			List<Roughage> availableRoughages = roughages.Where(r => r.Available).ToList();
+			// TODO test wat er wordt gedaan met ruwvoer producten die wel of niet een vem waarde bevatten
+			// TODO test de conditie wanneer een ruwvoerproduct niet beschikbaar is maar wel aan de functie wordt gegeven.
+			List<Roughage> availableRoughages = roughages.Where(r => r is { Available: true, FeedAnalysis: { VEM: { }, RE: { } } }).ToList();
 			float totalDryMatterIntakeInKg = totalGrassIntake;
 			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
 			float proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
@@ -48,16 +49,16 @@ namespace GripOpGras2.Client.Features.CreateRation
 			{
 				Roughage roaghageWithLowestRE = availableRoughages.OrderBy(r => r.FeedAnalysis.RE).First();
 				// TODO check of het RE gehalte van het ruwvoer product laag genoeg is, zodat dit gebruikt kan worden om te verdunnen.
-				// TODO Het rantsoen bevat te veel eiwit en moet dus worden verdund
+				// TODO Het rantsoen bevat te veel eiwit en moet dus worden verdund, toch?
 				throw new NotImplementedException();
 			}
 			else if (proteinIntakeInKg < CalculateProteinNeedsOfTheHerd(totalDryMatterIntakeInKg))
 			{
-				Roughage roughageWithHighestRE = availableRoughages.OrderByDescending(r => r.FeedAnalysis.RE).First();
+				Roughage roughageWithHighestRe = availableRoughages.OrderByDescending(r => r.FeedAnalysis.RE).First();
 
 				// The protein contant needs to be at least 10% more then the optimal coverage. 
 				// TODO bespreek met de studenten wat de beste aanpak is
-				if (roughageWithHighestRE.FeedAnalysis.RE > OptimalRECoverage * 100 * 1.10)
+				if (roughageWithHighestRe.FeedAnalysis.RE > OptimalRECoverage * 100 * 1.10)
 				{
 					// The roughageWithHighestRE can be used in a realistic situation
 
@@ -65,13 +66,15 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 					while (proteinIntakeInKg / OptimalRECoverage < totalDryMatterIntakeInKg)
 					{
-						//TODO
+						amountOfProductToAdd++;
+						totalDryMatterIntakeInKg++;
+						proteinIntakeInKg += (float)(roughageWithHighestRe.FeedAnalysis.RE / 1000);
 					}
 
-					//TODO add RE rich products
-
-					throw new NotImplementedException();
+					rationRoughages.Add(roughageWithHighestRe, amountOfProductToAdd);
 				}
+
+				// TODO mogelijk kijken of nu de MaxRECoverage niet is bereikt
 			}
 
 			return await Task.FromResult(new FeedRation

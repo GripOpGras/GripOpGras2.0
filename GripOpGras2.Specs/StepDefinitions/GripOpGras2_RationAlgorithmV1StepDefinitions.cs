@@ -21,7 +21,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private FeedRation? _result;
 
-		[Given(@"I have (.*) that contains (.*) dm, (.*) protein, and (.*) VEM")]
+		[Given(@"I have (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
 		public void GivenIHavProductThatContainsDmProteinAndVEM(string productName, float dm, float protein, float vem)
 		{
 			_roughages.Add(new Roughage
@@ -45,7 +45,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_grazingActivity.Herd = _herd;
 		}
 
-		[Given(@"each kg dm grass contains (.*) VEM and (.*) protein")]
+		[Given(@"each kg dm grass contains (.*) VEM and (.*) g protein")]
 		public void GivenEachKgDmGrassContainsVEMAndProtein(float vem, float protein)
 		{
 			_grazingActivity.Plot = new Plot

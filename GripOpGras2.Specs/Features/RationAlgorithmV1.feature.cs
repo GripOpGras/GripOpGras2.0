@@ -75,7 +75,7 @@ namespace GripOpGras2.Specs.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create an rantion for a herd, when having two 2 roughage products")]
-        [NUnit.Framework.TestCaseAttribute("120", "720", "720000", "144000", "27.14285713", "Graskuil", "320", "149", "857", "Maïskuil", "352", "57", "938", "1300", "900", null)]
+        [NUnit.Framework.TestCaseAttribute("120", "720", "1000", "200", "27.14285713", "Graskuil", "320", "149", "857", "Maïskuil", "352", "57", "938", "1300", "900", null)]
         public void CreateAnRantionForAHerdWhenHavingTwo2RoughageProducts(
                     string herd_Size, 
                     string grass_Intake, 
@@ -123,16 +123,16 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 6
- testRunner.Given(string.Format("I have {0} that contains {1} dm, {2} protein, and {3} VEM", roaghage1, dm_Roaghage1, re_Roaghage1, vem_Roaghage1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given(string.Format("I have {0} that contains {1} kg dm, {2} g protein, and {3} VEM", roaghage1, dm_Roaghage1, re_Roaghage1, vem_Roaghage1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 7
- testRunner.And(string.Format("I have {0} that contains {1} dm, {2} protein, and {3} VEM", roaghage2, dm_Roaghage2, re_Roaghage2, vem_Roaghage2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And(string.Format("I have {0} that contains {1} kg dm, {2} g protein, and {3} VEM", roaghage2, dm_Roaghage2, re_Roaghage2, vem_Roaghage2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 8
  testRunner.And(string.Format("I have a herd with {0} cows in it, which have taken in {1} kg dm grass", herd_Size, grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 9
- testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} g protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 10
  testRunner.And(string.Format("my herd has produced {0} liters of milk", lmilk_Produced), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
