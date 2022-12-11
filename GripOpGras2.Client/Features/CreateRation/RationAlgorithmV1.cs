@@ -61,6 +61,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 				{
 					// The roughageWithHighestRE can be used in a realistic situation
 
+					float amountOfProductToAdd = 0;
+
+					while (proteinIntakeInKg / OptimalRECoverage < totalDryMatterIntakeInKg)
+					{
+						//TODO
+					}
+
 					//TODO add RE rich products
 
 					throw new NotImplementedException();
