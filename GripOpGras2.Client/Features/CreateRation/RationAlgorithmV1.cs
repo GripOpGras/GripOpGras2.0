@@ -20,16 +20,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
 			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
 		{
+			Dictionary<Roughage, float> rationRoughages = new();
+
+
 			// TODO test wat er wordt gedaan met ruwvoer producten die wel of niet een VEM en/of RE waarde bevatten
 			// TODO test de conditie wanneer een ruwvoerproduct niet beschikbaar is maar wel aan de functie wordt gegeven.
 			List<Roughage> availableRoughages =
 				roughages.Where(r => r is { Available: true, FeedAnalysis: { VEM: { }, RE: { } } }).ToList();
-			float totalDryMatterIntakeInKg = totalGrassIntake;
-			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
-			float proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
-			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
-
-			Dictionary<Roughage, float> rationRoughages = new();
 
 			if (availableRoughages.Count == 0)
 			{
@@ -42,6 +39,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 					GrassIntake = totalGrassIntake
 				});
 			}
+
+			float totalDryMatterIntakeInKg = totalGrassIntake;
+			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
+			float proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
+			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
 
 			if (vemIntake < vemNeeds)
 			{
