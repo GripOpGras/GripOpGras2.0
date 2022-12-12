@@ -156,10 +156,17 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create an rantion for a herd, without having any roughage products")]
-        public void CreateAnRantionForAHerdWithoutHavingAnyRoughageProducts()
+        [NUnit.Framework.TestCaseAttribute("200", "100", "1000", "200", null)]
+        [NUnit.Framework.TestCaseAttribute("100", "0", "10", "200", null)]
+        [NUnit.Framework.TestCaseAttribute("100", "100", "0", "0", null)]
+        public void CreateAnRantionForAHerdWithoutHavingAnyRoughageProducts(string herd_Size, string grass_Intake, string vem_Grass, string protein_Grass, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("herd-size", herd_Size);
+            argumentsOfScenario.Add("grass-intake", grass_Intake);
+            argumentsOfScenario.Add("vem-grass", vem_Grass);
+            argumentsOfScenario.Add("protein-grass", protein_Grass);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an rantion for a herd, without having any roughage products", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 19
 this.ScenarioInitialize(scenarioInfo);
@@ -172,13 +179,17 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 20
- testRunner.Given("[context]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given(string.Format("I have a herd with {0} cows in it, which have taken in {1} kg dm grass", herd_Size, grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 21
- testRunner.When("[action]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} g protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 22
- testRunner.Then("[outcome]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 23
+ testRunner.Then(string.Format("the ration must contain the {0} kg of grass that the cows received during grazing" +
+                            "", grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -193,7 +204,7 @@ this.ScenarioInitialize(scenarioInfo);
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an rantion for a herd, when having no grass intake and two 2 roughage prod" +
                     "ucts", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 24
+#line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -203,13 +214,13 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 25
+#line 31
  testRunner.Given("[context]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 26
+#line 32
  testRunner.When("[action]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 27
+#line 33
  testRunner.Then("[outcome]", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

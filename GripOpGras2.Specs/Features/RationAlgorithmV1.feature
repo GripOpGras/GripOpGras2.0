@@ -17,9 +17,15 @@ Examples:
 | 120       | 720          | 1000      | 200           | 27.14285713    | Graskuil  | 320          | 149          | 857           | Maïskuil  | 352          | 57           | 938           | 1300         | 900          |
 
 Scenario: Create an rantion for a herd, without having any roughage products
-	Given [context]
-	When [action]
-	Then [outcome]
+	Given I have a herd with <herd-size> cows in it, which have taken in <grass-intake> kg dm grass
+	And each kg dm grass contains <vem-grass> VEM and <protein-grass> g protein
+	When I let Grip op Gras 2 create a ration
+	Then the ration must contain the <grass-intake> kg of grass that the cows received during grazing
+Examples: 
+| herd-size | grass-intake | vem-grass | protein-grass |
+| 200       | 100          | 1000      | 200           |
+| 100       | 0            | 10        | 200           |
+| 100       | 100          | 0         | 0             |
 
 Scenario: Create an rantion for a herd, when having no grass intake and two 2 roughage products
 	Given [context]
