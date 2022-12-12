@@ -85,7 +85,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			}
 
 			//TODO mogelijk dit opdelen in twee checks!
-			_result!.Roughages.Should().Contain(r => r.Key == roughage && r.Value == amount);
+			_result!.Roughages.Should().Contain(roughage, amount);
 		}
 
 		[Then(@"the ration must contain the (.*) kg of grass that the cows received during grazing")]
