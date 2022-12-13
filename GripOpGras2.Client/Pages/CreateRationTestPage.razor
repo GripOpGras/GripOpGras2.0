@@ -20,7 +20,7 @@ else
 			<InputText @bind-Value="_roughageToAdd.Name" class="form-control" id="Name"/>
 		</div>
 		<div class="form-group">
-			<label for="VEM">VEM in g/kg</label>
+			<label for="VEM">VEM in /kg</label>
 			<InputNumber @bind-Value="_roughageToAdd.FeedAnalysis!.VEM" class="form-control" id="VEM"/>
 		</div>
 		<div class="form-group">
@@ -28,7 +28,7 @@ else
 			<InputNumber @bind-Value="_roughageToAdd.FeedAnalysis!.RE" class="form-control" id="RE"/>
 		</div>
 		<br/>
-		<input type="submit" class="btn btn-primary" value="Add roughage"/>
+		<input type="submit" class="btn btn-primary" value="Add product"/>
 	</EditForm>
 
 	<br/>
@@ -54,7 +54,6 @@ else
 					<td>@roughage.FeedAnalysis!.RE</td>
 				</tr>
 			}
-
 			</tbody>
 		</table>
 	}
@@ -95,29 +94,7 @@ else
 	<br/>
 
 	<h1>Ration</h1>
-
-	<table class="table table-bordered">
-		<thead>
-		<tr>
-			<th scope="col">Product</th>
-			<th scope="col">kg dm</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-			<th scope="row">Grass intake</th>
-			<td>@_feedRation.GrassIntake</td>
-		</tr>
-		@foreach (KeyValuePair<Roughage, float> roughage in _feedRation.Roughages)
-		{
-			<tr>
-				<th scope="row">@roughage.Key.Name</th>
-				<td>@roughage.Value</td>
-			</tr>
-		}
-
-		</tbody>
-	</table>
+	<RationWidget Ration="@_feedRation"/>
 }
 }
 
@@ -141,7 +118,7 @@ else
 
 	private float _reInGrass;
 
-	private async Task CreateRation()
+	private async void CreateRation()
 	{
 	//TODO check alle code!!!!!!!!!!!!!!!!
 		if (_isRunning)
@@ -150,6 +127,8 @@ else
 		}
 
 		_isRunning = true;
+
+		StateHasChanged();
 
 		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrass, VEM = _vemInGrass } } };
 		_feedRation = await RationAlgorithm.CreateRationAsync(_roughages, _herd, _grassIntake, grazingActivity, _milkProduced);
