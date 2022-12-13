@@ -74,9 +74,9 @@ namespace GripOpGras2.Specs.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create an rantion for a herd, when having two 2 roughage products")]
+        [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having two roughage products")]
         [NUnit.Framework.TestCaseAttribute("120", "720", "1000", "200", "27.14285713", "Graskuil", "320", "149", "857", "Maïskuil", "352", "57", "938", "1300", "900", null)]
-        public void CreateAnRantionForAHerdWhenHavingTwo2RoughageProducts(
+        public void CreateARationForAHerdWhenHavingTwoRoughageProducts(
                     string herd_Size, 
                     string grass_Intake, 
                     string vem_Grass, 
@@ -111,7 +111,7 @@ namespace GripOpGras2.Specs.Features
             argumentsOfScenario.Add("vem-roaghage2", vem_Roaghage2);
             argumentsOfScenario.Add("kg-roaghage1", kg_Roaghage1);
             argumentsOfScenario.Add("kg-roaghage2", kg_Roaghage2);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an rantion for a herd, when having two 2 roughage products", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, when having two roughage products", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 5
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -154,11 +154,11 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create an rantion for a herd, without having any roughage products")]
+        [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, without having any roughage products")]
         [NUnit.Framework.TestCaseAttribute("200", "100", "1000", "200", null)]
         [NUnit.Framework.TestCaseAttribute("100", "0", "10", "200", null)]
         [NUnit.Framework.TestCaseAttribute("100", "100", "0", "0", null)]
-        public void CreateAnRantionForAHerdWithoutHavingAnyRoughageProducts(string herd_Size, string grass_Intake, string vem_Grass, string protein_Grass, string[] exampleTags)
+        public void CreateARationForAHerdWithoutHavingAnyRoughageProducts(string herd_Size, string grass_Intake, string vem_Grass, string protein_Grass, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
@@ -166,7 +166,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("grass-intake", grass_Intake);
             argumentsOfScenario.Add("vem-grass", vem_Grass);
             argumentsOfScenario.Add("protein-grass", protein_Grass);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an rantion for a herd, without having any roughage products", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, without having any roughage products", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 19
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -194,9 +194,10 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create an rantion for a herd when having no grass intake")]
-        [NUnit.Framework.TestCaseAttribute("200", "Graskuil", "320", "149", "857", "Maïskuil", "352", "57", "938", "1300", "900", null)]
-        public void CreateAnRantionForAHerdWhenHavingNoGrassIntake(string herd_Size, string roaghage1, string dm_Roaghage1, string re_Roaghage1, string vem_Roaghage1, string roaghage2, string dm_Roaghage2, string re_Roaghage2, string vem_Roaghage2, string kg_Roaghage1, string kg_Roaghage2, string[] exampleTags)
+        [NUnit.Framework.DescriptionAttribute("Create a ration for a herd when haven\'t grazed today and having two roughage prod" +
+            "ucts")]
+        [NUnit.Framework.TestCaseAttribute("120", "Graskuil", "320", "149", "857", "Maïskuil", "352", "57", "938", "1300", "900", null)]
+        public void CreateARationForAHerdWhenHaventGrazedTodayAndHavingTwoRoughageProducts(string herd_Size, string roaghage1, string dm_Roaghage1, string re_Roaghage1, string vem_Roaghage1, string roaghage2, string dm_Roaghage2, string re_Roaghage2, string vem_Roaghage2, string kg_Roaghage1, string kg_Roaghage2, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
@@ -211,7 +212,8 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("vem-roaghage2", vem_Roaghage2);
             argumentsOfScenario.Add("kg-roaghage1", kg_Roaghage1);
             argumentsOfScenario.Add("kg-roaghage2", kg_Roaghage2);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create an rantion for a herd when having no grass intake", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd when haven\'t grazed today and having two roughage prod" +
+                    "ucts", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 30
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
