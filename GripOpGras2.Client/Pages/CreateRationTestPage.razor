@@ -1,5 +1,4 @@
 ﻿@page "/create-ration-test"
-@using GripOpGras2.Domain
 
 @inject IRationAlgorithm RationAlgorithm
 
@@ -131,7 +130,7 @@ else
 		await Task.Delay(1);
 
 		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrassInGrams, VEM = _vemInGrass } } };
-		_feedRation = await RationAlgorithm.CreateRationAsync(_roughages, _herd, _grassIntakeInKgDm, grazingActivity, _milkProduced);
+		_feedRation = await RationAlgorithm.CreateRationAsync(_roughages, _herd, _grassIntakeInKgDm, _milkProduced, grazingActivity);
 
 		_isRunning = false;
 	}

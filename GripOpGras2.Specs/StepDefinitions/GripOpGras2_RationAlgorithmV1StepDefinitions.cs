@@ -13,7 +13,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly MilkProductionAnalysis _milkProductionAnalysis = new();
 
-		private readonly GrazingActivity _grazingActivity = new();
+		private GrazingActivity? _grazingActivity;
 
 		private readonly List<Roughage> _roughages = new();
 
@@ -37,12 +37,21 @@ namespace GripOpGras2.Specs.StepDefinitions
 			});
 		}
 
+		[Given(@"I have a herd with (.*) cows in it")]
+		public void GivenIHaveAHerdWithHerd_SizeCowsInIt(int herdSize)
+		{
+			_herd.NumberOfAnimals = herdSize;
+		}
+
 		[Given(@"I have a herd with (.*) cows in it, which have taken in (.*) kg dm grass")]
 		public void GivenIHaveAHerdWithCowsInItWhichHaveTakenInKgDmGrass(int herdSize, float grassIntake)
 		{
-			_herd.NumberOfAnimals = herdSize;
+			GivenIHaveAHerdWithHerd_SizeCowsInIt(herdSize);
 			_totalGrassIntake = grassIntake;
-			_grazingActivity.Herd = _herd;
+			_grazingActivity = new GrazingActivity
+			{
+				Herd = _herd
+			};
 		}
 
 		[Given(@"each kg dm grass contains (.*) VEM and (.*) g protein")]
@@ -68,8 +77,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I let Grip op Gras 2 create a ration")]
 		public void WhenILetGripOpGrasCreateARation()
 		{
-			_result = _rationAlgorithmV1.CreateRationAsync(_roughages, _herd, _totalGrassIntake, _grazingActivity,
-				_milkProductionAnalysis).Result;
+			_result = _rationAlgorithmV1.CreateRationAsync(_roughages, _herd, _totalGrassIntake,
+				_milkProductionAnalysis, _grazingActivity).Result;
 		}
 
 		[Then(@"the ration should contain (.*) kg dm of (.*)")]
@@ -88,8 +97,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_result!.Roughages.Should().Contain(roughage, amount);
 		}
 
-		[Then(@"the ration must contain the (.*) kg of grass that the cows received during grazing")]
-		public void ThenTheRationMustContainTheKgOfGrassThatTheCowsReceivedDuringGrazing(int amount)
+		[Then(@"the ration must contain (.*) kg of grass")]
+		public void ThenTheRationMustContainKgOfGrass(int amount)
 		{
 			_result.Should().NotBeNull();
 			_result!.GrassIntake.Should().Be(amount);

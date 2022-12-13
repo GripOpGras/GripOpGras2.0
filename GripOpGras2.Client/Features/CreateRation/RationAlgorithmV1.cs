@@ -18,7 +18,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		private const float MaxRECoverage = 0.17f;
 
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
-			float totalGrassIntake, GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis)
+			float totalGrassIntake, MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			Dictionary<Roughage, float> rationRoughages = new();
 
@@ -45,15 +45,22 @@ namespace GripOpGras2.Client.Features.CreateRation
 				{
 					Herd = herd,
 					Date = DateTime.Now,
-					Plot = grazingActivity.Plot,
+					Plot = grazingActivity?.Plot,
 					Roughages = rationRoughages,
 					GrassIntake = totalGrassIntake
 				});
 			}
 
 			float totalDryMatterIntakeInKg = totalGrassIntake;
-			float vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
-			float proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
+			float vemIntake = 0;
+			float proteinIntakeInKg = 0;
+
+			if (grazingActivity != null)
+			{
+				vemIntake = (float)(grazingActivity.Plot.FeedAnalysis.VEM * totalGrassIntake);
+				proteinIntakeInKg = (float)(grazingActivity.Plot.FeedAnalysis.RE * totalGrassIntake / 1000);
+			}
+
 			float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
 
 			if (vemIntake < vemNeeds)
@@ -128,7 +135,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			{
 				Herd = herd,
 				Date = DateTime.Now,
-				Plot = grazingActivity.Plot,
+				Plot = grazingActivity?.Plot,
 				Roughages = rationRoughages,
 				GrassIntake = totalGrassIntake
 			});

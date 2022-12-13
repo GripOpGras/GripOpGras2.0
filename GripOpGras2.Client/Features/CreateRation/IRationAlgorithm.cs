@@ -9,6 +9,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// </summary>
 		/// <param name="totalGrassIntake">The total grass intake of the herd in kg dm.</param>
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd, float totalGrassIntake,
-			GrazingActivity grazingActivity, MilkProductionAnalysis milkProductionAnalysis);
+			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity);
 	}
 }
