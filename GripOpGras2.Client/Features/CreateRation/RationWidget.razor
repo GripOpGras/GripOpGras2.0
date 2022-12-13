@@ -3,8 +3,8 @@
 	<tr>
 		<th scope="col">Product</th>
 		<th scope="col">kg dm</th>
-		<th scope="col">Total VEM</th>
-		<th scope="col">Total RE in kg</th>
+		<th scope="col">VEM</th>
+		<th scope="col">RE in kg</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -13,8 +13,16 @@
 		<tr>
 			<th scope="row">Grass intake</th>
 			<td>@Ration.GrassIntake</td>
-			<td>@CalculateAmountOfVEM(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
-			<td>@CalculateAmountOfREInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+			@if (Ration.Plot != null)
+			{
+				<td>@CalculateAmountOfVEM(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td>@CalculateAmountOfREInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+			}
+			else
+			{
+				<td>0</td>
+				<td>0</td>
+			}
 		</tr>
 
 		@if (Ration.Roughages != null)

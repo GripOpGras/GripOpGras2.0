@@ -71,8 +71,8 @@ else
 		<input class="form-control" @bind="_milkProduced.Amount"/>
 	</div>
 	<div class="form-group">
-		<label>Total grass intake in kg dm</label>
-		<input class="form-control" @bind="_grassIntake"/>
+		<label>Net grass intake in kg dm</label>
+		<input class="form-control" @bind="_grassIntakeInKgDm"/>
 	</div>
 	<div class="form-group">
 		<label>Amount of VEM in each kg dm of grass</label>
@@ -80,7 +80,7 @@ else
 	</div>
 	<div class="form-group">
 		<label>Amount of RE in each kg dm of grass in grams</label>
-		<input class="form-control" @bind="_reInGrass"/>
+		<input class="form-control" @bind="_reInGrassInGrams"/>
 	</div>
 
 	<br/>
@@ -112,26 +112,26 @@ else
 
 	private readonly MilkProductionAnalysis _milkProduced = new();
 
-	private float _grassIntake;
+	private float _grassIntakeInKgDm;
 
 	private float _vemInGrass;
 
-	private float _reInGrass;
+	private float _reInGrassInGrams;
 
-	private async void CreateRation()
+	private async Task CreateRation()
 	{
-	//TODO check alle code!!!!!!!!!!!!!!!!
 		if (_isRunning)
 		{
 			return;
 		}
 
-		_isRunning = true;
+		_isRunning = true; 
+	
+	// Give Blazor WebAssembly time to update the ui
+		await Task.Delay(1);
 
-		StateHasChanged();
-
-		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrass, VEM = _vemInGrass } } };
-		_feedRation = await RationAlgorithm.CreateRationAsync(_roughages, _herd, _grassIntake, grazingActivity, _milkProduced);
+		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrassInGrams, VEM = _vemInGrass } } };
+		_feedRation = await RationAlgorithm.CreateRationAsync(_roughages, _herd, _grassIntakeInKgDm, grazingActivity, _milkProduced);
 
 		_isRunning = false;
 	}
