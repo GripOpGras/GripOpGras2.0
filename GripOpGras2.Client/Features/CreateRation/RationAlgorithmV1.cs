@@ -22,6 +22,17 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			Dictionary<Roughage, float> rationRoughages = new();
 
+			if (herd.NumberOfAnimals == 0)
+			{
+				return await Task.FromResult(new FeedRation
+				{
+					Herd = herd,
+					Date = DateTime.Now,
+					Plot = null,
+					Roughages = rationRoughages,
+					GrassIntake = 0
+				});
+			}
 
 			// TODO test wat er wordt gedaan met ruwvoer producten die wel of niet een VEM en/of RE waarde bevatten
 			// TODO test de conditie wanneer een ruwvoerproduct niet beschikbaar is maar wel aan de functie wordt gegeven.
@@ -50,15 +61,19 @@ namespace GripOpGras2.Client.Features.CreateRation
 				Roughage roughageWithHighestVEM =
 					availableRoughages.OrderByDescending(r => r.FeedAnalysis.VEM).First();
 
-				float amountOfVemToAdd = vemNeeds - vemIntake;
-				float amountOfRoughageToAdd = (float)(amountOfVemToAdd / roughageWithHighestVEM.FeedAnalysis.VEM);
+				// TODO mogelijk een hogere limiet hebben dan 0
+				if (roughageWithHighestVEM.FeedAnalysis.VEM > 0)
+				{
+					float amountOfVemToAdd = vemNeeds - vemIntake;
+					float amountOfRoughageToAdd = (float)(amountOfVemToAdd / roughageWithHighestVEM.FeedAnalysis.VEM);
 
-				rationRoughages.Add(roughageWithHighestVEM, amountOfRoughageToAdd);
+					rationRoughages.Add(roughageWithHighestVEM, amountOfRoughageToAdd);
 
-				totalDryMatterIntakeInKg += amountOfRoughageToAdd;
+					totalDryMatterIntakeInKg += amountOfRoughageToAdd;
 
-				vemIntake += amountOfVemToAdd;
-				proteinIntakeInKg += (float)(amountOfRoughageToAdd * roughageWithHighestVEM.FeedAnalysis.RE / 1000);
+					vemIntake += amountOfVemToAdd;
+					proteinIntakeInKg += (float)(amountOfRoughageToAdd * roughageWithHighestVEM.FeedAnalysis.RE / 1000);
+				}
 			}
 
 			if (proteinIntakeInKg > CalculateMaxAllowedProteinIntake(totalDryMatterIntakeInKg))
