@@ -2,7 +2,7 @@ name: Pull Request Build and Deploy
 on:
   pull_request:
     branches: 
-    - '#32-implementatie-en-opzet-ci/cd' 
+    - main
     paths-ignore:
       - '.github/workflows/**'
       - '**.md'
