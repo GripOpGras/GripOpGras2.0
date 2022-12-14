@@ -19,7 +19,7 @@ jobs:
         with:
           name: ${{ env.PR_REPO_NAME }}
           org: GripOpGras
-          access-token: ${{ secrets.PAT }}
+          access-token: ${{ secrets.GRIPOPGRAS_PAT }}
     
   pr-build-deploy:
     needs: create-page-host
@@ -57,7 +57,7 @@ jobs:
         with:
           repository: GripOpGras/${{ env.PR_REPO_NAME }}
           path: 'pr-deploy'
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GRIPOPGRAS_PAT }}
       
       - name: Push files to target
         run: |
