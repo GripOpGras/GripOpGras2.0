@@ -8,7 +8,7 @@ on:
       - '**.md'
 
 env:
-  PR_REPO_NAME: GropOpGras2.0-pr-${{ github.event.pull_request.node_id }}
+  PR_REPO_NAME: GripOpGras2.0-pr-${{ github.event.pull_request.node_id }}
 
 jobs:
   create-page-host:
