@@ -19,4 +19,4 @@ jobs:
         uses: octobay/delete-repository-action@v1
         with:
           name: GripOpGras/${{ env.PR_REPO_NAME }}
-          access-token: ${{ secrets.PAT }}
+          access-token: ${{ secrets.GRIPOPGRAS_PAT }}
