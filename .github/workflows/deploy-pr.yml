@@ -61,7 +61,7 @@ jobs:
       
       - name: Push files to target
         run: |
-          cp -r pr-build/* pr-deploy
+          cp -r pr-build/dist/Web/wwwroot pr-deploy
           cd pr-deploy
           touch .nojekyll
           git add .
