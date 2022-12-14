@@ -49,8 +49,7 @@ jobs:
         run: |
           cd pr-build
           dotnet workload install wasm-tools
-          dotnet publish GripOpGras2.0.sln -c:Release -p:GHPages=true -o dist/Web --nologo
-          dotnet publish GripOpGras2.0.sln -c:Release -p:GHPages=true -p:GHPagesBase=env.PR_REPO_NAME -o dist/Web --nologo
+          dotnet publish GripOpGras2.0.sln -c:Release -p:GHPages=true -p:GHPagesBase=${{ env.PR_REPO_NAME }} -o dist/Web --nologo
           cd ..
       
       - name: Checkout temporary deployment target repo
