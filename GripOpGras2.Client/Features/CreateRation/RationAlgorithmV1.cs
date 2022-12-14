@@ -1,4 +1,5 @@
 ﻿using GripOpGras2.Domain;
+using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
@@ -17,10 +18,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		private const float MaxRECoverage = 0.17f;
 
-		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<Roughage> roughages, Herd herd,
+		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake, MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
-			Dictionary<Roughage, float> rationRoughages = new();
+			Dictionary<FeedProduct, float> rationProducts = new();
+
+			IReadOnlyList<Roughage> roughages = feedProducts.OfType<Roughage>().ToList();
+			IReadOnlyList<SupplementaryFeedProduct> supplementaryFeedProducts = feedProducts.OfType<SupplementaryFeedProduct>().ToList();
 
 			if (herd.NumberOfAnimals == 0)
 			{
@@ -29,7 +33,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					Herd = herd,
 					Date = DateTime.Now,
 					Plot = null,
-					Roughages = rationRoughages,
+					FeedProducts = rationProducts,
 					GrassIntake = 0
 				});
 			}
@@ -46,7 +50,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					Herd = herd,
 					Date = DateTime.Now,
 					Plot = grazingActivity?.Plot,
-					Roughages = rationRoughages,
+					FeedProducts = rationProducts,
 					GrassIntake = totalGrassIntake
 				});
 			}
@@ -74,7 +78,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					float amountOfVemToAdd = vemNeeds - vemIntake;
 					float amountOfRoughageToAdd = (float)(amountOfVemToAdd / roughageWithHighestVEM.FeedAnalysis.VEM);
 
-					rationRoughages.Add(roughageWithHighestVEM, amountOfRoughageToAdd);
+					rationProducts.Add(roughageWithHighestVEM, amountOfRoughageToAdd);
 
 					totalDryMatterIntakeInKg += amountOfRoughageToAdd;
 
@@ -102,7 +106,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 						proteinIntakeInKg += feedAnalysisRe;
 					}
 
-					rationRoughages.Add(roughageWithLowestRE, amountOfProductToAdd);
+					rationProducts.Add(roughageWithLowestRE, amountOfProductToAdd);
 				}
 			}
 			else if (proteinIntakeInKg < CalculateProteinNeedsOfTheHerd(totalDryMatterIntakeInKg))
@@ -127,7 +131,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 						proteinIntakeInKg += feedAnalysisRe;
 					}
 
-					rationRoughages.Add(roughageWithHighestRe, amountOfProductToAdd);
+					rationProducts.Add(roughageWithHighestRe, amountOfProductToAdd);
 				}
 			}
 
@@ -136,7 +140,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				Herd = herd,
 				Date = DateTime.Now,
 				Plot = grazingActivity?.Plot,
-				Roughages = rationRoughages,
+				FeedProducts = rationProducts,
 				GrassIntake = totalGrassIntake
 			});
 		}

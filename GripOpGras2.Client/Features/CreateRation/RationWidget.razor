@@ -25,9 +25,9 @@
 			}
 		</tr>
 
-		@if (Ration.Roughages != null)
+		@if (Ration.FeedProducts != null)
 		{
-			@foreach (KeyValuePair<Roughage, float> roughage in Ration.Roughages)
+			@foreach (KeyValuePair<FeedProduct, float> roughage in Ration.FeedProducts)
 			{
 				<tr>
 					<th scope="row">@roughage.Key.Name</th>

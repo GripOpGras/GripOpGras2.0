@@ -1,6 +1,7 @@
 using FluentAssertions;
 using GripOpGras2.Client.Features.CreateRation;
 using GripOpGras2.Domain;
+using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Specs.StepDefinitions
 {
@@ -94,7 +95,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			}
 
 			//TODO mogelijk dit opdelen in twee checks!
-			_result!.Roughages.Should().Contain(roughage, amount);
+			_result!.FeedProducts.Should().Contain(roughage, amount);
 		}
 
 		[Then(@"the ration must contain (.*) kg of grass")]

@@ -13,8 +13,8 @@ Scenario: Create a ration for a herd, when having two roughage products
 	And the ration should contain <kg-roaghage2> kg dm of <roaghage2>
 	And the ration must contain <grass-intake> kg of grass
 Examples: 
-| herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | roaghage1 | dm-roaghage1 | re-roaghage1 | vem-roaghage1 | roaghage2 | dm-roaghage2 | re-roaghage2 | vem-roaghage2 | kg-roaghage1 | kg-roaghage2 |
-| 120       | 720          | 1000      | 200           | 27.14285713    | Graskuil  | 320          | 149          | 857           | Maïskuil  | 352          | 57           | 938           | 1300         | 900          |
+| roaghage1 | dm-roaghage1 | re-roaghage1 | vem-roaghage1 | roaghage2 | dm-roaghage2 | re-roaghage2 | vem-roaghage2 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | kg-roaghage1 | kg-roaghage2 |
+| kuilgras  | 400          | 160          | 920           | mais      | 370          | 60           | 960           | 100       | 1062.5       | 1000      | 210           | 3000           | 275          | 708          |
 
 Scenario: Create a ration for a herd, when having three roughage products
 	Given I have <roaghage1> that contains <dm-roaghage1> kg dm, <re-roaghage1> g protein, and <vem-roaghage1> VEM

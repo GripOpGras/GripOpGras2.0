@@ -1,6 +1,6 @@
-﻿namespace GripOpGras2.Domain
+﻿namespace GripOpGras2.Domain.FeedProducts
 {
-	public class Roughage
+	public abstract class FeedProduct
 	{
 		public string? Name { get; set; }
 

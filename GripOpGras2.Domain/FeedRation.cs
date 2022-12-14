@@ -1,4 +1,6 @@
-﻿namespace GripOpGras2.Domain
+﻿using GripOpGras2.Domain.FeedProducts;
+
+namespace GripOpGras2.Domain
 {
 	public class FeedRation
 	{
@@ -9,9 +11,9 @@
 		public Plot? Plot { get; set; }
 
 		/// <summary>
-		/// The value is in kg dm roughage.
+		/// The value is in kg dm product.
 		/// </summary>
-		public Dictionary<Roughage, float>? Roughages { get; set; }
+		public Dictionary<FeedProduct, float>? FeedProducts { get; set; }
 
 		/// <summary>
 		/// In kg dm.
