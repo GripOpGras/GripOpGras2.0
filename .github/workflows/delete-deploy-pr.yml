@@ -2,7 +2,7 @@ name: Delete Pull Request Deployment
 on:
   pull_request:
     branches: 
-    - '#32-implementatie-en-opzet-ci/cd' 
+    - main
     types: [ closed ]
     paths-ignore:
       - '.github/workflows/**'
