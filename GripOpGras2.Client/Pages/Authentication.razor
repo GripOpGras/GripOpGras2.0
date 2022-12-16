@@ -1,0 +1,10 @@
+﻿@page "/authentication/{action}"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@*Handles the redirect to the identity server*@
+<RemoteAuthenticatorView Action="@Action" />
+
+@code {
+	[Parameter]
+	public string Action { get; set; }
+}
