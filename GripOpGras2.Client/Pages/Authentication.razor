@@ -2,7 +2,7 @@
 @attribute [AllowAnonymous]
 @inject NavigationManager NavManager
 
-@if (Action is "login" or "login-callback" or "logout" or "logout-callback")
+@if (Action is "login" or "login-callback" or "logout" or "logout-callback" or "login-failed" or "logout-failed")
 {
 	<RemoteAuthenticatorView Action="@Action"/>
 }
