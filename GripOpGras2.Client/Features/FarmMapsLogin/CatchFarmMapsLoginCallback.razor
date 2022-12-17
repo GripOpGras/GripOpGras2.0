@@ -1,4 +1,5 @@
 ﻿@page "/cb"
+@attribute [AllowAnonymous]
 @inject NavigationManager NavManager
 
 @code{
@@ -15,7 +16,7 @@
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		NavManager.NavigateTo(Query.Length > 1 ? $"authentication/login-callback?{Query[1]}" : "404");
+		NavManager.NavigateTo(Query.Length > 1 ? $"authentication/login-callback?{Query[1]}" : "/");
 	}
 
 }

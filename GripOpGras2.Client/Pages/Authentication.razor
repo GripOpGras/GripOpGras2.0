@@ -1,7 +1,14 @@
 ﻿@page "/authentication/{action}"
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-<RemoteAuthenticatorView Action="@Action" />
+@attribute [AllowAnonymous]
+
+@if (Action is "login" or "login-callback" or "logout" or "logout-callback")
+{
+	<RemoteAuthenticatorView Action="@Action" />
+}
 
 @code{
-    [Parameter] public string? Action { get; set; }
+
+	[Parameter]
+	public string? Action { get; set; }
+
 }
