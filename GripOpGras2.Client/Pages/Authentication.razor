@@ -1,9 +1,14 @@
 ﻿@page "/authentication/{action}"
 @attribute [AllowAnonymous]
+@inject NavigationManager NavManager
 
 @if (Action is "login" or "login-callback" or "logout" or "logout-callback")
 {
-	<RemoteAuthenticatorView Action="@Action" />
+	<RemoteAuthenticatorView Action="@Action"/>
+}
+else
+{
+	NavManager.NavigateTo("/");
 }
 
 @code{
