@@ -1,7 +1,7 @@
-using FluentAssertions;
 using GripOpGras2.Client.Features.CreateRation;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
+using GripOpGras2.Specs.Drivers;
 
 namespace GripOpGras2.Specs.StepDefinitions
 {
@@ -16,18 +16,43 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private GrazingActivity? _grazingActivity;
 
-		private readonly List<Roughage> _roughages = new();
+		private readonly List<FeedProduct> _feedProducts = new();
 
 		private float _totalGrassIntake;
 
 		private FeedRation? _result;
 
-		[Given(@"I have (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
-		public void GivenIHavProductThatContainsDmProteinAndVEM(string productName, float dm, float protein, float vem)
+		private readonly ExceptionDriver _exceptionDriver;
+
+		public GripOpGras2_RationAlgorithmV1StepDefinitions(ExceptionDriver exceptionDriver)
 		{
-			_roughages.Add(new Roughage
+			_exceptionDriver = exceptionDriver;
+		}
+
+		[Given(@"I have the roughage product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheRoughageProductThatContainsDmProteinAndVEM(string roughageName, float dm,
+			float protein, float vem)
+		{
+			_feedProducts.Add(new Roughage
 			{
-				Name = productName,
+				Name = roughageName,
+				FeedAnalysis = new FeedAnalysis
+				{
+					DryMatter = dm,
+					RE = protein,
+					VEM = vem
+				},
+				Available = true
+			});
+		}
+
+		[Given(@"I have the supplementary product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName, float dm,
+			float protein, float vem)
+		{
+			_feedProducts.Add(new SupplementaryFeedProduct()
+			{
+				Name = supplementaryName,
 				FeedAnalysis = new FeedAnalysis
 				{
 					DryMatter = dm,
@@ -78,8 +103,10 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I let Grip op Gras 2 create a ration")]
 		public void WhenILetGripOpGrasCreateARation()
 		{
-			_result = _rationAlgorithmV1.CreateRationAsync(_roughages, _herd, _totalGrassIntake,
-				_milkProductionAnalysis, _grazingActivity).Result;
+			_exceptionDriver.TryExecute(() =>
+				_result = _rationAlgorithmV1.CreateRationAsync(_feedProducts, _herd, _totalGrassIntake,
+					_milkProductionAnalysis, _grazingActivity).Result
+			);
 		}
 
 		[Then(@"the ration should contain (.*) kg dm of (.*)")]
@@ -87,11 +114,11 @@ namespace GripOpGras2.Specs.StepDefinitions
 		{
 			_result.Should().NotBeNull();
 
-			Roughage? roughage = _roughages.FirstOrDefault(r => r.Name == productName);
+			FeedProduct? roughage = _feedProducts.FirstOrDefault(r => r.Name == productName);
 
 			if (roughage == null)
 			{
-				throw new Exception($"Roughage {productName} could not be found");
+				throw new Exception($"FeedProduct {productName} could not be found.");
 			}
 
 			//TODO mogelijk dit opdelen in twee checks!
