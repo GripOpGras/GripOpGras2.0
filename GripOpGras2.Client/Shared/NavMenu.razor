@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<div class="top-row ps-3 navbar navbar-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="">Grip Op Gras 2.0</a>
 		<button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -14,11 +17,32 @@
 				<span class="oi oi-home" aria-hidden="true"></span> Home
 			</NavLink>
 		</div>
-		<div class="nav-item px-3">
-			<NavLink class="nav-link" href="counter">
-				<span class="oi oi-plus" aria-hidden="true"></span> Counter
-			</NavLink>
-		</div>
+		<AuthorizeView>
+			<Authorized>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="counter">
+						<span class="oi oi-plus" aria-hidden="true"></span> Counter
+					</NavLink>
+				</div>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" @onclick="BeginSignOut">
+						<span class="oi oi-account-logout" aria-hidden="true"></span> Log out
+					</NavLink>
+					<div class="card text-center">
+						<div class="card-body">
+							<b>Logged in as:</b> @context.User.Identity?.Name
+						</div>
+					</div>
+				</div>
+			</Authorized>
+			<NotAuthorized>
+				<div class="nav-item px-3">
+					<NavLink class="nav-link" href="authentication/login">
+						<span class="oi oi-account-login" aria-hidden="true"></span> Login
+					</NavLink>
+				</div>
+			</NotAuthorized>
+		</AuthorizeView>
 	</nav>
 </div>
 
@@ -31,6 +55,12 @@
 	private void ToggleNavMenu()
 	{
 		_collapseNavMenu = !_collapseNavMenu;
+	}
+
+	private async Task BeginSignOut(MouseEventArgs args)
+	{
+		await SignOutManager.SetSignOutState();
+		Navigation.NavigateTo("authentication/logout");
 	}
 
 }

@@ -2,8 +2,10 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
+EXPOSE 4200
 EXPOSE 80
-EXPOSE 443
+ENV ASPNETCORE_URLS=http://+:4200
+
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
@@ -21,4 +23,4 @@ RUN dotnet publish "GripOpGras2.Server.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "GripOpGras2.Server.dll"]
+ENTRYPOINT ["dotnet", "GripOpGras2.Server.dll","urls=http://0.0.0.0:4200"]
