@@ -21,9 +21,9 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "launchUrl": "{Scheme}://{ServiceHost}:4200",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": false
     }
   },
   "iisSettings": {
