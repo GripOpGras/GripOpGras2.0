@@ -106,22 +106,46 @@ namespace GripOpGras2.Specs.StepDefinitions
 			);
 		}
 
-		[Then(@"the ration should contain between (.*) and (.*) kg dm of (.*)")]
-		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfProduct(float minAmount, float maxAmount,
-			string productName)
+		[Then(@"the ration should contain between (.*) and (.*) kg dm of roughage products")]
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfRoughageProducts(float minAmount, float maxAmount)
 		{
 			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
 
-			FeedProduct? roughage = _feedProducts.FirstOrDefault(r => r.Name == productName);
-
-			if (roughage == null)
-			{
-				throw new Exception($"FeedProduct {productName} could not be found.");
-			}
-
-			_result!.FeedProducts.Should().ContainKey(roughage);
-			_result!.FeedProducts![roughage].Should().BeInRange(minAmount, maxAmount);
+			float totalAmountOfKgRoughageDryMatter = _result.FeedProducts!.Where(feedProduct => feedProduct.Key is Roughage).Sum(feedProduct => feedProduct.Value);
+			totalAmountOfKgRoughageDryMatter.Should().BeInRange(minAmount, maxAmount);
 		}
+
+		[Then(@"the ration should contain between (.*) and (.*) kg dm of supplementary products")]
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfSupplementaryProducts(float minAmount, float maxAmount)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
+
+			float totalAmountOfKgSupplementaryDryMatter = _result.FeedProducts!.Where(feedProduct => feedProduct.Key is SupplementaryFeedProduct).Sum(feedProduct => feedProduct.Value);
+			totalAmountOfKgSupplementaryDryMatter.Should().BeInRange(minAmount, maxAmount);
+		}
+
+		[Then(@"the ration should contain between (.*) and (.*) g protein")]
+		public void ThenTheRationShouldContainBetweenProtein_Ration_MinAndProtein_Ration_MaxGProtein(float min, float max)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
+
+			float totalAmountOfProtein = (float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis.RE * feedProduct.Value);
+			totalAmountOfProtein.Should().BeInRange(min, max);
+		}
+
+		[Then(@"the ration should contain between (.*) and (.*) VEM")]
+		public void ThenTheRationShouldContainBetweenVem_Ration_MinAndVem_Ration_MaxVEM(float min, float max)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
+
+			float totalAmountOfVEM = (float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis.VEM * feedProduct.Value);
+			totalAmountOfVEM.Should().BeInRange(min, max);
+		}
+
 
 		[Then(@"the ration must contain (.*) kg of grass")]
 		public void ThenTheRationMustContainKgOfGrass(int amount)
