@@ -42,6 +42,19 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
+			SetUp(feedProducts, herd, totalGrassIntake, milkProductionAnalysis, grazingActivity);
+			RunAlgorithm();
+			throw new NotImplementedException();
+		}
+
+		public void SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void RunAlgorithm()
+		{
 			throw new NotImplementedException();
 		}
 
@@ -64,7 +77,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		public AbstractMappedFoodItem GetBestRENaturalFeedProductGroup()
+		public AbstractMappedFoodItem FindBestRENaturalFeedProductGroup()
 		{
 			throw new NotImplementedException();
 		}
