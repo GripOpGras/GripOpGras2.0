@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Domain", "GripO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Specs", "GripOpGras2.Specs\GripOpGras2.Specs.csproj", "{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GripOpGras2.Plugins", "GripOpGras2.Plugins", "{16ABE7E6-2567-4717-9964-E58D95797E10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GripOpGras2.Plugins.FarmMaps", "GripOpGras2.Plugins.FarmMaps\GripOpGras2.Plugins.FarmMaps.csproj", "{03CED92F-FE08-432E-9DF5-03208A292667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GripOpGras2.Plugins.PluginInterfaces", "GripOpGras2.Plugins.PluginInterfaces\GripOpGras2.Plugins.PluginInterfaces.csproj", "{16B24991-5230-40FC-BC31-9A8D6D86B1FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +39,21 @@ Global
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03CED92F-FE08-432E-9DF5-03208A292667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03CED92F-FE08-432E-9DF5-03208A292667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03CED92F-FE08-432E-9DF5-03208A292667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03CED92F-FE08-432E-9DF5-03208A292667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16B24991-5230-40FC-BC31-9A8D6D86B1FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16B24991-5230-40FC-BC31-9A8D6D86B1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16B24991-5230-40FC-BC31-9A8D6D86B1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16B24991-5230-40FC-BC31-9A8D6D86B1FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{03CED92F-FE08-432E-9DF5-03208A292667} = {16ABE7E6-2567-4717-9964-E58D95797E10}
+		{16B24991-5230-40FC-BC31-9A8D6D86B1FF} = {16ABE7E6-2567-4717-9964-E58D95797E10}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E0D5C799-47F4-4045-823D-D5F8758C3046}
