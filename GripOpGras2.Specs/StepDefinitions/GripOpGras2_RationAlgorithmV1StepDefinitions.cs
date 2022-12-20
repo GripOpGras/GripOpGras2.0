@@ -29,16 +29,14 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_exceptionDriver = exceptionDriver;
 		}
 
-		[Given(@"I have the roughage product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheRoughageProductThatContainsDmProteinAndVEM(string roughageName, float dm,
-			float protein, float vem)
+		[Given(@"I have the roughage product (.*) that contains (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheRoughageProductThatContainsProteinAndVEM(string roughageName, float protein, float vem)
 		{
 			_feedProducts.Add(new Roughage
 			{
 				Name = roughageName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					DryMatter = dm,
 					RE = protein,
 					VEM = vem
 				},
@@ -46,8 +44,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			});
 		}
 
-		[Given(@"I have the supplementary product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName, float dm,
+		[Given(@"I have the supplementary product (.*) that contains (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName,
 			float protein, float vem)
 		{
 			_feedProducts.Add(new SupplementaryFeedProduct()
@@ -55,7 +53,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 				Name = supplementaryName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					DryMatter = dm,
 					RE = protein,
 					VEM = vem
 				},
