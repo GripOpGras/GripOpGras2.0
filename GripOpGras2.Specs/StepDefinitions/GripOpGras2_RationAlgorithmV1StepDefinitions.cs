@@ -109,8 +109,9 @@ namespace GripOpGras2.Specs.StepDefinitions
 			);
 		}
 
-		[Then(@"the ration should contain (.*) kg dm of (.*)")]
-		public void ThenTheRationShouldContainKgDmOfProduct(float amount, string productName)
+		[Then(@"the ration should contain between (.*) and (.*) kg dm of (.*)")]
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfProduct(float minAmount, float maxAmount,
+			string productName)
 		{
 			_result.Should().NotBeNull();
 
@@ -121,8 +122,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 				throw new Exception($"FeedProduct {productName} could not be found.");
 			}
 
-			//TODO mogelijk dit opdelen in twee checks!
-			_result!.FeedProducts.Should().Contain(roughage, amount);
+			_result!.FeedProducts.Should().ContainKey(roughage);
+			_result!.FeedProducts![roughage].Should().BeInRange(minAmount, maxAmount);
 		}
 
 		[Then(@"the ration must contain (.*) kg of grass")]

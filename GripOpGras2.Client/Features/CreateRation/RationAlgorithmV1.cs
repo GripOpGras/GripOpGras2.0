@@ -1,5 +1,4 @@
-﻿using GripOpGras2.Client.Data.Exceptions;
-using GripOpGras2.Domain;
+﻿using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
@@ -24,8 +23,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake, MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
-			throw new NoCowsInTheHerdException();
-
 			throw new NotImplementedException();
 
 			/*return await Task.FromResult(new FeedRation
