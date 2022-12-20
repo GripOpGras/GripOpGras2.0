@@ -5,31 +5,38 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class RationAlgorithmV2 : IRationAlgorithm
 	{
-		private const float DefaultVEMNeedsOfCow = 5500;
+		public const float DefaultVEMNeedsOfCow = 5500;
 
-		private const float VemNeedsPerLiterMilk = 450;
+		public const float VemNeedsPerLiterMilk = 450;
 
-		private const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
+		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
 
 		private const float MaxKgDmIntakePerCow = 18;
 
 		private const float OptimalVEMCoverage = 1.05f;
 
 		private const float OptimalRECoverageInGramsPerKgDm = 150;
-
-
+		
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		private const float MaxRECoverageInGramsPerKgDm = 170;
 
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		private const float MinRECoverageInGramsPerKgDm = 140;
 
-		private List<AbstractMappedFoodItem> availableFeedProducts = new();
-		private List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
+		protected float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
+		protected float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } = MaxAmountOfSupplementaryFeedProductInKGPerCow;
+		protected float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
+		protected float TargetedVEMCoverage { get; set; } = OptimalVEMCoverage;
+
+
+
+
+		protected List<AbstractMappedFoodItem> availableFeedProducts = new();
+		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		//private List<AbstractMappedFoodItem> GrassRENuturalizerFeedProducts = new();
-		private List<AbstractMappedFoodItem> REFoodItens = new();
-		private List<AbstractMappedFoodItem> roughages = new();
+		protected List<AbstractMappedFoodItem> REFoodItens = new();
+		protected List<AbstractMappedFoodItem> roughages = new();
 
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
@@ -38,46 +45,46 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		protected float GetTotalKGDM()
+		public float GetTotalKGDM()
 		{
 			throw new NotImplementedException();
 		}
 
-		protected float GetTotalVEM()
+		public float GetTotalVEM()
 		{
 			throw new NotImplementedException();}
 
-		private void ApplyGrassRENuturalizerFeedProduct()
+		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct()
 		{
 			throw new NotImplementedException();
 		}
 
-		private void MakeRENaturalFeedProductGroups()
+		public List<AbstractMappedFoodItem> GenerateRENaturalFeedProductGroups()
 		{
 			throw new NotImplementedException();
 		}
 
-		private void ApplyRENaturalFeedProductGroups()
+		public AbstractMappedFoodItem GetBestRENaturalFeedProductGroup()
 		{
 			throw new NotImplementedException();
 		}
 
-		private void MakeImprovementWithBijprod()
+		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod()
 		{
 			throw new NotImplementedException();
 		}
 		
-		private List<AbstractMappedFoodItem> ImprovementRationMethodGrassRENuterilizer()
+		public List<AbstractMappedFoodItem> FindImprovementRationMethodGrassRENuterilizer()
 		{
 			throw new NotImplementedException();
 		}
 
-		private List<AbstractMappedFoodItem> ImprovementRationMethodNaturalREGroups()
+		public List<AbstractMappedFoodItem> FindImprovementRationMethodNaturalREGroups()
 		{
 			throw new NotImplementedException();
 		}
 
-		private List<AbstractMappedFoodItem> ImprovementRationMethodChangeoptimalcoverages()
+		public List<AbstractMappedFoodItem> ImprovementRationMethodChangeTargetedCoverages()
 		{
 			throw new NotImplementedException();
 		}
