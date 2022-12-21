@@ -92,8 +92,8 @@ Scenario: Create a ration for a herd when haven't grazed today and having two ro
     And the ration should contain between <vem-ration-min> and <vem-ration-max> VEM
 	And the ration must contain 0 kg of grass
 Examples: 
-| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | herd-size |  lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | dm-supplementary-ration-min | dm-supplementary-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
-
+| roughage1              | protein-roughage1 | vem-roughage1 | roughage2     | protein-roughage2 | vem-roughage2 | herd-size | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
+| Kuil 1 2020 + 21 balen | 180               | 907           | Maiskuil 2019 | 58.3              | 963           | 62        | 2002.6         | 954.89                 | 1018.55                | 143234.10          | 162968.57          | 1242170        | 1366387        |
 
 Scenario: Create a ration for a herd that doesnt contain any cows
 	Given I have a herd with 0 cows in it

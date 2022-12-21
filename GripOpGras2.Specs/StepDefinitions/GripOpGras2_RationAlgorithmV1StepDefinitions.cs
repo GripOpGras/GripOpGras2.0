@@ -112,27 +112,33 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_result.Should().NotBeNull();
 			_result!.FeedProducts.Should().NotBeNull();
 
-			float totalAmountOfKgRoughageDryMatter = _result.FeedProducts!.Where(feedProduct => feedProduct.Key is Roughage).Sum(feedProduct => feedProduct.Value);
+			float totalAmountOfKgRoughageDryMatter = _result.FeedProducts!
+				.Where(feedProduct => feedProduct.Key is Roughage).Sum(feedProduct => feedProduct.Value);
 			totalAmountOfKgRoughageDryMatter.Should().BeInRange(minAmount, maxAmount);
 		}
 
 		[Then(@"the ration should contain between (.*) and (.*) kg dm of supplementary products")]
-		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfSupplementaryProducts(float minAmount, float maxAmount)
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfSupplementaryProducts(float minAmount,
+			float maxAmount)
 		{
 			_result.Should().NotBeNull();
 			_result!.FeedProducts.Should().NotBeNull();
 
-			float totalAmountOfKgSupplementaryDryMatter = _result.FeedProducts!.Where(feedProduct => feedProduct.Key is SupplementaryFeedProduct).Sum(feedProduct => feedProduct.Value);
+			float totalAmountOfKgSupplementaryDryMatter = _result.FeedProducts!
+				.Where(feedProduct => feedProduct.Key is SupplementaryFeedProduct)
+				.Sum(feedProduct => feedProduct.Value);
 			totalAmountOfKgSupplementaryDryMatter.Should().BeInRange(minAmount, maxAmount);
 		}
 
 		[Then(@"the ration should contain between (.*) and (.*) g protein")]
-		public void ThenTheRationShouldContainBetweenProtein_Ration_MinAndProtein_Ration_MaxGProtein(float min, float max)
+		public void ThenTheRationShouldContainBetweenProtein_Ration_MinAndProtein_Ration_MaxGProtein(float min,
+			float max)
 		{
 			_result.Should().NotBeNull();
 			_result!.FeedProducts.Should().NotBeNull();
 
-			float totalAmountOfProtein = (float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis.RE * feedProduct.Value);
+			float totalAmountOfProtein =
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.RE * feedProduct.Value)!;
 			totalAmountOfProtein.Should().BeInRange(min, max);
 		}
 
@@ -142,7 +148,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_result.Should().NotBeNull();
 			_result!.FeedProducts.Should().NotBeNull();
 
-			float totalAmountOfVEM = (float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis.VEM * feedProduct.Value);
+			float totalAmountOfVEM =
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.VEM * feedProduct.Value)!;
 			totalAmountOfVEM.Should().BeInRange(min, max);
 		}
 
