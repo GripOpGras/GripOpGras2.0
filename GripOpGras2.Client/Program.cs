@@ -1,3 +1,5 @@
+using GripOpGras2.Plugins.FarmMaps;
+using GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -13,16 +15,19 @@ namespace GripOpGras2.Client
 			builder.RootComponents.Add<App>("#app");
 			builder.RootComponents.Add<HeadOutlet>("head::after");
 
-			builder.Services.AddScoped<CustomAuthorizationMessageHandler>();
+			builder.Services.AddScoped<FarmMapsAuthorizationMessageHandler>();
 
 			builder.Services.AddHttpClient("FarmMapsApi", client =>
 				{
 					client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("FarmMapsBaseUrl"));
 				})
-				.AddHttpMessageHandler<CustomAuthorizationMessageHandler>();
+				.AddHttpMessageHandler<FarmMapsAuthorizationMessageHandler>();
 
 			builder.Services.AddScoped(
 				sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi"));
+
+			builder.Services.AddScoped<IFeedAnalysisRepository, FeedAnalysisRepository>();
+			builder.Services.AddScoped<IFarmsRepository, FarmsRepository>();
 
 			builder.Services.AddOidcAuthentication(options =>
 			{
@@ -34,9 +39,9 @@ namespace GripOpGras2.Client
 		}
 	}
 
-	public class CustomAuthorizationMessageHandler : AuthorizationMessageHandler
+	public class FarmMapsAuthorizationMessageHandler : AuthorizationMessageHandler
 	{
-		public CustomAuthorizationMessageHandler(IAccessTokenProvider provider,
+		public FarmMapsAuthorizationMessageHandler(IAccessTokenProvider provider,
 			NavigationManager navigationManager)
 			: base(provider, navigationManager)
 		{

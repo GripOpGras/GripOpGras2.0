@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GripOpGras2.Plugins.PluginInterfaces\GripOpGras2.Plugins.PluginInterfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="QuickType\" />
   </ItemGroup>
 
 </Project>

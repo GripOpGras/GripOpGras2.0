@@ -1,0 +1,20 @@
+﻿@page "/feedproducts"
+@inject IFeedAnalysisRepository FeedAnalysisRepository
+@inject IFarmsRepository FarmsRepository
+
+<PageTitle>Products</PageTitle>
+
+<h1>Roughage</h1>
+
+
+<h1>Supplementary</h1>
+
+
+@code {
+	private Farm[] _farms = {};
+	
+	protected override async Task OnInitializedAsync()
+	{
+		_farms = (await FarmsRepository.GetFarms()).ToArray();
+	}
+}
