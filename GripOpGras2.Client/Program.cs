@@ -1,8 +1,7 @@
+using GripOpGras2.Client.Features.FarmMapsLogin;
 using GripOpGras2.Plugins.FarmMaps;
 using GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace GripOpGras2.Client
@@ -36,19 +35,6 @@ namespace GripOpGras2.Client
 			});
 
 			await builder.Build().RunAsync();
-		}
-	}
-
-	public class FarmMapsAuthorizationMessageHandler : AuthorizationMessageHandler
-	{
-		public FarmMapsAuthorizationMessageHandler(IAccessTokenProvider provider,
-			NavigationManager navigationManager)
-			: base(provider, navigationManager)
-		{
-			ConfigureHandler(
-				authorizedUrls: new[] { "https://accounts.test.farmmaps.eu", "https://test.farmmaps.eu" }
-			);
-
 		}
 	}
 }
