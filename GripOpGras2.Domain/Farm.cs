@@ -3,6 +3,6 @@
 	public class Farm
 	{
 		public string Name { get; set; } = string.Empty;
-		public string? Code { get; set; }
+		public string? Id { get; set; }
 	}
 }

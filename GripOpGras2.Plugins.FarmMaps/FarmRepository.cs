@@ -1,15 +1,15 @@
 ﻿using GripOpGras2.Domain;
-using GripOpGras2.Plugins.FarmMaps.QuickType;
+using GripOpGras2.Plugins.FarmMaps.QuickType.Croppingscheme;
 using GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces;
 
 namespace GripOpGras2.Plugins.FarmMaps
 {
-	public class FarmsRepository : IFarmsRepository
+	public class FarmRepository : IFarmRepository
 	{
 		private readonly HttpClient _httpClient;
 		private const string ApiUri = "/api/v1/items?it=vnd.farmmaps.itemtype.croppingscheme";
 
-		public FarmsRepository(HttpClient httpClient)
+		public FarmRepository(HttpClient httpClient)
 		{
 			_httpClient = httpClient;
 		}
@@ -21,7 +21,7 @@ namespace GripOpGras2.Plugins.FarmMaps
 			return croppingscheme.Select(croppingscheme => new Farm
 			{
 				Name = croppingscheme.Name,
-				Code = croppingscheme.Code
+				Id = croppingscheme.Code
 			});
 		}
 	}

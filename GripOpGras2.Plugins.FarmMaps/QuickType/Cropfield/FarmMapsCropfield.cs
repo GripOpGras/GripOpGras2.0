@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Converters;
 using System.Globalization;
 
-namespace GripOpGras2.Plugins.FarmMaps.QuickType
+namespace GripOpGras2.Plugins.FarmMaps.QuickType.Cropfield
 {
-	public partial class FarmMapsCroppingscheme
+	public partial class FarmMapsCropfield
 	{
 		[JsonProperty("parentCode", NullValueHandling = NullValueHandling.Ignore)]
 		public string ParentCode { get; set; }
@@ -39,8 +39,8 @@ namespace GripOpGras2.Plugins.FarmMaps.QuickType
 		[JsonProperty("dataDate", NullValueHandling = NullValueHandling.Ignore)]
 		public DateTimeOffset? DataDate { get; set; }
 
-		[JsonProperty("dataEndDate")]
-		public object DataEndDate { get; set; }
+		[JsonProperty("dataEndDate", NullValueHandling = NullValueHandling.Ignore)]
+		public DateTimeOffset? DataEndDate { get; set; }
 
 		[JsonProperty("itemType", NullValueHandling = NullValueHandling.Ignore)]
 		public string ItemType { get; set; }
@@ -60,29 +60,31 @@ namespace GripOpGras2.Plugins.FarmMaps.QuickType
 
 	public class Data
 	{
-		[JsonProperty("naw", NullValueHandling = NullValueHandling.Ignore)]
-		public Naw Naw { get; set; }
-	}
+		[JsonProperty("area", NullValueHandling = NullValueHandling.Ignore)]
+		public double? Area { get; set; }
 
-	public class Naw
-	{
-		[JsonProperty("city", NullValueHandling = NullValueHandling.Ignore)]
-		public string City { get; set; }
+		[JsonProperty("final", NullValueHandling = NullValueHandling.Ignore)]
+		public bool? Final { get; set; }
 
-		[JsonProperty("phone", NullValueHandling = NullValueHandling.Ignore)]
-		public string Phone { get; set; }
+		[JsonProperty("soilCode", NullValueHandling = NullValueHandling.Ignore)]
+		[JsonConverter(typeof(ParseStringConverter))]
+		public long? SoilCode { get; set; }
 
-		[JsonProperty("mobile", NullValueHandling = NullValueHandling.Ignore)]
-		public string Mobile { get; set; }
+		[JsonProperty("soilName", NullValueHandling = NullValueHandling.Ignore)]
+		public string SoilName { get; set; }
 
-		[JsonProperty("address", NullValueHandling = NullValueHandling.Ignore)]
-		public string Address { get; set; }
+		[JsonProperty("cropTypeCode", NullValueHandling = NullValueHandling.Ignore)]
+		[JsonConverter(typeof(ParseStringConverter))]
+		public long? CropTypeCode { get; set; }
 
-		[JsonProperty("country", NullValueHandling = NullValueHandling.Ignore)]
-		public string Country { get; set; }
+		[JsonProperty("cropTypeName", NullValueHandling = NullValueHandling.Ignore)]
+		public string CropTypeName { get; set; }
 
-		[JsonProperty("postalCode", NullValueHandling = NullValueHandling.Ignore)]
-		public string PostalCode { get; set; }
+		[JsonProperty("rootDepthMax")]
+		public object RootDepthMax { get; set; }
+
+		[JsonProperty("emergenceDate")]
+		public object EmergenceDate { get; set; }
 	}
 
 	public class Geometry
@@ -91,17 +93,17 @@ namespace GripOpGras2.Plugins.FarmMaps.QuickType
 		public string Type { get; set; }
 
 		[JsonProperty("coordinates", NullValueHandling = NullValueHandling.Ignore)]
-		public double[] Coordinates { get; set; }
+		public double[][][] Coordinates { get; set; }
 	}
 
-	public partial class FarmMapsCroppingscheme
+	public partial class FarmMapsCropfield
 	{
-		public static FarmMapsCroppingscheme[] FromJson(string json) => JsonConvert.DeserializeObject<FarmMapsCroppingscheme[]>(json, Converter.Settings);
+		public static FarmMapsCropfield[] FromJson(string json) => JsonConvert.DeserializeObject<FarmMapsCropfield[]>(json, Cropfield.Converter.Settings);
 	}
 
 	public static class Serialize
 	{
-		public static string ToJson(this FarmMapsCroppingscheme[] self) => JsonConvert.SerializeObject(self, Converter.Settings);
+		public static string ToJson(this FarmMapsCropfield[] self) => JsonConvert.SerializeObject(self, Cropfield.Converter.Settings);
 	}
 
 	internal static class Converter
@@ -115,5 +117,36 @@ namespace GripOpGras2.Plugins.FarmMaps.QuickType
 				new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
 			},
 		};
+	}
+
+	internal class ParseStringConverter : JsonConverter
+	{
+		public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
+
+		public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
+		{
+			if (reader.TokenType == JsonToken.Null) return null;
+			string? value = serializer.Deserialize<string>(reader);
+			long l;
+			if (long.TryParse(value, out l))
+			{
+				return l;
+			}
+			throw new Exception("Cannot unmarshal type long");
+		}
+
+		public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
+		{
+			if (untypedValue == null)
+			{
+				serializer.Serialize(writer, null);
+				return;
+			}
+			long value = (long)untypedValue;
+			serializer.Serialize(writer, value.ToString());
+			return;
+		}
+
+		public static readonly ParseStringConverter Singleton = new();
 	}
 }

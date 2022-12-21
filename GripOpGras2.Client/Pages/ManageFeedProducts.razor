@@ -1,20 +1,48 @@
 ﻿@page "/feedproducts"
-@inject IFeedAnalysisRepository FeedAnalysisRepository
-@inject IFarmsRepository FarmsRepository
+@inject IFarmRepository FarmRepository
+@inject IPlotRepository PlotRepository
 
 <PageTitle>Products</PageTitle>
 
-<h1>Roughage</h1>
+@if (_farms.Length > 0)
+{
+	<h1>Roughage</h1>
 
 
-<h1>Supplementary</h1>
-
+	<h1>Supplementary</h1>
+}
+else
+{
+	<h1>No farms found</h1>
+}
 
 @code {
-	private Farm[] _farms = {};
-	
+
+	private Farm[] _farms = { };
+
+	private Plot[] _plots = { };
+
 	protected override async Task OnInitializedAsync()
 	{
-		_farms = (await FarmsRepository.GetFarms()).ToArray();
+		try
+		{
+			_farms = (await FarmRepository.GetFarms()).ToArray();
+
+			if (_farms.Length > 0)
+			{
+				// TODO Add the option to select a farm
+				_plots = (await PlotRepository.GetPlots(_farms[0].Id)).ToArray();
+			}
+			else
+			{
+			// TODO laat een error zien dat er geen farms zijn
+			}
+		}
+		catch (AccessTokenNotAvailableException ex)
+		{
+			Console.WriteLine(ex.Message);
+			ex.Redirect();
+		}
 	}
+
 }

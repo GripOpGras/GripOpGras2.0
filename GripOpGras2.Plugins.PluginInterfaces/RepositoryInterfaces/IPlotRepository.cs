@@ -2,8 +2,8 @@
 
 namespace GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces
 {
-	public interface IFarmsRepository
+	public interface IPlotRepository
 	{
-		public Task<IEnumerable<Farm>> GetFarms();
+		public Task<IEnumerable<Plot>> GetPlots(string farmId);
 	}
 }

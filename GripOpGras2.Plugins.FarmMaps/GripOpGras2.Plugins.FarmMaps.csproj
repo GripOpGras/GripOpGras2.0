@@ -14,8 +14,4 @@
     <ProjectReference Include="..\GripOpGras2.Plugins.PluginInterfaces\GripOpGras2.Plugins.PluginInterfaces.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="QuickType\" />
-  </ItemGroup>
-
 </Project>

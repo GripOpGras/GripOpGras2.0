@@ -26,7 +26,8 @@ namespace GripOpGras2.Client
 				sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi"));
 
 			builder.Services.AddScoped<IFeedAnalysisRepository, FeedAnalysisRepository>();
-			builder.Services.AddScoped<IFarmsRepository, FarmsRepository>();
+			builder.Services.AddScoped<IFarmRepository, FarmRepository>();
+			builder.Services.AddScoped<IPlotRepository, PlotRepository>();
 
 			builder.Services.AddOidcAuthentication(options =>
 			{
