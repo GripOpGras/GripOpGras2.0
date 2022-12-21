@@ -16,6 +16,14 @@ namespace GripOpGras2.Client
 			{ BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 			builder.Services.AddTransient<IRationAlgorithm, RationAlgorithmV1>();
 
+			builder.Services.AddOidcAuthentication(options =>
+			{
+				builder.Configuration.Bind("FarmMaps", options.ProviderOptions);
+				options.ProviderOptions.DefaultScopes.Add("openid");
+				options.ProviderOptions.DefaultScopes.Add("profile");
+				options.ProviderOptions.DefaultScopes.Add("api");
+			});
+
 			await builder.Build().RunAsync();
 		}
 	}
