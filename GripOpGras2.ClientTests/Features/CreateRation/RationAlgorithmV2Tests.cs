@@ -194,7 +194,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		}
 
 		[Test()]
-		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2, float VEMPerDMprod2,float REperDMBijprod, float VEMPerDMbijprod, float KGgrass, float VEMgrass, float REgrass, string expectedProd, float expectedKGDM)
+		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2, float VEMPerDMprod2,float REperDMBijprod, float VEMPerDMbijprod, float KGgrass, float VEMgrass, float REgrass, string expectedProd, float expectedKGDM, Exception? expectedException)
 		{
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", REperDMprod1, VEMPerDMprod1);
@@ -206,7 +206,9 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassRENuturalizerFeedProduct();
 			//Assert
 			Assert.AreEqual(1,foodlist.Count);
-			Assert.AreEqual(expectedProd, foodlist[0].GetProducts()[0].Item1.Name);
+			Assert.AreEqual(expectedProd, foodlist[0].GetProducts()[0].Item1.Name); 
+			Assert.AreEqual(expectedKGDM, foodlist[0].appliedKGDM);
+			Assert.AreEqual(expectedException, Assert.Throws<Exception>(() => rationAlgorithm.GetGrassRENuturalizerFeedProduct()));
 			//af maken (testcases, expectedKGDM, exceptions
 		}
 
