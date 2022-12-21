@@ -11,13 +11,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		protected float REdiffPerVEM { get; }
 
-		float appliedVEM;
+		public float appliedVEM { get; private set; }
 
-		float appliedKGDM;
+		public float appliedKGDM { get; private set; }
 
-		float appliedREdiff;
+		public float appliedREdiff { get; private set; }
 
-		List<Tuple<AbstractMappedFoodItem, float>> Products = new();
+		public abstract List<Tuple<FeedProduct, float>> GetProducts();
+
 
 		public void setAppliedVEM(float VEM)
 		{
@@ -34,12 +35,22 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			throw new NotImplementedException();
 		}
+
+		public override List<Tuple<FeedProduct, float>> GetProducts()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	public class MappedFeedProductGroup : AbstractMappedFoodItem
 	{
 
 		public MappedFeedProductGroup(List<Tuple<AbstractMappedFoodItem, float>> products)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override List<Tuple<FeedProduct, float>> GetProducts()
 		{
 			throw new NotImplementedException();
 		}

@@ -1,5 +1,6 @@
 ﻿using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
+using NUnit.Framework;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
@@ -11,17 +12,17 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
 
-		private const float MaxKgDmIntakePerCow = 18;
+		protected const float MaxKgDmIntakePerCow = 18;
 
-		private const float OptimalVEMCoverage = 1.05f;
+		protected const float OptimalVEMCoverage = 1.05f;
 
-		private const float OptimalRECoverageInGramsPerKgDm = 150;
+		protected const float OptimalRECoverageInGramsPerKgDm = 150;
 		
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
-		private const float MaxRECoverageInGramsPerKgDm = 170;
+		protected const float MaxRECoverageInGramsPerKgDm = 170;
 
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
-		private const float MinRECoverageInGramsPerKgDm = 140;
+		protected const float MinRECoverageInGramsPerKgDm = 140;
 
 		protected float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
 		protected float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } = MaxAmountOfSupplementaryFeedProductInKGPerCow;
@@ -35,11 +36,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		//private List<AbstractMappedFoodItem> GrassRENuturalizerFeedProducts = new();
-		protected List<AbstractMappedFoodItem> REFoodItens = new();
+		protected List<AbstractMappedFoodItem> REFoodItems = new();
 		protected List<AbstractMappedFoodItem> roughages = new();
 
 
-		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+		public FeedRation CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			SetUp(feedProducts, herd, totalGrassIntake, milkProductionAnalysis, grazingActivity);
@@ -47,7 +48,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		public void SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+		public AsyncTestDelegate SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			throw new NotImplementedException();
