@@ -75,7 +75,7 @@ namespace GripOpGras2.Specs.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having two roughage products")]
-        [NUnit.Framework.TestCaseAttribute("kuilgras", "160", "920", "mais", "60", "960", "100", "1062.5", "1000", "210", "3000", "100", "100", "0", "0", "0", "0", "0", "0", null)]
+        [NUnit.Framework.TestCaseAttribute("grass", "0", "0", "straw", "0", "0", "100", "100", "0", "0", "100", "0", "0", "0", "0", "0", "0", "0", "0", null)]
         public void CreateARationForAHerdWhenHavingTwoRoughageProducts(
                     string roughage1, 
                     string protein_Roughage1, 
@@ -169,7 +169,7 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having three roughage products")]
-        [NUnit.Framework.TestCaseAttribute("kuilgras", "160", "920", "mais", "60", "960", "kuilgras", "160", "920", "100", "1062.5", "1000", "210", "3000", "100", "100", "0", "0", "0", "0", "0", "0", null)]
+        [NUnit.Framework.TestCaseAttribute("grass", "0", "0", "straw", "0", "0", "hay", "0", "0", "100", "100", "0", "0", "100", "0", "0", "0", "0", "0", "0", "0", "0", null)]
         public void CreateARationForAHerdWhenHavingThreeRoughageProducts(
                     string roughage1, 
                     string protein_Roughage1, 
@@ -268,25 +268,25 @@ this.ScenarioInitialize(scenarioInfo);
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having three roughage products and two supplemen" +
+        [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having two roughage products and three supplemen" +
             "tary product")]
-        [NUnit.Framework.TestCaseAttribute("kuilgras", "160", "920", "mais", "60", "960", "kuilgras", "160", "920", "mais", "60", "960", "mais", "60", "960", "100", "1062.5", "1000", "210", "3000", "100", "100", "0", "0", "0", "0", "0", "0", null)]
-        public void CreateARationForAHerdWhenHavingThreeRoughageProductsAndTwoSupplementaryProduct(
+        [NUnit.Framework.TestCaseAttribute("silo 1-2019", "161.56", "861.56", "maissilo 2018", "81.82", "959.39", "PERSPULP 24%", "95.24", "1037.62", "GEPLETTE TARWE", "117.14", "1219.29", "TARWE MEEL", "121.11", "1240", "59", "123.9", "903.81", "180", "25.4", "725.7", "806.58", "259.6", "309.41", "151925", "162053.33", "998870", "1098757", null)]
+        public void CreateARationForAHerdWhenHavingTwoRoughageProductsAndThreeSupplementaryProduct(
                     string roughage1, 
                     string protein_Roughage1, 
                     string vem_Roughage1, 
                     string roughage2, 
                     string protein_Roughage2, 
                     string vem_Roughage2, 
-                    string roughage3, 
-                    string protein_Roughage3, 
-                    string vem_Roughage3, 
                     string supplementary1, 
                     string protein_Supplementary1, 
                     string vem_Supplementary1, 
                     string supplementary2, 
                     string protein_Supplementary2, 
                     string vem_Supplementary2, 
+                    string supplementary3, 
+                    string protein_Supplementary3, 
+                    string vem_Supplementary3, 
                     string herd_Size, 
                     string grass_Intake, 
                     string vem_Grass, 
@@ -310,15 +310,15 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("roughage2", roughage2);
             argumentsOfScenario.Add("protein-roughage2", protein_Roughage2);
             argumentsOfScenario.Add("vem-roughage2", vem_Roughage2);
-            argumentsOfScenario.Add("roughage3", roughage3);
-            argumentsOfScenario.Add("protein-roughage3", protein_Roughage3);
-            argumentsOfScenario.Add("vem-roughage3", vem_Roughage3);
             argumentsOfScenario.Add("supplementary1", supplementary1);
             argumentsOfScenario.Add("protein-supplementary1", protein_Supplementary1);
             argumentsOfScenario.Add("vem-supplementary1", vem_Supplementary1);
             argumentsOfScenario.Add("supplementary2", supplementary2);
             argumentsOfScenario.Add("protein-supplementary2", protein_Supplementary2);
             argumentsOfScenario.Add("vem-supplementary2", vem_Supplementary2);
+            argumentsOfScenario.Add("supplementary3", supplementary3);
+            argumentsOfScenario.Add("protein-supplementary3", protein_Supplementary3);
+            argumentsOfScenario.Add("vem-supplementary3", vem_Supplementary3);
             argumentsOfScenario.Add("herd-size", herd_Size);
             argumentsOfScenario.Add("grass-intake", grass_Intake);
             argumentsOfScenario.Add("vem-grass", vem_Grass);
@@ -332,9 +332,9 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("protein-ration-max", protein_Ration_Max);
             argumentsOfScenario.Add("vem-ration-min", vem_Ration_Min);
             argumentsOfScenario.Add("vem-ration-max", vem_Ration_Max);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, when having three roughage products and two supplemen" +
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, when having two roughage products and three supplemen" +
                     "tary product", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 38
+#line 37
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -344,46 +344,46 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 39
+#line 38
  testRunner.Given(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage1, protein_Roughage1, vem_Roughage1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 40
+#line 39
  testRunner.And(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage2, protein_Roughage2, vem_Roughage2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 41
- testRunner.And(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage3, protein_Roughage3, vem_Roughage3), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 42
+#line 40
  testRunner.And(string.Format("I have the supplementary product {0} that contains {1} g protein, and {2} VEM", supplementary1, protein_Supplementary1, vem_Supplementary1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 43
- testRunner.And(string.Format("I have the supplementary product {0} that contains {1} g protein, and {2} VEM", supplementary1, protein_Supplementary2, vem_Supplementary2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 41
+ testRunner.And(string.Format("I have the supplementary product {0} that contains {1} g protein, and {2} VEM", supplementary2, protein_Supplementary2, vem_Supplementary2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 44
+#line 42
+ testRunner.And(string.Format("I have the supplementary product {0} that contains {1} g protein, and {2} VEM", supplementary3, protein_Supplementary3, vem_Supplementary3), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 43
  testRunner.And(string.Format("I have a herd with {0} cows in it, which have taken in {1} kg dm grass", herd_Size, grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 45
+#line 44
  testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} g protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 46
+#line 45
  testRunner.And(string.Format("my herd has produced {0} liters of milk", lmilk_Produced), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 47
+#line 46
  testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 48
+#line 47
     testRunner.Then(string.Format("the ration should contain between {0} and {1} kg dm of roughage products", dm_Roughage_Ration_Min, dm_Roughage_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 49
+#line 48
     testRunner.And(string.Format("the ration should contain between {0} and {1} kg dm of supplementary products", dm_Supplementary_Ration_Min, dm_Supplementary_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 50
+#line 49
     testRunner.And(string.Format("the ration should contain between {0} and {1} g protein", protein_Ration_Min, protein_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 51
+#line 50
     testRunner.And(string.Format("the ration should contain between {0} and {1} VEM", vem_Ration_Min, vem_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 52
+#line 51
  testRunner.And(string.Format("the ration must contain {0} kg of grass", grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -393,7 +393,7 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having two roughage products and one supplementa" +
             "ry product")]
-        [NUnit.Framework.TestCaseAttribute("kuilgras", "160", "920", "mais", "60", "960", "kuilgras", "160", "920", "mais", "60", "960", "100", "1062.5", "1000", "210", "3000", "100", "100", "0", "0", "0", "0", "0", "0", null)]
+        [NUnit.Framework.TestCaseAttribute("grass", "0", "0", "straw", "0", "0", "PERSPULP 24%", "95.24", "1037.62", "100", "100", "0", "0", "100", "0", "0", "0", "0", "0", "0", "0", "0", null)]
         public void CreateARationForAHerdWhenHavingTwoRoughageProductsAndOneSupplementaryProduct(
                     string roughage1, 
                     string protein_Roughage1, 
@@ -401,9 +401,6 @@ this.ScenarioInitialize(scenarioInfo);
                     string roughage2, 
                     string protein_Roughage2, 
                     string vem_Roughage2, 
-                    string roughage3, 
-                    string protein_Roughage3, 
-                    string vem_Roughage3, 
                     string supplementary1, 
                     string protein_Supplementary1, 
                     string vem_Supplementary1, 
@@ -430,9 +427,6 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("roughage2", roughage2);
             argumentsOfScenario.Add("protein-roughage2", protein_Roughage2);
             argumentsOfScenario.Add("vem-roughage2", vem_Roughage2);
-            argumentsOfScenario.Add("roughage3", roughage3);
-            argumentsOfScenario.Add("protein-roughage3", protein_Roughage3);
-            argumentsOfScenario.Add("vem-roughage3", vem_Roughage3);
             argumentsOfScenario.Add("supplementary1", supplementary1);
             argumentsOfScenario.Add("protein-supplementary1", protein_Supplementary1);
             argumentsOfScenario.Add("vem-supplementary1", vem_Supplementary1);
@@ -451,7 +445,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("vem-ration-max", vem_Ration_Max);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, when having two roughage products and one supplementa" +
                     "ry product", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 58
+#line 56
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -461,40 +455,40 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 59
+#line 57
  testRunner.Given(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage1, protein_Roughage1, vem_Roughage1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 60
+#line 58
  testRunner.And(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage2, protein_Roughage2, vem_Roughage2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 61
+#line 59
  testRunner.And(string.Format("I have the supplementary product {0} that contains {1} g protein, and {2} VEM", supplementary1, protein_Supplementary1, vem_Supplementary1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 62
+#line 60
  testRunner.And(string.Format("I have a herd with {0} cows in it, which have taken in {1} kg dm grass", herd_Size, grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 63
+#line 61
  testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} g protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 64
+#line 62
  testRunner.And(string.Format("my herd has produced {0} liters of milk", lmilk_Produced), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 65
+#line 63
  testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 66
+#line 64
     testRunner.Then(string.Format("the ration should contain between {0} and {1} kg dm of roughage products", dm_Roughage_Ration_Min, dm_Roughage_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 67
+#line 65
     testRunner.And(string.Format("the ration should contain between {0} and {1} kg dm of supplementary products", dm_Supplementary_Ration_Min, dm_Supplementary_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 68
+#line 66
     testRunner.And(string.Format("the ration should contain between {0} and {1} g protein", protein_Ration_Min, protein_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 69
+#line 67
     testRunner.And(string.Format("the ration should contain between {0} and {1} VEM", vem_Ration_Min, vem_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 70
+#line 68
  testRunner.And(string.Format("the ration must contain {0} kg of grass", grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -515,7 +509,7 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("vem-grass", vem_Grass);
             argumentsOfScenario.Add("protein-grass", protein_Grass);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd, without having any feed products", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 75
+#line 73
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -525,16 +519,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 76
+#line 74
  testRunner.Given(string.Format("I have a herd with {0} cows in it, which have taken in {1} kg dm grass", herd_Size, grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 77
+#line 75
  testRunner.And(string.Format("each kg dm grass contains {0} VEM and {1} g protein", vem_Grass, protein_Grass), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 78
+#line 76
  testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 79
+#line 77
  testRunner.Then(string.Format("the ration must contain {0} kg of grass", grass_Intake), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -544,25 +538,8 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a ration for a herd when haven\'t grazed today and having two roughage prod" +
             "ucts")]
-        [NUnit.Framework.TestCaseAttribute("kuilgras", "160", "920", "mais", "60", "960", "100", "3000", "100", "100", "0", "0", "0", "0", "0", "0", null)]
-        public void CreateARationForAHerdWhenHaventGrazedTodayAndHavingTwoRoughageProducts(
-                    string roughage1, 
-                    string protein_Roughage1, 
-                    string vem_Roughage1, 
-                    string roughage2, 
-                    string protein_Roughage2, 
-                    string vem_Roughage2, 
-                    string herd_Size, 
-                    string lmilk_Produced, 
-                    string dm_Roughage_Ration_Min, 
-                    string dm_Roughage_Ration_Max, 
-                    string dm_Supplementary_Ration_Min, 
-                    string dm_Supplementary_Ration_Max, 
-                    string protein_Ration_Min, 
-                    string protein_Ration_Max, 
-                    string vem_Ration_Min, 
-                    string vem_Ration_Max, 
-                    string[] exampleTags)
+        [NUnit.Framework.TestCaseAttribute("Kuil 1 2020 + 21 balen", "180", "907", "Maiskuil 2019", "58.3", "963", "62", "2002.6", "954.89", "1018.55", "143234.10", "162968.57", "1242170", "1366387", null)]
+        public void CreateARationForAHerdWhenHaventGrazedTodayAndHavingTwoRoughageProducts(string roughage1, string protein_Roughage1, string vem_Roughage1, string roughage2, string protein_Roughage2, string vem_Roughage2, string herd_Size, string lmilk_Produced, string dm_Roughage_Ration_Min, string dm_Roughage_Ration_Max, string protein_Ration_Min, string protein_Ration_Max, string vem_Ration_Min, string vem_Ration_Max, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
@@ -576,15 +553,13 @@ this.ScenarioInitialize(scenarioInfo);
             argumentsOfScenario.Add("lmilk-produced", lmilk_Produced);
             argumentsOfScenario.Add("dm-roughage-ration-min", dm_Roughage_Ration_Min);
             argumentsOfScenario.Add("dm-roughage-ration-max", dm_Roughage_Ration_Max);
-            argumentsOfScenario.Add("dm-supplementary-ration-min", dm_Supplementary_Ration_Min);
-            argumentsOfScenario.Add("dm-supplementary-ration-max", dm_Supplementary_Ration_Max);
             argumentsOfScenario.Add("protein-ration-min", protein_Ration_Min);
             argumentsOfScenario.Add("protein-ration-max", protein_Ration_Max);
             argumentsOfScenario.Add("vem-ration-min", vem_Ration_Min);
             argumentsOfScenario.Add("vem-ration-max", vem_Ration_Max);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd when haven\'t grazed today and having two roughage prod" +
                     "ucts", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 86
+#line 84
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -594,31 +569,31 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 87
+#line 85
  testRunner.Given(string.Format("I have a herd with {0} cows in it", herd_Size), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 88
+#line 86
  testRunner.And(string.Format("my herd has produced {0} liters of milk", lmilk_Produced), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 89
+#line 87
  testRunner.And(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage1, protein_Roughage1, vem_Roughage1), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 90
+#line 88
  testRunner.And(string.Format("I have the roughage product {0} that contains {1} g protein, and {2} VEM", roughage2, protein_Roughage2, vem_Roughage2), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 91
+#line 89
  testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 92
+#line 90
     testRunner.Then(string.Format("the ration should contain between {0} and {1} kg dm of roughage products", dm_Roughage_Ration_Min, dm_Roughage_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 93
+#line 91
     testRunner.And(string.Format("the ration should contain between {0} and {1} g protein", protein_Ration_Min, protein_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 94
+#line 92
     testRunner.And(string.Format("the ration should contain between {0} and {1} VEM", vem_Ration_Min, vem_Ration_Max), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 95
+#line 93
  testRunner.And("the ration must contain 0 kg of grass", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -632,7 +607,7 @@ this.ScenarioInitialize(scenarioInfo);
             string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a ration for a herd that doesnt contain any cows", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 100
+#line 98
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -642,16 +617,16 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 101
+#line 99
  testRunner.Given("I have a herd with 0 cows in it", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 102
+#line 100
  testRunner.And("I have the roughage product mais that contains 60 g protein, and 960 VEM", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 103
+#line 101
  testRunner.When("I let Grip op Gras 2 create a ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 104
+#line 102
  testRunner.Then("an exception with the message \'The herd doesn\'t contain any cows\' should be throw" +
                         "n", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden

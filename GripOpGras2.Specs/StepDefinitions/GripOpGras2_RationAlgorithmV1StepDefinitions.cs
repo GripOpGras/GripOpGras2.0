@@ -153,7 +153,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 			totalAmountOfVEM.Should().BeInRange(min, max);
 		}
 
-
 		[Then(@"the ration must contain (.*) kg of grass")]
 		public void ThenTheRationMustContainKgOfGrass(int amount)
 		{
