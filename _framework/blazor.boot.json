@@ -9,7 +9,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "GripOpGras2.Client.dll": "sha256-yy6l5pH\/IW3btklMXR6qOFvabweZ8MNbUDjR1N8w6gM=",
+      "GripOpGras2.Client.dll": "sha256-UcU1E6n4+Fa7ZOStdCM4GG3D8wTIE0y4otqz+xcHEjI=",
       "GripOpGras2.Domain.dll": "sha256-QWLuYzNWfxxWcH6TBHCEPE2U1w9UxVVoS1axHvylZy8=",
       "Microsoft.AspNetCore.Authorization.dll": "sha256-\/qZ9xJqJTAKx+HAZY6UV0ankOlFfOYgHVPw4gKY+r24=",
       "Microsoft.AspNetCore.Components.Authorization.dll": "sha256-TX5paOghukVeZpjc2BYPhjhzmhiI90DjngnJg66jiS8=",
