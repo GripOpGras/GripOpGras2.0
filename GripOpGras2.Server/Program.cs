@@ -1,3 +1,5 @@
+using Prometheus;
+
 namespace GripOpGras2.Server
 {
 	public class Program
@@ -24,12 +26,14 @@ namespace GripOpGras2.Server
 				app.UseHsts();
 			}
 
-			//app.UseHttpsRedirection();
+			app.UseHttpsRedirection();
 
 			app.UseBlazorFrameworkFiles();
 			app.UseStaticFiles();
 
 			app.UseRouting();
+			app.UseHttpMetrics();
+			app.MapMetrics();
 
 			app.MapRazorPages();
 			app.MapControllers();
