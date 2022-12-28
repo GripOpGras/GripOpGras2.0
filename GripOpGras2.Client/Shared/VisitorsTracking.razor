@@ -1,0 +1,21 @@
+﻿@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+@code {
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			string uriLocalPath = new Uri(NavigationManager.Uri).LocalPath;
+
+			await Http.PostAsync($"Telemetry/CountPageVisit?route={uriLocalPath}", null);
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			// TODO log exception
+		}
+	}
+
+}
