@@ -9,8 +9,6 @@ services:
     container_name: gripopgras2.server
     restart: always
     environment:
-    # TODO also support non development environments
-      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:4200
     ports:
       - "4200:4200"

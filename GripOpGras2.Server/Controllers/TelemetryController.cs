@@ -8,7 +8,7 @@ namespace GripOpGras2.Server.Controllers
 	public class TelemetryController : ControllerBase
 	{
 		private static readonly Counter RequestCountByPageRoute = Metrics
-			.CreateCounter("razor_page_requests_total", "Number of requests received, by razor page.",
+			.CreateCounter("razor_page_requests_total", "Number of requests received, by razor page route.",
 				labelNames: new[] { "route" });
 
 		[HttpPost]
