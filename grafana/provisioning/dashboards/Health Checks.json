@@ -64,7 +64,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "Healthy = The FarmMaps server responds fast to requests\nDegraded = The FarmMaps server responds slowly to requests\nUnhealthy = The FarmMaps  server doesn't respond to requests",
+      "description": "Healthy = The FarmMaps server responds fast to requests;  \nDegraded = The FarmMaps server responds slowly to requests; \nUnhealthy = The FarmMaps  server doesn't respond to requests; ",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -171,7 +171,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "Healthy = The FarmMaps API responds fast to requests\nDegraded = The FarmMaps API responds slowly to requests\nUnhealthy = The FarmMaps  API doesn't respond to requests",
+      "description": "Healthy = The FarmMaps API responds fast to requests; \nDegraded = The FarmMaps API responds slowly to requests; \nUnhealthy = The FarmMaps  API doesn't respond to requests;  ",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -313,6 +313,6 @@
   "timezone": "",
   "title": "Health Checks",
   "uid": "JwoEy1tVz",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }

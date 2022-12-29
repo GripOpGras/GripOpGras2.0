@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System.Diagnostics;
+﻿using GripOpGras2.Server.Utils;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Net;
 
 namespace GripOpGras2.Server.HealthChecks
@@ -20,31 +20,8 @@ namespace GripOpGras2.Server.HealthChecks
 		public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
 			CancellationToken cancellationToken = default)
 		{
-			Stopwatch stopwatch = new();
-			stopwatch.Start();
-			try
-			{
-				HttpResponseMessage response = await _httpClient.GetAsync(ApiUri, cancellationToken);
-				stopwatch.Stop();
-				if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Unauthorized)
-				{
-					if (stopwatch.ElapsedMilliseconds < MaxResponseTimeInMilliseconds)
-					{
-						return HealthCheckResult.Healthy(
-							$"The {ApiUri} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
-					}
-
-					return HealthCheckResult.Degraded(
-						$"The {ApiUri} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
-				}
-
-				return HealthCheckResult.Unhealthy($"Failed to reach {ApiUri}. Status code: {response.StatusCode}");
-			}
-			catch (Exception ex)
-			{
-				stopwatch.Stop();
-				return HealthCheckResult.Unhealthy($"Failed to reach {ApiUri} in {stopwatch.ElapsedMilliseconds}ms", ex);
-			}
+			return await WebUtils.PingExternalEndpoint(ApiUri, _httpClient, MaxResponseTimeInMilliseconds,
+				new[] { HttpStatusCode.Unauthorized }, cancellationToken);
 		}
 	}
 }
