@@ -11,7 +11,15 @@ namespace GripOpGras2.Server
 
 			builder.Services.AddControllersWithViews();
 			builder.Services.AddRazorPages();
-			builder.Services.AddHttpClient();
+
+			builder.Services.AddHttpClient("FarmMapsApi", client =>
+			{
+				client.BaseAddress = new Uri(builder.Configuration["FarmMapsApiBaseUrl"]);
+			});
+			builder.Services.AddHttpClient("FarmMapsAccount", client =>
+			{
+				client.BaseAddress = new Uri(builder.Configuration["FarmMapsAccountBaseUrl"]);
+			});
 
 			builder.Services.AddHealthChecks()
 				.AddCheck<FarmMapsAccountHealthCheck>(nameof(FarmMapsAccountHealthCheck))

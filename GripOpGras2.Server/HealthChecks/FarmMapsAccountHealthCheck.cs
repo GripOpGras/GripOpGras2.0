@@ -9,40 +9,40 @@ namespace GripOpGras2.Server.HealthChecks
 
 		private const int MaxResponseTimeInMilliseconds = 1200;
 
-		public FarmMapsAccountHealthCheck(HttpClient httpClient)
+		private const string LoginUri = "/Account/LoginGui";
+
+		public FarmMapsAccountHealthCheck(IHttpClientFactory httpClientFactory)
 		{
-			_httpClient = httpClient;
+			_httpClient = httpClientFactory.CreateClient("FarmMapsAccount");
 		}
 
 		public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
 			CancellationToken cancellationToken = default)
 		{
-			// TODO use the url from appsettings instead!!!
-			const string url = "https://accounts.test.farmmaps.eu/Account/LoginGui";
 			Stopwatch stopwatch = new();
 			stopwatch.Start();
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+				HttpResponseMessage response = await _httpClient.GetAsync(LoginUri, cancellationToken);
 				stopwatch.Stop();
 				if (response.IsSuccessStatusCode)
 				{
 					if (stopwatch.ElapsedMilliseconds < MaxResponseTimeInMilliseconds)
 					{
 						return HealthCheckResult.Healthy(
-							$"The {url} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
+							$"The {LoginUri} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
 					}
 
 					return HealthCheckResult.Degraded(
-						$"The {url} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
+						$"The {LoginUri} endpoint responded in {stopwatch.ElapsedMilliseconds} ms.");
 				}
 
-				return HealthCheckResult.Unhealthy($"Failed to reach {url}. Status code: {response.StatusCode}");
+				return HealthCheckResult.Unhealthy($"Failed to reach {LoginUri}. Status code: {response.StatusCode}");
 			}
 			catch (Exception ex)
 			{
 				stopwatch.Stop();
-				return HealthCheckResult.Unhealthy($"Failed to reach {url} in {stopwatch.ElapsedMilliseconds}ms", ex);
+				return HealthCheckResult.Unhealthy($"Failed to reach {LoginUri} in {stopwatch.ElapsedMilliseconds}ms", ex);
 			}
 		}
 	}
