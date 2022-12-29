@@ -86,7 +86,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 13,
         "w": 14,
         "x": 0,
         "y": 0
@@ -147,7 +147,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Requests received by controller",
+      "title": "Requests received by route",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -219,7 +219,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 7,
         "w": 5,
         "x": 14,
         "y": 0
@@ -336,6 +336,6 @@
   "timezone": "",
   "title": "Blazor WebAssembly metrics",
   "uid": "iqKoB1pVk",
-  "version": 4,
+  "version": 3,
   "weekStart": ""
 }
