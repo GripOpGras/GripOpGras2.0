@@ -1,3 +1,4 @@
+using GripOpGras2.Server.HealthChecks;
 using Prometheus;
 
 namespace GripOpGras2.Server
@@ -8,9 +9,15 @@ namespace GripOpGras2.Server
 		{
 			WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
 			builder.Services.AddControllersWithViews();
 			builder.Services.AddRazorPages();
+			builder.Services.AddHttpClient();
+
+			builder.Services.AddHealthChecks()
+				.AddCheck<FarmMapsAccountHealthCheck>(nameof(FarmMapsAccountHealthCheck))
+				.AddCheck<FarmMapsApiHealthCheck>(nameof(FarmMapsApiHealthCheck))
+				// Report health check results in the metrics output.
+				.ForwardToPrometheus();
 
 			WebApplication app = builder.Build();
 
