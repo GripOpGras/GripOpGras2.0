@@ -21,7 +21,7 @@ namespace GripOpGras2.Server.HealthChecks
 			CancellationToken cancellationToken = default)
 		{
 			return await WebUtils.PingExternalEndpoint(ApiUri, _httpClient, MaxResponseTimeInMilliseconds,
-				new[] { HttpStatusCode.Unauthorized }, cancellationToken);
+				cancellationToken, HttpStatusCode.Unauthorized);
 		}
 	}
 }

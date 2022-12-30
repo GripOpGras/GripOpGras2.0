@@ -7,16 +7,8 @@ namespace GripOpGras2.Server.Utils
 	public static class WebUtils
 	{
 		public static async Task<HealthCheckResult> PingExternalEndpoint(string uri, HttpClient httpClient,
-			int maxResponseTimeInMilliseconds, CancellationToken cancellationToken = default)
-		{
-			return await PingExternalEndpoint(uri, httpClient, maxResponseTimeInMilliseconds,
-				Array.Empty<HttpStatusCode>(),
-				cancellationToken);
-		}
-
-		public static async Task<HealthCheckResult> PingExternalEndpoint(string uri, HttpClient httpClient,
-			int maxResponseTimeInMilliseconds, HttpStatusCode[] otherAllowedStatusCodes,
-			CancellationToken cancellationToken = default)
+			int maxResponseTimeInMilliseconds, CancellationToken cancellationToken = default,
+			params HttpStatusCode[] otherAllowedStatusCodes)
 		{
 			Stopwatch stopwatch = new();
 			stopwatch.Start();
