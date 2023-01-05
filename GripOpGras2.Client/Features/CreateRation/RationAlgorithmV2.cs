@@ -17,7 +17,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		protected const float OptimalVEMCoverage = 1.05f;
 
 		protected const float OptimalRECoverageInGramsPerKgDm = 150;
-		
+
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		protected const float MaxRECoverageInGramsPerKgDm = 170;
 
@@ -25,18 +25,24 @@ namespace GripOpGras2.Client.Features.CreateRation
 		protected const float MinRECoverageInGramsPerKgDm = 140;
 
 		protected float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
-		protected float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } = MaxAmountOfSupplementaryFeedProductInKGPerCow;
+
+		protected float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } =
+			MaxAmountOfSupplementaryFeedProductInKGPerCow;
+
 		protected float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
+
 		protected float TargetedVEMCoverage { get; set; } = OptimalVEMCoverage;
 
 
 
 
 		protected List<AbstractMappedFoodItem> availableFeedProducts = new();
+
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		//private List<AbstractMappedFoodItem> GrassRENuturalizerFeedProducts = new();
 		protected List<AbstractMappedFoodItem> REFoodItems = new();
+
 		protected List<AbstractMappedFoodItem> roughages = new();
 
 
@@ -66,7 +72,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float GetTotalVEM()
 		{
-			throw new NotImplementedException();}
+			throw new NotImplementedException();
+		}
 
 		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct()
 		{
@@ -87,7 +94,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			throw new NotImplementedException();
 		}
-		
+
 		public List<AbstractMappedFoodItem> FindImprovementRationMethodGrassRENuterilizer()
 		{
 			throw new NotImplementedException();
@@ -102,12 +109,24 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			throw new NotImplementedException();
 		}
+	};
+
+	public class ImprovementRapport
+	{
+		public List<AbstractMappedFoodItem> changesPerVEM = new List<AbstractMappedFoodItem>();
+
+		public List<AbstractMappedFoodItem> changesPerKGBijprod = new List<AbstractMappedFoodItem>();
 
 
 
-
-
-
-
+		public ImprovementRapport(List<AbstractMappedFoodItem> changesPerVEM)
+		{
+			this.changesPerVEM = changesPerVEM.Select(x => x.Clone()).ToList();
+			
+			float totalKGBijprodperVem = changesPerVEM.Sum(x => x.appliedVEM * x.KGDMPerVEM_bijprod);
+			//make a copy of the list and the items in the list
+			changesPerKGBijprod = changesPerVEM.Select(x => x.Clone()).ToList();
+			changesPerKGBijprod.ForEach(x => x.setAppliedVEM(x.appliedVEM / totalKGBijprodperVem)); ;
+		}
 	}
 }

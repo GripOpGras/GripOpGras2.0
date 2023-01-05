@@ -1,15 +1,17 @@
-﻿using GripOpGras2.Domain.FeedProducts;
+﻿using System.Runtime.CompilerServices;
+using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
 	public abstract class AbstractMappedFoodItem
 	{
 
-		protected float KGDMperVEM { get; }
+		public float KGDMperVEM { get; private set; }
 
-		protected float KGDMbijprodPerVEM { get; }
+		public float KGDMPerVEM_bijprod { get; private set; }
 
-		protected float REdiffPerVEM { get; }
+		public float REdiffPerVEM { get; private set; }
+		public float REdiffPerVEM_bijprod { get; private set; }
 
 		public float appliedVEM { get; private set; }
 
@@ -17,7 +19,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float appliedREdiff { get; private set; }
 
+		//Gives a number between 1 and 0, which reperesents the percentage of VEM that is bijproduct
+		public float partOfTotalVEMbijprod { get; protected set; }
+
 		public abstract List<Tuple<FeedProduct, float>> GetProducts();
+
+		public abstract AbstractMappedFoodItem Clone();
+		//reference to original
+		public AbstractMappedFoodItem originalRefference { get; }
 
 
 		public void setAppliedVEM(float VEM)
@@ -40,6 +49,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			throw new NotImplementedException();
 		}
+
+		public override AbstractMappedFoodItem Clone()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	public class MappedFeedProductGroup : AbstractMappedFoodItem
@@ -51,6 +65,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 		}
 
 		public override List<Tuple<FeedProduct, float>> GetProducts()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override AbstractMappedFoodItem Clone()
 		{
 			throw new NotImplementedException();
 		}

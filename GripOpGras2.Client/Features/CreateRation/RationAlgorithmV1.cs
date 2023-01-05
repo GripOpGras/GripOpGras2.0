@@ -23,7 +23,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		private const float MinRECoverageInGramsPerKgDm = 140;
 
-		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
+		public FeedRation CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake, MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			Dictionary<FeedProduct, float> rationProducts = new();
@@ -39,7 +39,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			if (herd.NumberOfAnimals == 0)
 			{
-				return await Task.FromResult(new FeedRation
+				return Task.FromResult(new FeedRation
 				{
 					Herd = herd,
 					Date = DateTime.Now,
@@ -51,7 +51,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			if (availableFeedProducts.Count == 0)
 			{
-				return await Task.FromResult(new FeedRation
+				return Task.FromResult(new FeedRation
 				{
 					Herd = herd,
 					Date = DateTime.Now,
@@ -115,15 +115,22 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			//pick the amount VEM of roughageWithBiggestNegativeReDeviation to compensate the REdeviation of grass
 			float aanvullenVEMMetHoogstTegenpooLvanEiwittekortCverschot = 1;
-			throw new NotImplementedException("Not Implemented");
-			return null;
+			//throw new NotImplementedException("Not Implemented");
+			return new FeedRation
+			{
+				Herd = herd,
+				Date = DateTime.Now,
+				Plot = grazingActivity?.Plot,
+				FeedProducts = rationProducts,
+				GrassIntake = totalGrassIntake
+			};
 		}
 
 		//////////--------------------------//////////
 			//////////--------------------------//////////
 			//////////--------------------------//////////
 
-		//	float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
+			//float vemNeeds = CalculateVemNeedsOfTheHerd(herd, milkProductionAnalysis);
 
 		//	if (vemIntake < vemNeeds)
 		//	{
