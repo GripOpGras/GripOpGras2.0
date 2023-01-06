@@ -1,71 +1,71 @@
-name: Pull Request Build and Deploy
-on:
-  pull_request:
-    branches: 
-    - main
-    paths-ignore:
-      - '.github/workflows/**'
-      - '**.md'
-
-env:
-  PR_REPO_NAME: GripOpGras2.0-pr-${{ github.event.pull_request.node_id }}
-
-jobs:
-  create-page-host:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
-    steps:
-      - name: Create new repository for temporary deployment
-        uses: octobay/create-repository-action@v1
-        with:
-          name: ${{ env.PR_REPO_NAME }}
-          org: GripOpGras
-          access-token: ${{ secrets.GRIPOPGRAS_PAT }}
-    
-  pr-build-deploy:
-    needs: create-page-host
-    runs-on: ubuntu-latest
-    environment: 
-      name: pr-staging
-      url: https://gripopgras.github.io/${{ env.PR_REPO_NAME }}/
-    steps:
-      # sets up .NET Core SDK 6.0.x
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-          
-      # https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
-      - name: Set GitHub Actions as Commit Author
-        run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-          
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-        with:
-          path: 'pr-build'
-                
-      - name: Build Pull Request
-        run: |
-          cd pr-build
-          dotnet workload install wasm-tools
-          dotnet publish GripOpGras2.0.sln -c:Release -p:GHPages=true -p:GHPagesBase=/${{ env.PR_REPO_NAME }}/ -o dist/Web --nologo
-          cd ..
-      
-      - name: Checkout temporary deployment target repo
-        uses: actions/checkout@v2
-        with:
-          repository: GripOpGras/${{ env.PR_REPO_NAME }}
-          path: 'pr-deploy'
-          token: ${{ secrets.GRIPOPGRAS_PAT }}
-      
-      - name: Push files to target
-        run: |
-          cp -r pr-build/dist/Web/wwwroot/* pr-deploy
-          cd pr-deploy
-          touch .nojekyll
-          git add .
-          git commit -m $GITHUB_SHA
-          git branch -M gh-pages
-          git push -u origin gh-pages
+#name: Pull Request Build and Deploy
+#on:
+#  pull_request:
+#    branches: 
+#    - main
+#    paths-ignore:
+#      - '.github/workflows/**'
+#      - '**.md'
+#
+#env:
+#  PR_REPO_NAME: GripOpGras2.0-pr-${{ github.event.pull_request.node_id }}
+#
+#jobs:
+#  create-page-host:
+#    runs-on: ubuntu-latest
+#    if: github.event.pull_request.draft == false
+#    steps:
+#      - name: Create new repository for temporary deployment
+#        uses: octobay/create-repository-action@v1
+#        with:
+#          name: ${{ env.PR_REPO_NAME }}
+#          org: GripOpGras
+#          access-token: ${{ secrets.GRIPOPGRAS_PAT }}
+#    
+#  pr-build-deploy:
+#    needs: create-page-host
+#    runs-on: ubuntu-latest
+#    environment: 
+#      name: pr-staging
+#      url: https://gripopgras.github.io/${{ env.PR_REPO_NAME }}/
+#    steps:
+#      # sets up .NET Core SDK 6.0.x
+#      - name: Setup .NET Core SDK
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: 6.0.x
+#          
+#      # https://github.com/actions/checkout#push-a-commit-using-the-built-in-token
+#      - name: Set GitHub Actions as Commit Author
+#        run: |
+#          git config --global user.name github-actions
+#          git config --global user.email github-actions@github.com
+#          
+#      - name: Checkout Repo
+#        uses: actions/checkout@v2
+#        with:
+#          path: 'pr-build'
+#                
+#      - name: Build Pull Request
+#        run: |
+#          cd pr-build
+#          dotnet workload install wasm-tools
+#          dotnet publish GripOpGras2.0.sln -c:Release -p:GHPages=true -p:GHPagesBase=/${{ env.PR_REPO_NAME }}/ -o dist/Web --nologo
+#          cd ..
+#      
+#      - name: Checkout temporary deployment target repo
+#        uses: actions/checkout@v2
+#        with:
+#          repository: GripOpGras/${{ env.PR_REPO_NAME }}
+#          path: 'pr-deploy'
+#          token: ${{ secrets.GRIPOPGRAS_PAT }}
+#      
+#      - name: Push files to target
+#        run: |
+#          cp -r pr-build/dist/Web/wwwroot/* pr-deploy
+#          cd pr-deploy
+#          touch .nojekyll
+#          git add .
+#          git commit -m $GITHUB_SHA
+#          git branch -M gh-pages
+#          git push -u origin gh-pages
