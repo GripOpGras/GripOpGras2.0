@@ -127,7 +127,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 
 		[Test()]
-		public void CreateRationAsyncTest()
+		public async void CreateRationAsyncTest()
 		{
 			// Arrange
 			FeedProduct prod1 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod1", 189f, 884.2f);
@@ -148,7 +148,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			grazingActivity.Plot = new Plot();
 			var rationAlgorithm = new RationAlgorithmV2();
 			// Act
-			var feedRotation = rationAlgorithm.CreateRationAsync(
+			var feedRotation = await rationAlgorithm.CreateRationAsync(
 				feedProducts: new List<FeedProduct>()
 				{
 					prod1, prod2
@@ -162,6 +162,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 				totalGrassIntake: 1063.5f,
 				milkProductionAnalysis: milkProductionAnalysis,
 				grazingActivity: grazingActivity);
+			
 			// Assert
 			Assert.NotNull(feedRotation);
 			Assert.NotNull(feedRotation.FeedProducts);

@@ -46,7 +46,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 		protected List<AbstractMappedFoodItem> roughages = new();
 
 
-		public FeedRation CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
+			float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			SetUp(feedProducts, herd, totalGrassIntake, milkProductionAnalysis, grazingActivity);
