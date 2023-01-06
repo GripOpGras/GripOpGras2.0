@@ -26,7 +26,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public abstract AbstractMappedFoodItem Clone();
 		//reference to original
-		public AbstractMappedFoodItem originalRefference { get; }
+		public AbstractMappedFoodItem originalRefference { get; } = null!;
 
 
 		public void setAppliedVEM(float VEM)
