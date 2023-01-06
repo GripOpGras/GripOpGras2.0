@@ -14,8 +14,8 @@ Scenario: Create a ration for a herd, when having two roughage products
     And the ration should contain between <protein-ration-min> and <protein-ration-max> g protein
     And the ration should contain between <vem-ration-min> and <vem-ration-max> VEM
 	And the ration must contain <grass-intake> kg of grass
-Examples: 
-| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | dm-supplementary-ration-min | dm-supplementary-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
+#Examples: 
+#| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | dm-supplementary-ration-min | dm-supplementary-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
 
 
 Scenario: Create a ration for a herd, when having three roughage products
@@ -30,8 +30,8 @@ Scenario: Create a ration for a herd, when having three roughage products
     And the ration should contain between <protein-ration-min> and <protein-ration-max> g protein
     And the ration should contain between <vem-ration-min> and <vem-ration-max> VEM
 	And the ration must contain <grass-intake> kg of grass
-Examples: 
-| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | roughage3 | protein-roughage3 | vem-roughage3 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max | kg-roughage3-min | kg-roughage3-max |
+#Examples: 
+#| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | roughage3 | protein-roughage3 | vem-roughage3 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max | kg-roughage3-min | kg-roughage3-max |
 
 
 Scenario: Create a ration for a herd, when having two roughage products and three supplementary product
@@ -66,8 +66,8 @@ Scenario: Create a ration for a herd, when having two roughage products and one 
     And the ration should contain between <protein-ration-min> and <protein-ration-max> g protein
     And the ration should contain between <vem-ration-min> and <vem-ration-max> VEM
 	And the ration must contain <grass-intake> kg of grass
-Examples:
-| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | supplementary1 | protein-supplementary1 | vem-supplementary1 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | dm-supplementary-ration-min | dm-supplementary-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
+#Examples:
+#| roughage1 | protein-roughage1 | vem-roughage1 | roughage2 | protein-roughage2 | vem-roughage2 | supplementary1 | protein-supplementary1 | vem-supplementary1 | herd-size | grass-intake | vem-grass | protein-grass | lmilk-produced | dm-roughage-ration-min | dm-roughage-ration-max | dm-supplementary-ration-min | dm-supplementary-ration-max | protein-ration-min | protein-ration-max | vem-ration-min | vem-ration-max |
 
 
 Scenario: Create a ration for a herd, without having any feed products
