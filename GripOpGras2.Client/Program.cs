@@ -16,7 +16,7 @@ namespace GripOpGras2.Client
 
 			builder.Services.AddOidcAuthentication(options =>
 			{
-				builder.Configuration.Bind("FarmMaps", options.ProviderOptions);
+				builder.Configuration.Bind("FarmMapsOidc", options.ProviderOptions);
 				options.ProviderOptions.DefaultScopes.Add("openid");
 				options.ProviderOptions.DefaultScopes.Add("profile");
 				options.ProviderOptions.DefaultScopes.Add("api");
