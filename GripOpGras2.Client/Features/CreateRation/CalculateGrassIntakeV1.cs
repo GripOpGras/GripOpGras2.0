@@ -2,7 +2,6 @@
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
-	//TODO the implementation of this class needs to be moved to a separate module.
 	public class CalculateGrassIntakeV1 : ICalculateGrassIntake
 	{
 		private const float GrazingLosses = 0.85f;

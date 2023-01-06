@@ -29,16 +29,14 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_exceptionDriver = exceptionDriver;
 		}
 
-		[Given(@"I have the roughage product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheRoughageProductThatContainsDmProteinAndVEM(string roughageName, float dm,
-			float protein, float vem)
+		[Given(@"I have the roughage product (.*) that contains (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheRoughageProductThatContainsProteinAndVEM(string roughageName, float protein, float vem)
 		{
 			_feedProducts.Add(new Roughage
 			{
 				Name = roughageName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					DryMatter = dm,
 					RE = protein,
 					VEM = vem
 				},
@@ -46,8 +44,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			});
 		}
 
-		[Given(@"I have the supplementary product (.*) that contains (.*) kg dm, (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName, float dm,
+		[Given(@"I have the supplementary product (.*) that contains (.*) g protein, and (.*) VEM")]
+		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName,
 			float protein, float vem)
 		{
 			_feedProducts.Add(new SupplementaryFeedProduct()
@@ -55,7 +53,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 				Name = supplementaryName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					DryMatter = dm,
 					RE = protein,
 					VEM = vem
 				},
@@ -109,20 +106,51 @@ namespace GripOpGras2.Specs.StepDefinitions
 			);
 		}
 
-		[Then(@"the ration should contain (.*) kg dm of (.*)")]
-		public void ThenTheRationShouldContainKgDmOfProduct(float amount, string productName)
+		[Then(@"the ration should contain between (.*) and (.*) kg dm of roughage products")]
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfRoughageProducts(float minAmount, float maxAmount)
 		{
 			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
 
-			FeedProduct? roughage = _feedProducts.FirstOrDefault(r => r.Name == productName);
+			float totalAmountOfKgRoughageDryMatter = _result.FeedProducts!
+				.Where(feedProduct => feedProduct.Key is Roughage).Sum(feedProduct => feedProduct.Value);
+			totalAmountOfKgRoughageDryMatter.Should().BeInRange(minAmount, maxAmount);
+		}
 
-			if (roughage == null)
-			{
-				throw new Exception($"FeedProduct {productName} could not be found.");
-			}
+		[Then(@"the ration should contain between (.*) and (.*) kg dm of supplementary products")]
+		public void ThenTheRationShouldContainBetweenMinAndMaxKgDmOfSupplementaryProducts(float minAmount,
+			float maxAmount)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
 
-			//TODO mogelijk dit opdelen in twee checks!
-			_result!.FeedProducts.Should().Contain(roughage, amount);
+			float totalAmountOfKgSupplementaryDryMatter = _result.FeedProducts!
+				.Where(feedProduct => feedProduct.Key is SupplementaryFeedProduct)
+				.Sum(feedProduct => feedProduct.Value);
+			totalAmountOfKgSupplementaryDryMatter.Should().BeInRange(minAmount, maxAmount);
+		}
+
+		[Then(@"the ration should contain between (.*) and (.*) g protein")]
+		public void ThenTheRationShouldContainBetweenProtein_Ration_MinAndProtein_Ration_MaxGProtein(float min,
+			float max)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
+
+			float totalAmountOfProtein =
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.RE * feedProduct.Value)!;
+			totalAmountOfProtein.Should().BeInRange(min, max);
+		}
+
+		[Then(@"the ration should contain between (.*) and (.*) VEM")]
+		public void ThenTheRationShouldContainBetweenVem_Ration_MinAndVem_Ration_MaxVEM(float min, float max)
+		{
+			_result.Should().NotBeNull();
+			_result!.FeedProducts.Should().NotBeNull();
+
+			float totalAmountOfVEM =
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.VEM * feedProduct.Value)!;
+			totalAmountOfVEM.Should().BeInRange(min, max);
 		}
 
 		[Then(@"the ration must contain (.*) kg of grass")]
