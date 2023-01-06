@@ -1,5 +1,8 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -12,4 +15,7 @@
 
 @using GripOpGras2.Client
 @using GripOpGras2.Client.Shared
+@using GripOpGras2.Client.Features
+
+@attribute [Authorize]
 @using GripOpGras2.Client.Features.CreateRation

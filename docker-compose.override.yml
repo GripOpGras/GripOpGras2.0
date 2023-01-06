@@ -1,0 +1,6 @@
+version: '3.4'
+
+services:
+  gripopgras2.server:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
