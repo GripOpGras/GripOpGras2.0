@@ -14,7 +14,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public float REdiffPerVEM { get; protected set; }
 		public float REdiffPerVEM_bijprod { get; protected set; }
 
-		public float appliedVEM { get; private set; }
+		public float appliedVEM { get; private set; } = 0;
 
 		public float appliedKGDM { get; private set; }
 
@@ -27,7 +27,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public abstract AbstractMappedFoodItem Clone();
 		//reference to original
-		public AbstractMappedFoodItem originalRefference { get; } = null!;
+		public AbstractMappedFoodItem originalRefference { get; protected set; } = null!;
 
 
 		public void setAppliedVEM(float VEM)
@@ -40,25 +40,35 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 	public class MappedFeedProduct : AbstractMappedFoodItem
 	{
+		FeedProduct containingFeedProduct;
 
 		public MappedFeedProduct(FeedProduct feedProduct)
 		{
 			if (feedProduct.FeedAnalysis == null) throw new GripOpGras2Exception("FeedAnalysis cannot be null");
-			KGDMperVEM = 1/feedProduct.FeedAnalysis.VEM;
-			KGDMPerVEM_bijprod = feedProduct.;
-			REdiffPerVEM = feedProduct.REdiffPerVEM;
-			REdiffPerVEM_bijprod = feedProduct.REdiffPerVEM_bijprod;
-			partOfTotalVEMbijprod = feedProduct.partOfTotalVEMbijprod;
+			if (feedProduct.FeedAnalysis.VEM == null) throw new GripOpGras2Exception("VEM cannot be null");
+			if (feedProduct.FeedAnalysis.RE == null) throw new GripOpGras2Exception("RE cannot be null");
+			bool isSupplementaryFeedProduct = (feedProduct.GetType() == typeof(SupplementaryFeedProduct));
+			KGDMperVEM = (float)(1f/feedProduct.FeedAnalysis.VEM);
+			KGDMPerVEM_bijprod = (isSupplementaryFeedProduct) ? KGDMperVEM : 0;
+			REdiffPerVEM = (float)(feedProduct.FeedAnalysis.RE - 150); //gewenste RE is 150
+			REdiffPerVEM_bijprod = (isSupplementaryFeedProduct) ? REdiffPerVEM : 0;
+			partOfTotalVEMbijprod = (isSupplementaryFeedProduct) ? 1 : 0;
+			setAppliedVEM(0);
+			originalRefference = this;
+			containingFeedProduct = feedProduct;
 		}
 
 		public override List<Tuple<FeedProduct, float>> GetProducts()
 		{
-			throw new NotImplementedException();
+			return new List<Tuple<FeedProduct, float>>() { new Tuple<FeedProduct, float>(containingFeedProduct, appliedKGDM) };
 		}
 
 		public override AbstractMappedFoodItem Clone()
 		{
-			throw new NotImplementedException();
+			MappedFeedProduct newMappedFeedProduct = new MappedFeedProduct(containingFeedProduct);
+			newMappedFeedProduct.setAppliedVEM(appliedVEM);
+			newMappedFeedProduct.originalRefference = originalRefference;
+			return newMappedFeedProduct;
 		}
 	}
 

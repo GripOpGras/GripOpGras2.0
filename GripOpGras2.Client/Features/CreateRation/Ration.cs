@@ -1,4 +1,6 @@
-﻿namespace GripOpGras2.Client.Features.CreateRation
+﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
+
+namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class Ration
 	{
@@ -33,7 +35,7 @@
 				}
 				else
 				{
-					if (foodItem.appliedVEM < 0) throw new Exception("Cannot reduce an item that is not in the ration");
+					if (foodItem.appliedVEM < 0) throw new RationAlgorithmException("Cannot reduce an item that is not in the ration");
 					this.RationList.Add(foodItem);
 				}
 

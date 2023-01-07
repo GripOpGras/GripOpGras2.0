@@ -10,6 +10,7 @@ using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 using NUnit.Framework;
 using Assert = NUnit.Framework.Assert;
+using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 
 namespace GripOpGras2.Client.Features.CreateRation.Tests
 {
@@ -64,11 +65,15 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			AbstractMappedFoodItem item2 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 2", 20f, 200f, 20f);
 			ration.RationList.Add(item1);
 			ration.RationList.Add(item2);
+			AbstractMappedFoodItem item3 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 3", 20f, 200f, 8f);
 			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
 			{
-				TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 1", 10f, 100f, 5f),
-				TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 2", 20f, 200f, 10f)
+				item1.Clone(),
+				item2.Clone(),
+				item3
 			};
+			changes[0].setAppliedVEM(5);
+			changes[1].setAppliedVEM(10);
 
 			// Act
 			ration.ApplyChangesToRationList(changes);
@@ -76,21 +81,53 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			// Assert
 			Assert.AreEqual(15f, ration.RationList.Find(x => x.originalRefference == item1.originalRefference).appliedVEM);
 			Assert.AreEqual(30f, ration.RationList.Find(x => x.originalRefference == item2.originalRefference).appliedVEM);
+			Assert.Contains(item3, ration.RationList);
 		}
-		//{
-		//	//Assert
-		//	Ration ration = new Ration();
-		//	ration.RationList.Add(TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 1", 100, 100, 100));
-		//	//Act
-		//	ration.RationList[1].setAppliedVEM(5);
-		//	//Assert
 
-		//}
+		[Test()]
+		public void ErrorOnIllegalChangesToRationListTest()
+		{
+			// Arrange
+			Ration ration = new Ration();
+			AbstractMappedFoodItem item1 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 1", 10f, 100f, 10f);
+			AbstractMappedFoodItem item2 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 2", 20f, 200f, 20f);
+			ration.RationList.Add(item1);
+			ration.RationList.Add(item2);
+			AbstractMappedFoodItem item3 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 3", 20f, 200f, -2f);
+			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
+			{
+				item1.Clone(),
+				item2.Clone(),
+				item3
+			};
+			changes[0].setAppliedVEM(5);
+			changes[1].setAppliedVEM(10);
+			//Assert
+			Assert.Throws<RationAlgorithmException>(() => ration.ApplyChangesToRationList(changes));
+		}
 
 		[Test()]
 		public void CloneTest()
 		{
-			Assert.Fail();
+			// Arrange
+			Ration ration = new Ration();
+			AbstractMappedFoodItem item1 = TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 1", 10f, 100f, 10f);
+			ration.RationList.Add(item1);
+			//Act
+			Ration clone = ration.Clone();
+			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
+			{
+				item1.Clone()
+			};
+			changes[0].setAppliedVEM(5);
+			clone.ApplyChangesToRationList(changes);
+			//Assert
+			Assert.AreSame(ration.originalRefference, clone.originalRefference);
+			Assert.AreNotSame(ration, clone);
+			Assert.AreSame(item1.originalRefference, clone.RationList[0].originalRefference);
+			
+			Assert.AreNotEqual(ration.totalVEM,clone.totalVEM);
+			Assert.AreNotEqual(ration.totalDM,clone.totalDM);
 		}
 	}
 
@@ -124,8 +161,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 	[TestFixture]
 	public class RationAlgorithmV2Tests
 	{
-		[SetUp]
-		public RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods Setup(List<FeedProduct> feedProducts, float totalGrassIntake = 1062.5f,
+		public RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods CreateRationAlgorithm(List<FeedProduct> feedProducts, float totalGrassIntake = 1062.5f,
 			float lmilk = 3000, bool hasPlot = true, float PlotRE = 210, float PlotVEM = 1000)
 		{
 			// Arrange
@@ -220,7 +256,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		[TestCase(0, 0, 1800.5f, 1800.5f)]
 		[TestCase(0, 0, 0, 0)]
 		[TestCase(30.5, 15, 0, 45.5)]
-		public void GetTotalKGDMTest(float KGprod1, float KGprod2, float KGgrass, float expected)
+		public void GetTotalKgdmTest(float KGprod1, float KGprod2, float KGgrass, float expected)
 		{
 			//Arrange
 			FeedProduct prod1 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod1", 189f, 884.2f);
@@ -229,7 +265,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			MappedFeedProduct mappedProd2 = new MappedFeedProduct(prod2);
 			mappedProd1.setAppliedVEM(KGprod1 * 884.2f);
 			mappedProd2.setAppliedVEM(KGprod2 * 1238f);
-			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = Setup(new List<FeedProduct>(), KGgrass);
+			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass);
 
 			//Act
 			var totalKGDM = rationAlgorithm.GetTotalKGDM();
@@ -252,7 +288,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			mappedProd1.setAppliedVEM(VEMprod1);
 			mappedProd2.setAppliedVEM(VEMprod2);
 			mappedBijvprod.setAppliedVEM(VEMBijvoerProd);
-			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = Setup(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
+			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
 			rationAlgorithm.getsetroughages =
 				new List<AbstractMappedFoodItem>{mappedProd1, mappedProd2, mappedBijvprod};
 			//Act
@@ -263,10 +299,10 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 		[Test]
 		[TestCase(100, 200, 300, 400, 30, 10, 500, 600, 200 + 400 + 500 * 600 + 10 * 0.3 * 100 + 10 * 0.7 * 300)]
-		[TestCase(100, 200, 300, 400, 30, 0, 500, 600, 200 + 400 + 500 * 600)]
+		[TestCase(100, 200, 300, 400, 30, 0, 500, 600, 300600f)]
 		[TestCase(300, 800, 500, 0, 0, 100, 0, 80, 800 + 500 * 100)]
 		public void GetTotalVEMTestWithCombos(float VEMPerDMprod1, float VEMprod1, float VEMPerDMprod2, float VEMprod2,
-			float percentProd1, float KGofGroup, float KGgrass, float VEMgrass, float expectd)
+			float percentProd1, float KGofGroup, float KGgrass, float VEMgrass, float expectedVEM)
 		{
 			//Arrange
 			FeedProduct prod1 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod1", 189f, VEMPerDMprod1);
@@ -280,15 +316,16 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 				(mappedProd1, percentProd1),
 					(mappedProd2, 100 - percentProd1));
 			mappedgroup.setAppliedVEM(KGofGroup);
-			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = Setup(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
+			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
 			rationAlgorithm.getsetroughages = new List<AbstractMappedFoodItem>{mappedProd1, mappedProd2, mappedgroup};
 			//Act
 			float totalVEM = rationAlgorithm.getsetTargetedVEMCoverage;
 			//Assert
-			Assert.AreEqual(expectd, totalVEM);
+			Assert.AreEqual(expectedVEM, totalVEM);
 		}
 
 		[Test()]
+
 		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2, float VEMPerDMprod2, float REperDMBijprod, float VEMPerDMbijprod, float KGgrass, float VEMgrass, float REgrass, string expectedProd, float expectedKGDM, Exception? expectedException)
 		{
 			//Arrange
@@ -296,7 +333,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			FeedProduct prod2 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod2", REperDMprod2, VEMPerDMprod2);
 			FeedProduct bijprod = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("bijprod", REperDMBijprod, VEMPerDMbijprod, false);
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm =
-				Setup(new List<FeedProduct>{prod1, prod2, bijprod}, KGgrass, PlotVEM: VEMgrass, PlotRE: REgrass);
+				CreateRationAlgorithm(new List<FeedProduct>{prod1, prod2, bijprod}, KGgrass, PlotVEM: VEMgrass, PlotRE: REgrass);
 			//Act
 			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassRENuturalizerFeedProduct();
 			//Assert
