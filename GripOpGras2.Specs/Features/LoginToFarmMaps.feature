@@ -7,8 +7,10 @@ Scenario: The app navigates to the login page
 	Then the application should navigate to the FarmMaps login page
 
 Scenario: The user logs into the application with FarmMaps
-	Given the user is on the login page of FarmMaps
-	When the user enters the username and password
-	And the user clicks the login button
-	Then the application should navigate to the FarmMaps dashboard
-	And the application should show the users email address
+	Given that I am on the FarmMaps login screen
+	When I enter my username and password
+	And I click the login button
+	Then I will have to be redirected to the home page of the application
+	And the page should show the users email address
+
+

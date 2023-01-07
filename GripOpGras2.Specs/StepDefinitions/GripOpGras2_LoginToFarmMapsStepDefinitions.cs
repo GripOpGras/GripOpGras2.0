@@ -9,7 +9,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 	{
 		private readonly IWebDriver _driver;
 
-		private const string Url = "http://localhost:4200";
+		private const string BaseUrl = "http://localhost:4200";
 
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
@@ -21,9 +21,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
 			_farmMapsTestAccount = account ?? throw new Exception(
 				"The FarmMapsTestAccount variable in the secrets.json file has not been configured. See the following link on how to configure this file: https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows");
-
-			// Initialize Selenium page object
-			//this.loginPage = new LoginPage(driver);
 		}
 
 		[When(@"I open the Grip op Gras application")]
@@ -35,7 +32,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"the application should navigate to the FarmMaps login page")]
 		public void ThenTheApplicationShouldNavigateToTheFarmMapsLoginPage()
 		{
-			IWebElement loginPage = _driver!.FindElement(By.ClassName("login-page"));
+			IWebElement loginPage = _driver.FindElement(By.ClassName("login-page"));
 			loginPage.Should().NotBeNull();
 
 			IWebElement loginForm = loginPage.FindElement(By.TagName("form"));
@@ -46,13 +43,13 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_driver.Url.Should().Contain("farmmaps.eu");
 		}
 
-		[Given(@"the user is on the login page of FarmMaps")]
-		public void GivenTheUserIsOnTheLoginPageOfFarmMaps()
+		[Given(@"that I am on the FarmMaps login screen")]
+		public void GivenThatIAmOnTheFarmMapsLoginScreen()
 		{
 			NavigateWebDriverToApplication();
 
 			// Give the page time to load
-			_driver!.FindElement(By.ClassName("login-page"));
+			_driver.FindElement(By.ClassName("login-page"));
 
 			if (!_driver.Url.Contains("farmmaps.eu"))
 			{
@@ -60,8 +57,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			}
 		}
 
-		[When(@"the user enters the username and password")]
-		public void WhenTheUserEntersTheUsernameAndPassword()
+		[When(@"I enter my username and password")]
+		public void WhenIEnterMyUsernameAndPassword()
 		{
 			IWebElement usernameInput = _driver.FindElement(By.Id("Username"));
 			usernameInput.SendKeys(_farmMapsTestAccount.Username);
@@ -69,39 +66,40 @@ namespace GripOpGras2.Specs.StepDefinitions
 			passwordInput.SendKeys(_farmMapsTestAccount.Password);
 		}
 
-		[When(@"the user clicks the login button")]
-		public void WhenTheUserClicksTheLoginButton()
+		[When(@"I click the login button")]
+		public void WhenIClickTheLoginButton()
 		{
-			IWebElement loginButton = _driver!.FindElement(By.ClassName("btn-primary"));
+			IWebElement loginButton = _driver.FindElement(By.ClassName("btn-primary"));
 			loginButton.Click();
+
 		}
 
-		[Then(@"the application should navigate to the FarmMaps dashboard")]
-		public void ThenTheApplicationShouldNavigateToTheFarmMapsDashboard()
+		[Then(@"I will have to be redirected to the home page of the application")]
+		public void ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication()
 		{
 			Thread.Sleep(3000);
 
-			_driver.Url.Should().Be(Url + "/");
+			_driver.Url.Should().Be(BaseUrl + "/");
 		}
 
-		[Then(@"the application should show the users email address")]
-		public void ThenTheApplicationShouldShowTheUsersEmailAddress()
+		[Then(@"the page should show the users email address")]
+		public void ThenThePageShouldShowTheUsersEmailAddress()
 		{
 			_driver.PageSource.Should().Contain(_farmMapsTestAccount.Username);
 		}
 
-		private void NavigateWebDriverToApplication()
+		private void NavigateWebDriverToApplication(string uri = "/")
 		{
 			try
 			{
-				_driver.Navigate().GoToUrl(Url);
+				_driver.Navigate().GoToUrl(BaseUrl + uri);
 			}
 			catch (WebDriverException exception)
 			{
 				if (exception.Message.Contains("ERR_CONNECTION_REFUSED"))
 				{
 					throw new Exception(
-						$"The application is not running on {Url}. Please start the application and try again.");
+						$"The application is not running on {BaseUrl}. Please start the application and try again.");
 				}
 
 				throw;
