@@ -13,8 +13,10 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I open the Grip op Gras application")]
 		public void WhenIOpenTheGripOpGrasApplication()
 		{
+			ChromeOptions chromeOptions = new();
+			chromeOptions.AddArgument("headless");
 			string projectPath = Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName;
-			_driver = new ChromeDriver(projectPath + @"\Drivers\");
+			_driver = new ChromeDriver(projectPath + @"\Drivers\", chromeOptions);
 
 			try
 			{
@@ -35,12 +37,20 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 		}
 
-		[Then(@"the home page is loaded")]
-		public void ThenTheHomePageIsLoaded()
+		[Then(@"the application should navigate to the FarmMaps login page")]
+		public void ThenTheApplicationShouldNavigateToTheFarmMapsLoginPage()
 		{
-			IWebElement? navMenu = _driver.FindElement(By.XPath("//div[contains(@class, 'nav-item')]"));
-			navMenu.Should().NotBeNull();
+			IWebElement loginPage = _driver!.FindElement(By.ClassName("login-page"));
+			loginPage.Should().NotBeNull();
+
+			IWebElement loginForm = loginPage.FindElement(By.TagName("form"));
+			loginForm.Should().NotBeNull();
+			loginForm.GetAttribute("method").Should().Be("post");
+
+			// Should be checked as last to allow the webdriver to load the page
+			_driver.Url.Should().Contain("farmmaps.eu");
 		}
+
 
 		[AfterScenario]
 		public void AfterScenario()

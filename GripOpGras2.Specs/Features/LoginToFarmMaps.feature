@@ -2,6 +2,7 @@
 
 A short summary of the feature
 
-Scenario: Start the app succesfuly
+Scenario: The app navigates to the login page
 	When I open the Grip op Gras application
-	Then the home page is loaded
+	Then the application should navigate to the FarmMaps login page
+
