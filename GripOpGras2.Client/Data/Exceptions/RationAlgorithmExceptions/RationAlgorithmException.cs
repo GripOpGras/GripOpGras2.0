@@ -11,4 +11,15 @@
 		{
 		}
 	}
+	public class NoProductsWithPossibleREException : RationAlgorithmException
+	{
+		public NoProductsWithPossibleREException() : base("No products with possible RE. Make sure to add products with different RE values")
+		{
+		}
+
+		public NoProductsWithPossibleREException(string message) : base(
+			$"The feed ration cannot be made because there are some products missing: {message}.")
+		{
+		}
+	}
 }

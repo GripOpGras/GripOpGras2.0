@@ -4,38 +4,39 @@ using NUnit.Framework;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
-	public class RationAlgorithmV2 : IRationAlgorithm
+	public class TargetValues
 	{
+
 		public const float DefaultVEMNeedsOfCow = 5500;
 
 		public const float VemNeedsPerLiterMilk = 450;
 
 		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
 
-		protected const float MaxKgDmIntakePerCow = 18;
+		public const float MaxKgDmIntakePerCow = 18;
 
-		protected const float OptimalVEMCoverage = 1.05f;
+		public const float OptimalVEMCoverage = 1.05f;
 
-		protected const float OptimalRECoverageInGramsPerKgDm = 150;
-
-		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
-		protected const float MaxRECoverageInGramsPerKgDm = 170;
+		public const float OptimalRECoverageInGramsPerKgDm = 150;
 
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
-		protected const float MinRECoverageInGramsPerKgDm = 140;
+		public const float MaxRECoverageInGramsPerKgDm = 170;
 
-		protected float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
+		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
+		public const float MinRECoverageInGramsPerKgDm = 140;
 
-		protected float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } =
+		public float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
+
+		public float TargetedMaxAmountOfSupplementeryFeedProductInKGPerCow { get; set; } =
 			MaxAmountOfSupplementaryFeedProductInKGPerCow;
 
-		protected float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
+		public float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
 
-		protected float TargetedVEMCoverage { get; set; } = OptimalVEMCoverage;
+		public float TargetedVEMCoverage { get; set; } = OptimalVEMCoverage;
+	}
 
-
-
-
+	public class RationAlgorithmV2 : IRationAlgorithm
+	{
 		protected List<AbstractMappedFoodItem> availableFeedProducts = new();
 
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
@@ -44,6 +45,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 		protected List<AbstractMappedFoodItem> REFoodItems = new();
 
 		protected List<AbstractMappedFoodItem> roughages = new();
+
+		/// <summary>
+		/// The improvementSelector will be used to combine various ImprovementRapports to improve the ration based on various 
+		/// </summary>
+		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
+
+		public TargetValues targetValues = new();
 
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
@@ -86,27 +94,22 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		public AbstractMappedFoodItem FindBestRENaturalFeedProductGroup()
+		public AbstractMappedFoodItem FindBestRENaturalFeedProductGroup(bool supplementeryFeedProductAllowed)
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod()
+		public ImprovementRapport FindImprovementRationMethodGrassRENuterilizer()
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<AbstractMappedFoodItem> FindImprovementRationMethodGrassRENuterilizer()
+		public ImprovementRapport FindImprovementRationMethodNaturalREGroups()
 		{
 			throw new NotImplementedException();
 		}
 
-		public List<AbstractMappedFoodItem> FindImprovementRationMethodNaturalREGroups()
-		{
-			throw new NotImplementedException();
-		}
-
-		public List<AbstractMappedFoodItem> ImprovementRationMethodChangeTargetedCoverages()
+		public ImprovementRapport ImprovementRationMethodChangeTargetedCoverages()
 		{
 			throw new NotImplementedException();
 		}
