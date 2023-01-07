@@ -1,31 +1,34 @@
+using GripOpGras2.Specs.Models;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 
 namespace GripOpGras2.Specs.StepDefinitions
 {
 	[Binding]
 	public class GripOpGras2_LoginToFarmMapsStepDefinitions
 	{
-		private IWebDriver? _driver;
+		private readonly IWebDriver _driver;
 
 		private const string Url = "http://localhost:4200";
 
-		private FarmMapsTestAccount _farmMapsTestAccount = null!;
+		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
-		[BeforeScenario]
-		public void BeforeScenario()
+		public GripOpGras2_LoginToFarmMapsStepDefinitions(IWebDriver driver)
 		{
+			_driver = driver;
+
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
-			FarmMapsTestAccount? account = config.GetSection("FarmMapsTestAccount").Get<FarmMapsTestAccount>();
+			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
 			_farmMapsTestAccount = account ?? throw new Exception(
-				"The FarmMapsTestAccount variable in secrets.json is not configured. See the following link on how to configure this file: https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows");
+				"The FarmMapsTestAccount variable in the secrets.json file has not been configured. See the following link on how to configure this file: https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows");
+
+			// Initialize Selenium page object
+			//this.loginPage = new LoginPage(driver);
 		}
 
 		[When(@"I open the Grip op Gras application")]
 		public void WhenIOpenTheGripOpGrasApplication()
 		{
-			SetupWebDriver();
 			NavigateWebDriverToApplication();
 		}
 
@@ -46,7 +49,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Given(@"the user is on the login page of FarmMaps")]
 		public void GivenTheUserIsOnTheLoginPageOfFarmMaps()
 		{
-			SetupWebDriver();
 			NavigateWebDriverToApplication();
 
 			// Give the page time to load
@@ -61,7 +63,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"the user enters the username and password")]
 		public void WhenTheUserEntersTheUsernameAndPassword()
 		{
-			IWebElement usernameInput = _driver!.FindElement(By.Id("Username"));
+			IWebElement usernameInput = _driver.FindElement(By.Id("Username"));
 			usernameInput.SendKeys(_farmMapsTestAccount.Username);
 			IWebElement passwordInput = _driver.FindElement(By.Id("Password"));
 			passwordInput.SendKeys(_farmMapsTestAccount.Password);
@@ -85,13 +87,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"the application should show the users email address")]
 		public void ThenTheApplicationShouldShowTheUsersEmailAddress()
 		{
-			_driver!.PageSource.Should().Contain(_farmMapsTestAccount.Username);
-		}
-
-		[AfterScenario]
-		public void AfterScenario()
-		{
-			_driver?.Quit();
+			_driver.PageSource.Should().Contain(_farmMapsTestAccount.Username);
 		}
 
 		private void NavigateWebDriverToApplication()
@@ -110,16 +106,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 				throw;
 			}
-		}
-
-		private void SetupWebDriver()
-		{
-			ChromeOptions chromeOptions = new();
-			chromeOptions.AddArgument("headless");
-			string projectPath = Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName;
-			_driver = new ChromeDriver(projectPath + @"\Drivers\", chromeOptions);
-			_driver.Manage().Window.Maximize();
-			_driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 		}
 	}
 }
