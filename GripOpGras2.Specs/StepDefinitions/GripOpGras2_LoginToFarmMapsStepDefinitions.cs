@@ -43,8 +43,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_driver.Url.Should().Contain("farmmaps.eu");
 		}
 
-		[Given(@"that I am on the FarmMaps login screen")]
-		public void GivenThatIAmOnTheFarmMapsLoginScreen()
+		[Given(@"that I am on the FarmMaps login page")]
+		public void GivenThatIAmOnTheFarmMapsLoginPage()
 		{
 			NavigateWebDriverToApplication();
 
@@ -86,6 +86,23 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void ThenThePageShouldShowTheUsersEmailAddress()
 		{
 			_driver.PageSource.Should().Contain(_farmMapsTestAccount.Username);
+		}
+
+		[When(@"I enter an incorrect username and password")]
+		public void WhenIEnterAnIncorrectUsernameAndPassword()
+		{
+			string guid = Guid.NewGuid().ToString();
+			IWebElement usernameInput = _driver.FindElement(By.Id("Username"));
+			usernameInput.SendKeys(guid);
+			IWebElement passwordInput = _driver.FindElement(By.Id("Password"));
+			passwordInput.SendKeys(guid);
+		}
+
+		[Then(@"the login page should show me an error message")]
+		public void ThenTheLoginPageShouldShowMeAnErrorMessage()
+		{
+			_driver.PageSource.Should().Contain("Invalid username or password");
+			_driver.Url.Should().Contain("farmmaps.eu");
 		}
 
 		private void NavigateWebDriverToApplication(string uri = "/")
