@@ -4,6 +4,7 @@
 
 @if (Action is "login" or "login-callback" or "logout" or "logout-callback" or "login-failed" or "logout-failed")
 {
+	<VisitorsTracking />
 	<RemoteAuthenticatorView Action="@Action"/>
 }
 else

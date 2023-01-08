@@ -19,4 +19,8 @@
     <ProjectReference Include="..\GripOpGras2.Plugins.FarmMaps\GripOpGras2.Plugins.FarmMaps.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Exceptions\RationAlgorithmExceptions\" />
+  </ItemGroup>
+
 </Project>

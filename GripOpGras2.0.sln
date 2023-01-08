@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Domain", "GripO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Specs", "GripOpGras2.Specs\GripOpGras2.Specs.csproj", "{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{8F1DD7C2-9AD9-4D1B-86F1-75BBBDE41005}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GripOpGras2.Plugins", "GripOpGras2.Plugins", "{16ABE7E6-2567-4717-9964-E58D95797E10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GripOpGras2.Plugins.FarmMaps", "GripOpGras2.Plugins.FarmMaps\GripOpGras2.Plugins.FarmMaps.csproj", "{03CED92F-FE08-432E-9DF5-03208A292667}"
@@ -39,6 +41,10 @@ Global
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33B5AB34-D425-4D6E-8CF5-6C8E3F77824F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F1DD7C2-9AD9-4D1B-86F1-75BBBDE41005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F1DD7C2-9AD9-4D1B-86F1-75BBBDE41005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F1DD7C2-9AD9-4D1B-86F1-75BBBDE41005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F1DD7C2-9AD9-4D1B-86F1-75BBBDE41005}.Release|Any CPU.Build.0 = Release|Any CPU
 		{03CED92F-FE08-432E-9DF5-03208A292667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03CED92F-FE08-432E-9DF5-03208A292667}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03CED92F-FE08-432E-9DF5-03208A292667}.Release|Any CPU.ActiveCfg = Release|Any CPU
