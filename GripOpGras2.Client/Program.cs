@@ -26,12 +26,8 @@ namespace GripOpGras2.Client
 			// The default HttpClient is used to connect to the server-side Blazor app.
 			builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-			builder.Services.AddScoped<IFeedAnalysisRepository, FeedAnalysisRepository>(sp =>
-				new FeedAnalysisRepository(sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi")));
 			builder.Services.AddScoped<IFarmRepository, FarmRepository>(sp =>
 				new FarmRepository(sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi")));
-			builder.Services.AddScoped<IPlotRepository, PlotRepository>(sp =>
-				new PlotRepository(sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi")));
 
 			builder.Services.AddOidcAuthentication(options =>
 			{
