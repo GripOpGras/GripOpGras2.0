@@ -1,3 +1,4 @@
+using GripOpGras2.Specs.Data.Exceptions;
 using GripOpGras2.Specs.Models;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
@@ -13,13 +14,15 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
+		private readonly TimeSpan _timeToLogin = TimeSpan.FromSeconds(3);
+
 		public GripOpGras2_LoginToFarmMapsStepDefinitions(IWebDriver driver)
 		{
 			_driver = driver;
 
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
-			_farmMapsTestAccount = account ?? throw new Exception(
+			_farmMapsTestAccount = account ?? throw new SpecFlowTestException(
 				"The FarmMapsTestAccount variable in the secrets.json file has not been configured. See the following link on how to configure this file: https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows");
 		}
 
@@ -53,7 +56,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 			if (!_driver.Url.Contains("farmmaps.eu"))
 			{
-				throw new Exception("The application did not navigate to the FarmMaps login page.");
+				throw new UnexpectedPageUrlException(_driver.Url, "login page");
 			}
 		}
 
@@ -71,19 +74,18 @@ namespace GripOpGras2.Specs.StepDefinitions
 		{
 			IWebElement loginButton = _driver.FindElement(By.ClassName("btn-primary"));
 			loginButton.Click();
-
 		}
 
 		[Then(@"I will have to be redirected to the home page of the application")]
 		public void ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication()
 		{
-			Thread.Sleep(3000);
+			Thread.Sleep(_timeToLogin);
 
 			_driver.Url.Should().Be(BaseUrl + "/");
 		}
 
-		[Then(@"the page should show the users email address")]
-		public void ThenThePageShouldShowTheUsersEmailAddress()
+		[Then(@"the page should show my email address")]
+		public void ThenThePageShouldShowMyEmailAddress()
 		{
 			_driver.PageSource.Should().Contain(_farmMapsTestAccount.Username);
 		}
@@ -105,6 +107,50 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_driver.Url.Should().Contain("farmmaps.eu");
 		}
 
+		[Given(@"that I am logged into the application")]
+		public void GivenThatIAmLoggedIntoTheApplication()
+		{
+			GivenThatIAmOnTheFarmMapsLoginPage();
+			WhenIEnterMyUsernameAndPassword();
+			WhenIClickTheLoginButton();
+			ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication();
+			ThenThePageShouldShowMyEmailAddress();
+		}
+
+		[Given(@"that I am currently on the home page")]
+		public void GivenThatIAmCurrentlyOnTheHomePage()
+		{
+			NavigateWebDriverToApplication();
+			Thread.Sleep(_timeToLogin);
+			if (_driver.Url != BaseUrl + "/")
+			{
+				throw new UnexpectedPageUrlException(_driver.Url, "home page");
+			}
+		}
+
+		[When(@"I click the logout button")]
+		public void WhenIClickTheLogoutButton()
+		{
+			IWebElement logoutButton = _driver.FindElement(By.ClassName("oi-account-logout"));
+			logoutButton.Click();
+
+			// Button from the FarmMaps environment
+			IWebElement logoutConfirmButton = _driver.FindElement(By.ClassName("btn-primary"));
+			logoutConfirmButton.Click();
+		}
+
+		[Then(@"I will be logged out of the application")]
+		public void ThenIWillBeLoggedOutOfTheApplication()
+		{
+			NavigateWebDriverToApplication();
+
+			IWebElement loginPage = _driver.FindElement(By.ClassName("login-page"));
+			loginPage.Should().NotBeNull();
+
+			// Should be checked as last to allow the webdriver to load the page
+			_driver.Url.Should().Contain("farmmaps.eu");
+		}
+
 		private void NavigateWebDriverToApplication(string uri = "/")
 		{
 			try
@@ -115,7 +161,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			{
 				if (exception.Message.Contains("ERR_CONNECTION_REFUSED"))
 				{
-					throw new Exception(
+					throw new SeleniumException(
 						$"The application is not running on {BaseUrl}. Please start the application and try again.");
 				}
 
