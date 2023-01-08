@@ -289,7 +289,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			mappedProd2.setAppliedVEM(VEMprod2);
 			mappedBijvprod.setAppliedVEM(VEMBijvoerProd);
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
-			rationAlgorithm.getsetroughages =
+			rationAlgorithm.getsetcurrentRation.RationList =
 				new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedBijvprod };
 			//Act
 			float totalVEM = rationAlgorithm.GetTotalVEM();
@@ -317,7 +317,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 					(mappedProd2, 100 - percentProd1));
 			mappedgroup.setAppliedVEM(KGofGroup);
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
-			rationAlgorithm.getsetroughages = new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedgroup };
+			rationAlgorithm.getsetcurrentRation.RationList = new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedgroup };
 			//Act
 			float totalVEM = rationAlgorithm.GetTotalVEM();
 			//Assert
@@ -439,8 +439,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		{
 			public List<AbstractMappedFoodItem> getsetavailableFeedProducts { get => availableFeedProducts; set => availableFeedProducts = value; }
 			public List<AbstractMappedFoodItem> getsetavailableRENaturalFeedProductGroups { get => availableRENaturalFeedProductGroups; set => availableRENaturalFeedProductGroups = value; }
-			public List<AbstractMappedFoodItem> getsetREFoodItems { get => REFoodItems; set => REFoodItems = value; }
-			public List<AbstractMappedFoodItem> getsetroughages { get => roughages; set => roughages = value; }
+			public Ration getsetcurrentRation { get => currentRation; set => currentRation = value; }
 		}
 	}
 

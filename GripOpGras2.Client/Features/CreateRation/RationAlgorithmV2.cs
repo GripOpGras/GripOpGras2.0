@@ -37,22 +37,27 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 	public class RationAlgorithmV2 : IRationAlgorithm
 	{
+		public TargetValues targetValues = new();
+		
 		protected List<AbstractMappedFoodItem> availableFeedProducts = new();
 
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
-		//private List<AbstractMappedFoodItem> GrassRENuturalizerFeedProducts = new();
-		protected List<AbstractMappedFoodItem> REFoodItems = new();
-
-		protected List<AbstractMappedFoodItem> roughages = new();
+		/// <summary>
+		/// This property will be used to save and fill the ration with possible products. It has a .Clone get, to make sure the ration won't be changed by accident.
+		/// </summary>
+		public Ration currentRation
+		{
+			get => _currentRation.Clone();
+			protected set => _currentRation = value;
+		}
 
 		/// <summary>
 		/// The improvementSelector will be used to combine various ImprovementRapports to improve the ration based on various 
 		/// </summary>
 		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
-		public TargetValues targetValues = new();
-
+		private Ration _currentRation = new();
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake,
@@ -70,6 +75,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 		}
 
 		public void RunAlgorithm()
+		{
+			throw new NotImplementedException();
+		}
+		public void GetCurrentFeedRation()
 		{
 			throw new NotImplementedException();
 		}
@@ -99,20 +108,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		public ImprovementRapport FindImprovementRationMethodGrassRENuterilizer()
-		{
-			throw new NotImplementedException();
-		}
-
-		public ImprovementRapport FindImprovementRationMethodNaturalREGroups()
-		{
-			throw new NotImplementedException();
-		}
-
-		public ImprovementRapport ImprovementRationMethodChangeTargetedCoverages()
-		{
-			throw new NotImplementedException();
-		}
 	};
 
 	public class ImprovementRapport

@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Exceptions\RationAlgorithmExceptions\" />
+    <Folder Include="Features\CreateRation\ImprovementMethods\" />
   </ItemGroup>
 
 </Project>
