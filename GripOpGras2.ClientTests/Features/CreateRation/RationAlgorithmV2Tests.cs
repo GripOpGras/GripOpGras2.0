@@ -401,19 +401,36 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			var groups = ration.GenerateRENaturalFeedProductGroups();
 			ration.getsetavailableRENaturalFeedProductGroups = groups;
 			//Act
-			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(false);
-			AbstractMappedFoodItem group2 = ration.FindBestRENaturalFeedProductGroup(true);
+			List<AbstractMappedFoodItem> group = ration.FindBestRENaturalFeedProductGroup(false);
+			List<AbstractMappedFoodItem> group2 = ration.FindBestRENaturalFeedProductGroup(true);
 			//Assert
-			Assert.Contains(prod1, group.GetProducts());
-			Assert.Contains(prod3, group.GetProducts());
-			Assert.Contains(prod4, group2.GetProducts());
-			Assert.Contains(prod2, group2.GetProducts());
+			Assert.Contains(prod1, group[0].GetProducts());
+			Assert.Contains(prod3, group[0].GetProducts());
+			Assert.Contains(prod4, group2[0].GetProducts());
+			Assert.Contains(prod2, group2[0].GetProducts());
 		}
 
 		//TODO: test for determine improvemend rations with bijprod test
 		[Test()]
 		public void DetermineImprovemendRationsWithBijprodTest()
 		{
+			//Arrange
+			FeedProduct prod1 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod 1", 90, 100);
+			FeedProduct prod2 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod 2", 160, 200);
+			FeedProduct prod3 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod 3", 180, 200);
+			FeedProduct prod4 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod 4", 140, 400, false);
+			//make a rationAlgorithm
+			RationAlgorithmV2WithTestMethods ration = CreateRationAlgorithm(new List<FeedProduct>() { prod1, prod2, prod3, prod4 });
+			var groups = ration.GenerateRENaturalFeedProductGroups();
+			ration.getsetavailableRENaturalFeedProductGroups = groups;
+			//Act
+			List<AbstractMappedFoodItem> group = ration.FindBestRENaturalFeedProductGroup(false);
+			List<AbstractMappedFoodItem> group2 = ration.FindBestRENaturalFeedProductGroup(true);
+			//Assert
+			Assert.Contains(prod1, group[0].GetProducts());
+			Assert.Contains(prod3, group[0].GetProducts());
+			Assert.Contains(prod4, group2[0].GetProducts());
+			Assert.Contains(prod2, group2[0].GetProducts());
 		}
 
 		[Test()]

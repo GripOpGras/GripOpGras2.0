@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using GripOpGras2.Client.Data.Exceptions;
+using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
@@ -94,7 +95,5 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 	}
-
-
 }
 	
