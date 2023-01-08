@@ -1,5 +1,5 @@
+using GripOpGras2.Specs.Data;
 using GripOpGras2.Specs.Data.Exceptions;
-using GripOpGras2.Specs.Models;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 
@@ -139,8 +139,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			logoutConfirmButton.Click();
 		}
 
-		[Then(@"I will be logged out of the application")]
-		public void ThenIWillBeLoggedOutOfTheApplication()
+		[Then(@"I should be logged out of the application")]
+		public void ThenIShouldBeLoggedOutOfTheApplication()
 		{
 			NavigateWebDriverToApplication();
 
@@ -162,7 +162,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 				if (exception.Message.Contains("ERR_CONNECTION_REFUSED"))
 				{
 					throw new SeleniumException(
-						$"The application is not running on {BaseUrl}. Please start the application and try again.");
+						$"The application is not running on {BaseUrl}. Start the application and then try again.");
 				}
 
 				throw;

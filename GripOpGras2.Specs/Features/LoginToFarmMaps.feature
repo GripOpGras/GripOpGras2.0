@@ -23,4 +23,4 @@ Scenario: The user logs out of the application
 	Given that I am logged into the application
 	And that I am currently on the home page
 	When I click the logout button
-	Then I will be logged out of the application
+	Then I should be logged out of the application

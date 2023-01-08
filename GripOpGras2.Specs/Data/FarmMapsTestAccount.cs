@@ -1,4 +1,4 @@
-﻿namespace GripOpGras2.Specs.Models
+﻿namespace GripOpGras2.Specs.Data
 {
 	internal class FarmMapsTestAccount
 	{
