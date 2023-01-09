@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Domain;
+using NUnit.Framework.Internal;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class Ration
 	{
-		public List<AbstractMappedFoodItem> RationList = new();
+		public IReadOnlyList<AbstractMappedFoodItem> RationList = new List<AbstractMappedFoodItem>();
 		private FeedAnalysis? grassFeedAnalysis { get; }
 		private float grassVEM { get; }
 		private float grassRE { get; }
@@ -32,10 +33,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 			originalRefference = reference ?? this;
 			if (grassIntake != null && grassAnalysis != null)
 			{
-				grassVEM = (float)grassAnalysis.VEM;
+				grassVEM = (float)grassAnalysis.VEM * (float)grassIntake;
 				grassRE = (float)(grassAnalysis.RE * grassIntake);
 				grassKGDM = (float)grassIntake;
 				grassREdiff = (float)(grassAnalysis.RE - 150 * grassIntake);
+				grassFeedAnalysis = grassAnalysis;
 			}
 			else
 			{
@@ -47,12 +49,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 		}
 
 		//adds or subtracts the amount of applied VEM to the RationList
-		public void ApplyChangesToRationList(List<AbstractMappedFoodItem> rationChanges)
+		public void ApplyChangesToRationList(List<AbstractMappedFoodItem> rationChanges) { ApplyChangesToRationList(rationChanges.ToArray()); }
+		public void ApplyChangesToRationList(params AbstractMappedFoodItem[] rationChanges)
 		{
 			Ration newRation = Clone();
+			List<AbstractMappedFoodItem> newList = RationList.ToList();
 			foreach (AbstractMappedFoodItem foodItem in rationChanges)
 			{
-				AbstractMappedFoodItem? itemInRationList = newRation.RationList.Find(x => x.originalRefference == foodItem.originalRefference);
+				AbstractMappedFoodItem? itemInRationList = newList.Find(x => x.originalRefference == foodItem.originalRefference);
 				if (itemInRationList != null)
 				{
 					itemInRationList.setAppliedVEM(itemInRationList.appliedVEM+foodItem.appliedVEM);
@@ -61,18 +65,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 				else
 				{
 					if (foodItem.appliedVEM < 0) throw new RationAlgorithmException("Cannot reduce an item that is not in the ration");
-					this.RationList.Add(foodItem);
+					newList.Add(foodItem);
 				}
 
 			}
-			RationList = newRation.RationList;
+			RationList = newList;
 		}
 		public Ration Clone()
 		{
 			Ration clone = new(reference: originalRefference, grassIntake: grassKGDM, grassAnalysis: grassFeedAnalysis);
 			foreach (AbstractMappedFoodItem item in RationList)
 			{
-				clone.RationList.Add(item.Clone());
+				clone.ApplyChangesToRationList(item.Clone());
 			}
 			return clone;
 		}

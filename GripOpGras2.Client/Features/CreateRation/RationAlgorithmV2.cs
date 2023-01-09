@@ -80,7 +80,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// </summary>
 		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
-		private Ration _currentRation;
+		protected Ration _currentRation;
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake,
@@ -91,13 +91,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 			throw new NotImplementedException();
 		}
 
-		public AsyncTestDelegate SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+		public void SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity != null && grazingActivity.Plot != null & grazingActivity.Plot.FeedAnalysis != null)
 			{
 				_currentRation = new Ration(grassIntake: totalGrassIntake, grassAnalysis: grazingActivity.Plot.FeedAnalysis);
+
 			}
 			_improvementSelector.Initialize(currentRation: ref _currentRation,
 				targetValues: ref targetValues,
@@ -105,7 +106,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				availableRENaturalFeedProductGroups: ref availableRENaturalFeedProductGroups);
 			//TODO: set the needs of cows based on the milk production analysis and Herd. (fill TargetValues)
 			//TODO: Fill the availableFeedProducts with the available feedProducts, converted to MappedFeedProduct.
-			return null;
+			return;
 		}
 
 		public void RunAlgorithm()
