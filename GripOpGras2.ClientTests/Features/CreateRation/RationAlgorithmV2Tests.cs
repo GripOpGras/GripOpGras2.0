@@ -24,22 +24,24 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 		}
 		[Test()]
-		[TestCase(1000, 500, 500, 5000, 150, 200, 500, 5500, 5000, 500 / 1000 + 5000 / 500, 5000 / 500, 50 / 500 * 5000)]
+		[TestCase(1000, 500, 500, 5000, 150, 200, 500, 5500, 5000, 10.5f, 10, 500)]
 		public void TestTotalCalculations(float vem, float vem_bijprod, float appliedVEM, float appliedVEMbijpord, float RE, float RE_bijprod, float dm_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod, float expectedRediff)
 		{
 			Ration ration = new Ration();
 			ration.ApplyChangesToRationList(TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 1", RE, vem, appliedVEM));
 			ration.ApplyChangesToRationList(TestassetsForRationAlgorithmV2Tests.GetMappedFeedProduct("product 2", RE_bijprod, vem_bijprod, appliedVEMbijpord, false));
 
-			Assert.AreEqual(expectedVEM, ration.totalVEM);
-			Assert.AreEqual(expectedVEM_bijprod, ration.totalVEM_Bijprod);
-			Assert.AreEqual(expectedDM, ration.totalDM);
-			Assert.AreEqual(expectedDM_bijprod, ration.totalDM_Bijprod);
-			Assert.AreEqual(expectedRediff, ration.totalREdiff);
+			Console.WriteLine(ration.RationList[0].appliedKGDM);
+			Console.WriteLine(ration.RationList[1].appliedKGDM);
+			Assert.AreEqual(expectedVEM, ration.totalVEM, "total vem");
+			Assert.AreEqual(expectedVEM_bijprod, ration.totalVEM_Bijprod, "total vem bijprod");
+			Assert.AreEqual(expectedDM, ration.totalDM, "total dm");
+			Assert.AreEqual(expectedDM_bijprod, ration.totalDM_Bijprod, "total dm bijprod");
+			Assert.AreEqual(expectedRediff, ration.totalREdiff, "total rediff");
 		}
 
 		[Test()]
-		[TestCase(1000, 500, 500, 150, 200, 500, 500, 250 / 1000 + 250 / 500, 250 / 500, 50 / 500 * 250)]
+		[TestCase(1000, 500, 500, 150, 200, 500, 250, 0.75, 0.5, 25)]
 		public void TestAllCalculationsWithCombos(float vem, float vem_bijprod, float appliedVEM, float RE, float RE_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod, float expectedRediff)
 		{
 			Ration ration = new Ration();
@@ -300,9 +302,9 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		}
 
 		[Test]
-		[TestCase(100, 200, 300, 400, 30, 10, 500, 600, 200 + 400 + 500 * 600 + 10 * 0.3 * 100 + 10 * 0.7 * 300)]
+		[TestCase(100, 200, 300, 400, 30, 10, 500, 600, 303000f)]
 		[TestCase(100, 200, 300, 400, 30, 0, 500, 600, 300600f)]
-		[TestCase(300, 800, 500, 0, 0, 100, 0, 80, 800 + 500 * 100)]
+		[TestCase(300, 800, 500, 0, 0, 100, 0, 80, 50800f)]
 		public void GetTotalVEMTestWithCombos(float VEMPerDMprod1, float VEMprod1, float VEMPerDMprod2, float VEMprod2,
 			float percentProd1, float KGofGroup, float KGgrass, float VEMgrass, float expectedVEM)
 		{
