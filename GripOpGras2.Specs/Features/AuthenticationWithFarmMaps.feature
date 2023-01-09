@@ -1,6 +1,6 @@
-﻿Feature: GripOpGras2.LoginToFarmMaps
+﻿Feature: GripOpGras2.AuthenticationWithFarmMaps
 
-A short summary of the feature
+The authentication feature that is being used by Grip op Gras 2.0 to get access to FarmMaps and its API.
 
 Scenario: The app navigates to the login page
 	When I open the Grip op Gras application

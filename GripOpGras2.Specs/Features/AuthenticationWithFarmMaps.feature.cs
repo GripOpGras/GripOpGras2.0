@@ -20,22 +20,23 @@ namespace GripOpGras2.Specs.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("GripOpGras2.LoginToFarmMaps")]
-    public partial class GripOpGras2_LoginToFarmMapsFeature
+    [NUnit.Framework.DescriptionAttribute("GripOpGras2.AuthenticationWithFarmMaps")]
+    public partial class GripOpGras2_AuthenticationWithFarmMapsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-#line 1 "LoginToFarmMaps.feature"
+#line 1 "AuthenticationWithFarmMaps.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GripOpGras2.LoginToFarmMaps", "A short summary of the feature", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "GripOpGras2.AuthenticationWithFarmMaps", "The authentication feature that is being used by Grip op Gras 2.0 to get access t" +
+                    "o FarmMaps and its API.", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         

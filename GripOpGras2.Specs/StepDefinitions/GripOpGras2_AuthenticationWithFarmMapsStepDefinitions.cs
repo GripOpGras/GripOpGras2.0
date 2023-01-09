@@ -7,7 +7,7 @@ using OpenQA.Selenium;
 namespace GripOpGras2.Specs.StepDefinitions
 {
 	[Binding]
-	public class GripOpGras2_LoginToFarmMapsStepDefinitions
+	public class GripOpGras2_AuthenticationWithFarmMapsStepDefinitions
 	{
 		private readonly IWebDriver _driver;
 
@@ -17,7 +17,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(4);
 
-		public GripOpGras2_LoginToFarmMapsStepDefinitions(IWebDriver driver)
+		public GripOpGras2_AuthenticationWithFarmMapsStepDefinitions(IWebDriver driver)
 		{
 			_driver = driver;
 
