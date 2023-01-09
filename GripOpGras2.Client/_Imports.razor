@@ -18,4 +18,8 @@
 @using GripOpGras2.Client.Features
 @using GripOpGras2.Client.Features.CreateRation
 
+@using GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces
+
+// Using the [Authorize] attribute in this razor component will make it so the user must be authenticated to use any razor page.
+// Add the [AllowAnonymous] attribute to any page that needs to be excluded from this rule.
 @attribute [Authorize]

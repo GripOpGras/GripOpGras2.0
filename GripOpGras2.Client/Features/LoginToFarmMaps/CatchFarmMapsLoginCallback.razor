@@ -1,4 +1,8 @@
-﻿@page "/cb"
+﻿@*
+ This razor page component is used to catch the callback that is sent by the FarmMaps login page.
+*@
+
+@page "/cb"
 @attribute [AllowAnonymous]
 @inject NavigationManager NavManager
 
@@ -10,12 +14,6 @@
 	protected override void OnInitialized()
 	{
 		Query = NavManager.Uri.Split('?');
-
-		base.OnInitialized();
-	}
-
-	protected override void OnAfterRender(bool firstRender)
-	{
 		NavManager.NavigateTo(Query.Length > 1 ? $"authentication/login-callback?{Query[1]}" : "/");
 	}
 
