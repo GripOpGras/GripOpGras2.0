@@ -1,5 +1,6 @@
 using GripOpGras2.Specs.Data;
-using GripOpGras2.Specs.Data.Exceptions;
+using GripOpGras2.Specs.Data.Exceptions.SeleniumExceptions;
+using GripOpGras2.Specs.Data.Exceptions.SpecFlowTestExceptions;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 
@@ -22,8 +23,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
-			_farmMapsTestAccount = account ?? throw new SpecFlowTestException(
-				"The FarmMapsTestAccount variable in the secrets.json file has not been configured. See the following link on how to configure this file: https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-6.0&tabs=windows");
+			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException();
 		}
 
 		[When(@"I open the Grip op Gras application")]
