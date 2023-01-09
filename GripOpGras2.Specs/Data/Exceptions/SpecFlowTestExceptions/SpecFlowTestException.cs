@@ -1,4 +1,4 @@
-namespace GripOpGras2.Specs.Data.Exceptions
+namespace GripOpGras2.Specs.Data.Exceptions.SpecFlowTestExceptions
 {
 	internal class SpecFlowTestException : Exception
 	{
