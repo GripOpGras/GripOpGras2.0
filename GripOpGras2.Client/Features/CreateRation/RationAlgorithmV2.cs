@@ -1,4 +1,5 @@
-﻿using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
+﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
+using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 using NUnit.Framework;
@@ -104,7 +105,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				availableRENaturalFeedProductGroups: ref availableRENaturalFeedProductGroups);
 			//TODO: set the needs of cows based on the milk production analysis and Herd. (fill TargetValues)
 			//TODO: Fill the availableFeedProducts with the available feedProducts, converted to MappedFeedProduct.
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public void RunAlgorithm()
@@ -138,25 +139,31 @@ namespace GripOpGras2.Client.Features.CreateRation
 			     currentRation.totalDM_Bijprod <= targetValues.TargetedMaxKgDmSupplementeryFeedProduct);
 		}
 
-		public void GetCurrentFeedRation()
+
+		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct(
+			bool allowSupplementeryFeedProducts = false)
 		{
-			throw new NotImplementedException();
+			if (currentRation.totalREdiff == 0) return new List<AbstractMappedFoodItem>();
+
+			bool grassHasPositiveREdiff = (currentRation.totalREdiff > 0);
+			var products = (grassHasPositiveREdiff)
+				? availableFeedProducts
+				: availableFeedProducts.Where(x => x.partOfTotalVEMbijprod == 0);
+			AbstractMappedFoodItem bestproduct = (grassHasPositiveREdiff) ? products.First() : products.Last();
+			float vemNeeded = bestproduct.REdiffPerVEM / -currentRation.totalREdiff;
+			//if not possible, try with supplementeryFeedProducts.
+			if (vemNeeded < 0 && !grassHasPositiveREdiff) return GetGrassRENuturalizerFeedProduct(true);
+			if (grassHasPositiveREdiff && bestproduct.REdiffPerVEM > 0)
+				throw new NoProductsWithPossibleREException("Products are missing to lower the REdiff");
+			if (!grassHasPositiveREdiff && bestproduct.REdiffPerVEM < 0)
+				throw new NoProductsWithPossibleREException("Products are missing to raise the REdiff");
+			//TODO: check if supplementeries don't have too much KG DS when using them, and throw exception if they do.
+			AbstractMappedFoodItem productclone = bestproduct.Clone();
+			productclone.setAppliedVEM(vemNeeded);
+			return new List<AbstractMappedFoodItem> { productclone };
 		}
 
-		public float GetTotalKGDM()
-		{
-			throw new NotImplementedException();
-		}
 
-		public float GetTotalVEM()
-		{
-			throw new NotImplementedException();
-		}
-
-		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct()
-		{
-			throw new NotImplementedException();
-		}
 
 		public List<AbstractMappedFoodItem> GenerateRENaturalFeedProductGroups()
 		{

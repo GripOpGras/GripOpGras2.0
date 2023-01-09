@@ -203,7 +203,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 
 		[Test()]
-		public async void CreateRationAsyncTest()
+		public async Task CreateRationAsyncTest()
 		{
 			// Arrange
 			FeedProduct prod1 = TestassetsForRationAlgorithmV2Tests.GetFeedProduct("prod1", 189f, 884.2f);
@@ -268,7 +268,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass);
 
 			//Act
-			var totalKGDM = rationAlgorithm.GetTotalKGDM();
+			var totalKGDM = rationAlgorithm.currentRation.totalDM;
 			//Assert
 			Assert.AreEqual(expected, totalKGDM);
 		}
@@ -292,7 +292,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			rationAlgorithm.getsetcurrentRation.RationList =
 				new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedBijvprod };
 			//Act
-			float totalVEM = rationAlgorithm.GetTotalVEM();
+			float totalVEM = rationAlgorithm.currentRation.totalVEM;
 			//Assert
 			Assert.AreEqual(expected, totalVEM);
 		}
@@ -319,7 +319,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
 			rationAlgorithm.getsetcurrentRation.RationList = new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedgroup };
 			//Act
-			float totalVEM = rationAlgorithm.GetTotalVEM();
+			float totalVEM = rationAlgorithm.currentRation.totalVEM;
 			//Assert
 			Assert.AreEqual(expectedVEM, totalVEM);
 		}

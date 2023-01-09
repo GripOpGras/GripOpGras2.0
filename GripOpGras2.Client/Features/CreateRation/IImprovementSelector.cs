@@ -22,10 +22,17 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 	public class ImprovementSelectorV1 : IImprovementSelector
 	{
+		private Ration _currentRation;
+		private TargetValues _targetValues;
+		private List<AbstractMappedFoodItem> _availableFeedProducts;
+		private List<AbstractMappedFoodItem> _availableRENaturalFeedProductGroups;
 		public void Initialize(ref Ration currentRation, ref TargetValues targetValues, ref List<AbstractMappedFoodItem> availableFeedProducts,
 			ref List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups)
 		{
-			throw new NotImplementedException();
+			_currentRation = currentRation;
+			_targetValues = targetValues;
+			_availableFeedProducts = availableFeedProducts;
+			_availableRENaturalFeedProductGroups = availableRENaturalFeedProductGroups;
 		}
 
 		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(params ImprovementRapport[] improvementRapports)
