@@ -24,3 +24,15 @@ Scenario: The user logs out of the application
 	And that I am currently on the home page
 	When I click the logout button
 	Then I should be logged out of the application
+
+Scenario: The user visits another page
+	Given that I am logged into the application
+	And that I am currently on the home page
+	When I visit the test page
+	Then the page should show my email address
+	And the page should show my farms
+
+Scenario: The user visits a page that doesn't exist
+	Given that I am logged into the application
+	When I visit a page that doesn't exist
+	Then the page should show my email address

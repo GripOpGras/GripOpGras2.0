@@ -23,7 +23,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
-			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException();
+			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException(nameof(FarmMapsTestAccount));
 		}
 
 		[When(@"I open the Grip op Gras application")]
@@ -150,6 +150,27 @@ namespace GripOpGras2.Specs.StepDefinitions
 			// Should be checked as last to allow the webdriver to load the page
 			_driver.Url.Should().Contain("farmmaps.eu");
 		}
+
+		[When(@"I visit the test page")]
+		public void WhenIVisitTheTestPage()
+		{
+			NavigateWebDriverToApplication("/testpage");
+			Thread.Sleep(_timeToLogin);
+		}
+
+		[Then(@"the page should show my farms")]
+		public void ThenThePageShouldShowMyFarms()
+		{
+			_driver.PageSource.Should().NotContain("No farms were found");
+		}
+
+		[When(@"I visit a page that doesn't exist")]
+		public void WhenIVisitAPageThatDoesntExist()
+		{
+			NavigateWebDriverToApplication("/this-is-a-page-that-doesnt-exist");
+			Thread.Sleep(_timeToLogin);
+		}
+
 
 		private void NavigateWebDriverToApplication(string uri = "/")
 		{
