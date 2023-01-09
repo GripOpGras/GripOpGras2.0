@@ -1,0 +1,54 @@
+﻿@page "/testpage"
+@inject IFarmRepository FarmRepository
+
+<VisitorsTracking/>
+
+<PageTitle>Test</PageTitle>
+
+<h1>Get farms from FarmMaps API</h1>
+@if (_farms.Count > 0)
+{
+	<ul>
+		@foreach (Farm farm in _farms)
+		{
+			<li>@farm.Name</li>
+		}
+	</ul>
+}
+else
+{
+	<div>No farms found</div>
+}
+<br/>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @_currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+
+	private int _currentCount;
+
+	private void IncrementCount()
+	{
+		_currentCount++;
+	}
+
+	private readonly List<Farm> _farms = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			_farms.AddRange(await FarmRepository.GetFarms());
+		}
+		catch (AccessTokenNotAvailableException ex)
+		{
+			Console.WriteLine(ex.Message);
+			ex.Redirect();
+		}
+	}
+
+}
