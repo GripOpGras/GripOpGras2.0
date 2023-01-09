@@ -6,7 +6,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		void Initialize(ref Ration currentRation,
 			ref TargetValues targetValues,
-			ref List<AbstractMappedFoodItem> availableFeedProducts,
+			ref IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
 			ref List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups);
 		///  <summary>
 		/// 		This method will consider the results of different improvement methods and combine them into one list of changes.
@@ -24,9 +24,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		private Ration _currentRation;
 		private TargetValues _targetValues;
-		private List<AbstractMappedFoodItem> _availableFeedProducts;
+		private IReadOnlyList<AbstractMappedFoodItem> _availableFeedProducts;
 		private List<AbstractMappedFoodItem> _availableRENaturalFeedProductGroups;
-		public void Initialize(ref Ration currentRation, ref TargetValues targetValues, ref List<AbstractMappedFoodItem> availableFeedProducts,
+		public void Initialize(ref Ration currentRation, ref TargetValues targetValues,
+			ref IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
 			ref List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups)
 		{
 			_currentRation = currentRation;

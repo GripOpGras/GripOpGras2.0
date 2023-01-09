@@ -62,7 +62,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		public TargetValues targetValues;
 		
-		protected List<AbstractMappedFoodItem> availableFeedProducts = new();
+		protected IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts;
 
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
@@ -80,7 +80,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// </summary>
 		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
-		protected Ration _currentRation;
+		protected Ration _currentRation = new();
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake,
@@ -100,6 +100,16 @@ namespace GripOpGras2.Client.Features.CreateRation
 				_currentRation = new Ration(grassIntake: totalGrassIntake, grassAnalysis: grazingActivity.Plot.FeedAnalysis);
 
 			}
+			//add products
+			List<AbstractMappedFoodItem> availableFeedProductsList = new();
+			foreach (FeedProduct x in feedProducts)
+			{
+				MappedFeedProduct mappedFeedProduct = new MappedFeedProduct(x, targetValues.TargetedREcoveragePerKgDm);
+				availableFeedProductsList.Add(mappedFeedProduct);
+			}
+
+			availableFeedProducts = availableFeedProductsList;
+			;
 			_improvementSelector.Initialize(currentRation: ref _currentRation,
 				targetValues: ref targetValues,
 				availableFeedProducts: ref availableFeedProducts,
@@ -150,6 +160,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			var products = (grassHasPositiveREdiff)
 				? availableFeedProducts
 				: availableFeedProducts.Where(x => x.partOfTotalVEMbijprod == 0);
+			if (products.Count() == 0 && allowSupplementeryFeedProducts == false)
+				return GetGrassRENuturalizerFeedProduct(true);
+			if (products.Count() == 0) throw new RationAlgorithmException("No roughage feed products available.");
 			AbstractMappedFoodItem bestproduct = (grassHasPositiveREdiff) ? products.First() : products.Last();
 			float vemNeeded = bestproduct.REdiffPerVEM / -currentRation.totalREdiff;
 			//if not possible, try with supplementeryFeedProducts.
