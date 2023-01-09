@@ -15,7 +15,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
-		private readonly TimeSpan _timeToLogin = TimeSpan.FromSeconds(3);
+		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(4);
 
 		public GripOpGras2_LoginToFarmMapsStepDefinitions(IWebDriver driver)
 		{
@@ -79,7 +79,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"I will have to be redirected to the home page of the application")]
 		public void ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication()
 		{
-			Thread.Sleep(_timeToLogin);
+			Thread.Sleep(_pageLoadDelay);
 
 			_driver.Url.Should().Be(BaseUrl + "/");
 		}
@@ -121,7 +121,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void GivenThatIAmCurrentlyOnTheHomePage()
 		{
 			NavigateWebDriverToApplication();
-			Thread.Sleep(_timeToLogin);
+			Thread.Sleep(_pageLoadDelay);
 			if (_driver.Url != BaseUrl + "/")
 			{
 				throw new UnexpectedPageUrlException(_driver.Url, "home page");
@@ -155,20 +155,21 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void WhenIVisitTheTestPage()
 		{
 			NavigateWebDriverToApplication("/testpage");
-			Thread.Sleep(_timeToLogin);
+			Thread.Sleep(_pageLoadDelay);
 		}
 
 		[Then(@"the page should show my farms")]
 		public void ThenThePageShouldShowMyFarms()
 		{
-			_driver.PageSource.Should().NotContain("No farms were found");
+			IWebElement farmOverview = _driver.FindElement(By.Id("farmoverview"));
+			farmOverview.Should().NotBeNull();
 		}
 
 		[When(@"I visit a page that doesn't exist")]
 		public void WhenIVisitAPageThatDoesntExist()
 		{
 			NavigateWebDriverToApplication("/this-is-a-page-that-doesnt-exist");
-			Thread.Sleep(_timeToLogin);
+			Thread.Sleep(_pageLoadDelay);
 		}
 
 

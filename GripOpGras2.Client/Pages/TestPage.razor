@@ -8,7 +8,7 @@
 <h1>Get farms from FarmMaps API</h1>
 @if (_farms.Count > 0)
 {
-	<ul>
+	<ul id="farmoverview">
 		@foreach (Farm farm in _farms)
 		{
 			<li>@farm.Name</li>

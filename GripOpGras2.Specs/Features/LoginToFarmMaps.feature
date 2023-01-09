@@ -25,7 +25,7 @@ Scenario: The user logs out of the application
 	When I click the logout button
 	Then I should be logged out of the application
 
-Scenario: The user visits another page
+Scenario: The user switches between pages while logged in
 	Given that I am logged into the application
 	And that I am currently on the home page
 	When I visit the test page
