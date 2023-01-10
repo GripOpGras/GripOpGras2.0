@@ -197,16 +197,27 @@ namespace GripOpGras2.Client.Features.CreateRation
 				{
 					float prod2PerProd1 = product.REdiffPerVEM/product2.REdiffPerVEM;
 					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
-					Console.WriteLine($"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}");
+					Console.WriteLine($"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}. Part supplementery prod 1: {product.partOfTotalVEMbijprod}, prod2: {product2.partOfTotalVEMbijprod}");
 				}
 			}
 			if (naturalFeedProductGroups.Count == 0) throw new NoPossibleRENaturalProductGroupsException(targetValues.TargetedREcoveragePerKgDm.ToString());
 			return naturalFeedProductGroups;
 		}
 
-		public List<AbstractMappedFoodItem> FindBestRENaturalFeedProductGroup(bool supplementeryFeedProductAllowed)
+		//Returns the RE natural feed product group with the least KG DM per VEM.
+		public AbstractMappedFoodItem FindBestRENaturalFeedProductGroup(bool supplementeryFeedProductAllowed)
 		{
-			throw new NotImplementedException();
+			IEnumerable<AbstractMappedFoodItem> availablegroups = availableRENaturalFeedProductGroups.Where(x => x.partOfTotalVEMbijprod == 0 || (supplementeryFeedProductAllowed));
+			if (availablegroups.Count() == 0 && !supplementeryFeedProductAllowed)
+			{
+				Console.WriteLine("No RE natural feed product groups available of only roughages. Switching to supplementeryFeedProductAllowed == true");
+				return FindBestRENaturalFeedProductGroup(true);
+			}
+
+			AbstractMappedFoodItem bestgroup = availablegroups.OrderBy(x => x.KGDMperVEM).First();
+			Console.WriteLine($"FindBestReNaturalFeedProductGroup: supplementeryallowed = {supplementeryFeedProductAllowed}, partsupplementery: {bestgroup.partOfTotalVEMbijprod}, DM per VEM: {bestgroup.KGDMperVEM}, RE per VEM: {bestgroup.REperVEM}");
+			return bestgroup;
+
 		}
 
 	};
