@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
 using GripOpGras2.Client.Data.Exceptions;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
@@ -41,6 +42,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 			appliedREdiff = VEM * REdiffPerVEM;
 			appliedTotalRE = VEM * REperVEM;
 		}
+
+		public string GetProductsForConsole()
+		{
+			List<Tuple<FeedProduct, float>> products = GetProducts();
+			string result = "";
+			foreach (Tuple<FeedProduct, float> product in products)
+			{
+				result = result+ $"\t - Product: {product.Item1.Name + ",",-20} {product.Item2,5} KG DM\n";
+			}
+
+			return result;
+		}
 	}
 
 	public class MappedFeedProduct : AbstractMappedFoodItem
@@ -72,6 +85,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			return new List<Tuple<FeedProduct, float>>() { new Tuple<FeedProduct, float>(containingFeedProduct, appliedKGDM) };
 		}
+
 
 		public override AbstractMappedFoodItem Clone()
 		{

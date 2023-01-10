@@ -21,7 +21,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public const float OptimalRECoverageInGramsPerKgDm = 150;
 
-		private Herd herd;
+		private Herd _herd;
+
+		private MilkProductionAnalysis _milkProductionAnalysis;
 
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		public const float MaxRECoverageInGramsPerKgDm = 170;
@@ -29,18 +31,25 @@ namespace GripOpGras2.Client.Features.CreateRation
 		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
 		public const float MinRECoverageInGramsPerKgDm = 140;
 
-		public TargetValues(Herd herd)
-		{
-			this.herd = herd;
-		}
+		//public TargetValues(Herd herd, MilkProductionAnalysis milkProductionAnalysis)
+		//{
+		//	this._herd = herd;
+		//	this._milkProductionAnalysis = milkProductionAnalysis;
 
-		public TargetValues(Herd herd, float targetedREcoveragePerKgDm, float targetedMaxAmountOfSupplementeryFeedProductInKgPerCow, float targetedMaxKgDm, float targetedMaxKgDmIntakePerCow, float targetedVemCoverage)
+		//}
+
+		public TargetValues(Herd herd,
+			MilkProductionAnalysis milkProductionAnalysis,
+			float targetedREcoveragePerKgDm = OptimalRECoverageInGramsPerKgDm,
+			float targetedMaxAmountOfSupplementeryFeedProductInKgPerCow = MaxAmountOfSupplementaryFeedProductInKGPerCow,
+			float targetedMaxKgDmIntakePerCow = MaxKgDmIntakePerCow)
 		{
-			this.herd = herd;
+			_herd = herd;
+			_milkProductionAnalysis = milkProductionAnalysis;
 			TargetedREcoveragePerKgDm = targetedREcoveragePerKgDm;
 			TargetedMaxKgDmSupplementeryFeedProductPerCow = targetedMaxAmountOfSupplementeryFeedProductInKgPerCow;
 			TargetedMaxKgDmIntakePerCow = targetedMaxKgDmIntakePerCow;
-			TargetedVEMCoveragePerCow = targetedVemCoverage;
+			TargetedVEM = (_milkProductionAnalysis.Amount * 450 + 5500*herd.NumberOfAnimals) * OptimalVEMCoverage;
 		}
 
 		public float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
@@ -50,11 +59,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
 
-		public float TargetedVEMCoveragePerCow { get; set; } = OptimalVEMCoverage;
-		public float TargetedMaxKgDm => TargetedMaxKgDmIntakePerCow*herd.NumberOfAnimals;
-		public float TargetedMaxKgDmSupplementeryFeedProduct => TargetedMaxKgDmSupplementeryFeedProductPerCow * herd.NumberOfAnimals;
+		public float TargetedVEMPerCow => TargetedVEM / _herd.NumberOfAnimals;
+		public float TargetedMaxKgDm => TargetedMaxKgDmIntakePerCow*_herd.NumberOfAnimals;
+		public float TargetedMaxKgDmSupplementeryFeedProduct => TargetedMaxKgDmSupplementeryFeedProductPerCow * _herd.NumberOfAnimals;
 
-		public float TargetedVEM => TargetedVEMCoveragePerCow * herd.NumberOfAnimals;
+		public float TargetedVEM { get; set; }
 
 	}
 
@@ -82,19 +91,28 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		protected Ration _currentRation = new();
 
-		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
+		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
 			SetUp(feedProducts, herd, totalGrassIntake, milkProductionAnalysis, grazingActivity);
 			RunAlgorithm();
-			throw new NotImplementedException();
+
+			FeedRation feedRation = new FeedRation()
+			{
+				Plot = grazingActivity?.Plot,
+				Date = DateTime.Now,
+				FeedProducts = _currentRation.getFeedProducts(),
+				GrassIntake = totalGrassIntake,
+				Herd = herd
+			};
+			return feedRation;
 		}
 
 		public void SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
-			targetValues = new TargetValues(herd);
+			targetValues = new TargetValues(herd, milkProductionAnalysis);
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity != null && grazingActivity.Plot != null & grazingActivity.Plot.FeedAnalysis != null)
 			{
@@ -123,11 +141,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public void RunAlgorithm()
 		{
 			//fill ration with feed product to get RE on the targeted level.
-			currentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
-			//generate RE natural FeedProductGroups #TODO taiga #193
+			_currentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
+			//generate RE natural FeedProductGroups #TODO change targetRE when needed: taiga #193
 			availableRENaturalFeedProductGroups = GenerateRENaturalFeedProductGroups();
 			//fill ration with best FeedProductGroups untill the VEM is on the targeted level, only containing roughage products.
-			currentRation.ApplyChangesToRationList(FindBestRENaturalFeedProductGroup(false));
+			AbstractMappedFoodItem bestREnaturalFeedProductGroup = FindBestRENaturalFeedProductGroup(false);
+			bestREnaturalFeedProductGroup.setAppliedVEM(targetValues.TargetedVEM-currentRation.totalVEM);
+			Console.WriteLine($"Applying REnaturalFedproductgroep. amount: {bestREnaturalFeedProductGroup.appliedVEM}");
+			_currentRation.ApplyChangesToRationList(bestREnaturalFeedProductGroup);
 			//check if Ration is in line with target values, if not, improve the ration.
 			if (checkIfRationIsInLineWithTargetValues()) return;
 			//if not, improve the ration.
@@ -142,14 +163,35 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//check if Ration is in line with target values, if not, change Targetvalues.
 			currentRation.ApplyChangesToRationList(_improvementSelector.DetermineImprovemendRationsWithBijprod(new ImprovementRationMethodChangeTargetedCoverages()));
 			
+
 		}
 
 		private bool checkIfRationIsInLineWithTargetValues()
 		{
-			return (Math.Abs(currentRation.totalREdiff - targetValues.TargetedREcoveragePerKgDm) < 0.1 &&
-			     Math.Abs(currentRation.totalVEM - targetValues.TargetedVEM) < 0.1 &&
-			     currentRation.totalDM <= targetValues.TargetedMaxKgDm &&
-			     currentRation.totalDM_Bijprod <= targetValues.TargetedMaxKgDmSupplementeryFeedProduct);
+			bool inlinewithtargets = true;
+			Console.WriteLine("Checking if ration is in line with targetValues");
+			if (Math.Abs(currentRation.totalRE/currentRation.totalDM - targetValues.TargetedREcoveragePerKgDm) > 2)
+			{
+				inlinewithtargets = false;
+				Console.WriteLine($"\t- RE is not in line with target, ration RE/DM:\t\t{currentRation.totalRE/currentRation.totalDM},\t\ttarget RE/DM:\t{targetValues.TargetedREcoveragePerKgDm}");
+			}
+			if (Math.Abs(currentRation.totalVEM - targetValues.TargetedVEM) > 5)
+			{
+				inlinewithtargets = false;
+				Console.WriteLine($"\t- VEM is not in line with target, ration VEM:\t\t{currentRation.totalVEM},\ttarget VEM:\t\t{targetValues.TargetedVEM}");
+			}
+			if (currentRation.totalDM > targetValues.TargetedMaxKgDm)
+			{
+				inlinewithtargets = false;
+				Console.WriteLine($"\t- DM not in line with target, ration KGDM:\t\t\t{currentRation.totalDM},\t\ttarget max DM:\t{targetValues.TargetedMaxKgDm}");
+			}
+			if (currentRation.totalDM_Bijprod > targetValues.TargetedMaxKgDmSupplementeryFeedProduct)
+			 {
+				 inlinewithtargets = false;
+				 Console.WriteLine($"\t- DM bijprod not in line with targt, ration KGDMbijprod:{currentRation.totalDM_Bijprod},\t\ttarget max DM: \t{targetValues.TargetedMaxKgDmSupplementeryFeedProduct}");
+			 }
+			 if (inlinewithtargets) Console.WriteLine($"\t- ration in line with targets");
+			 return inlinewithtargets;
 		}
 		//TODO: make this method more efficient.; taiga issue #192
 		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct(
@@ -181,6 +223,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			AbstractMappedFoodItem productclone = bestproduct.Clone();
 			productclone.setAppliedVEM(vemNeeded);
 			Console.WriteLine($"GrassNeuturilizer: totalREdiff = {currentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVEM}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVEM+1500)*productclone.appliedVEM} RE total and {productclone.appliedVEM} VEM total and {productclone.appliedREdiff.ToString()} RE difference of the target");
+			Console.WriteLine($"VEM needed after GrassRENuturalizer: {targetValues.TargetedVEM - currentRation.totalVEM-vemNeeded}");
 			return new List<AbstractMappedFoodItem> { productclone };
 		}
 
@@ -195,7 +238,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			{
 				foreach (AbstractMappedFoodItem? product2 in availableFeedProducts.Where(x => x.REdiffPerVEM > 0))
 				{
-					float prod2PerProd1 = product.REdiffPerVEM/product2.REdiffPerVEM;
+					float prod2PerProd1 = product.REdiffPerVEM/-product2.REdiffPerVEM;
 					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
 					Console.WriteLine($"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}. Part supplementery prod 1: {product.partOfTotalVEMbijprod}, prod2: {product2.partOfTotalVEMbijprod}");
 				}

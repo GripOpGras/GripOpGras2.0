@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Domain;
+using GripOpGras2.Domain.FeedProducts;
 using NUnit.Framework.Internal;
 
 namespace GripOpGras2.Client.Features.CreateRation
@@ -64,7 +65,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				}
 				else
 				{
-					if (foodItem.appliedVEM < 0) throw new RationAlgorithmException("Cannot reduce an item that is not in the ration");
+					if (foodItem.appliedVEM < 0) throw new RationAlgorithmException($"Cannot reduce an item that is not in the ration.\nChangedata:\n{foodItem.GetProductsForConsole()}");
 					newList.Add(foodItem);
 				}
 
@@ -80,6 +81,16 @@ namespace GripOpGras2.Client.Features.CreateRation
 			}
 			return clone;
 		}
+
+		public Dictionary<FeedProduct, float> getFeedProducts()
+		{
+			var feedproductgroup =
+				new MappedFeedProductGroup(RationList.Select(x => (x.originalRefference, x.appliedVEM)).ToArray());
+			feedproductgroup.setAppliedVEM(RationList.Sum(x => x.appliedVEM));
+			return feedproductgroup.GetProducts().ToDictionary(x => x.Item1, x => x.Item2);
+			//new MappedFeedProductGroup(RationList.Select(x => (FoodItem: x, partOfGroupInVEM: x.appliedVEM).ToTuple()).ToList());
+		} 
+			
 
 	}
 }

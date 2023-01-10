@@ -38,12 +38,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(params ImprovementRapport[] improvementRapports)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException("ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementRapports)");
 		}
 
 		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(params IImprovementRationMethod[] improvementMethods)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException("ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementmethods)");
 		}
 	}
 }

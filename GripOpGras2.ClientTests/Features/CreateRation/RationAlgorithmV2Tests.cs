@@ -20,11 +20,6 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 	{
 
 		[Test()]
-		public void RationTestWithTwoProducts(float REprod1, float REprod2, float VEMprod1, float VEMprod2)
-		{
-
-		}
-		[Test()]
 		[TestCase(1000, 500, 500, 5000, 150, 200, 500, 5500, 5000, 10.5f, 10, 500)]
 		public void TestTotalCalculations(float vem, float vem_bijprod, float appliedVEM, float appliedVEMbijpord, float RE, float RE_bijprod, float dm_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod, float expectedRediff)
 		{
@@ -42,7 +37,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		}
 
 		[Test()]
-		[TestCase(1000, 500, 500, 150, 200, 500, 250, 0.75, 0.5, 25)]
+		[TestCase(1000, 500, 500, 150, 200, 500, 250, 0.75f, 0.5f, 25)]
 		public void TestAllCalculationsWithCombos(float vem, float vem_bijprod, float appliedVEM, float RE, float RE_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod, float expectedRediff)
 		{
 			Ration ration = new Ration();
@@ -190,13 +185,16 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 	public class RationAlgorithmV2Tests
 	{
 
-
+	
 		[Test()]
-		public async Task CreateRationAsyncTest()
+		[TestCase(165f,884.2f,112f,1000.2f,88f,1338f, 1063.5f, 1210f, 210f)]
+		[TestCase(165f, 2000.2f, 50f, 1800.2f, 88f, 1338f, 500.5f, 1600f, 210f)] //not realistic, but should give an output.
+public async Task CreateRationAsyncTest(float prod1RE, float prod1VEM, float prod2RE, float prod2VEM, float bijprodRE, float bijprodVEM, float totalgrassIntake, float grassVEM, float grassRE)
 		{
 			// Arrange
-			FeedProduct prod1 = GetFeedProduct("prod1", 189f, 884.2f);
-			FeedProduct prod2 = GetFeedProduct("prod2", 88f, 1238f, false);
+			FeedProduct prod1 = GetFeedProduct("prod1", prod1RE, prod1VEM);
+			FeedProduct prod2 = GetFeedProduct("prod2", prod2RE, prod2VEM);
+			FeedProduct prod3 = GetFeedProduct("bijprod", bijprodRE, bijprodVEM, false);
 			var herd = new Herd()
 			{
 				Name = "Herd1",
@@ -206,25 +204,30 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			var milkProductionAnalysis = new MilkProductionAnalysis
 			{
 				Date = DateTime.Now,
-				Amount = 3200
+				Amount = 2002.6f
 			};
 			GrazingActivity grazingActivity = new GrazingActivity();
 			grazingActivity.Herd = herd;
-			grazingActivity.Plot = new Plot();
+			grazingActivity.Plot = new Plot()
+			{
+				Area = 100,
+				Name = "TestcaseGrass",
+				NetDryMatter = totalgrassIntake*1.1f,
+				FeedAnalysis = new FeedAnalysis()
+				{
+					VEM = grassVEM,
+					RE = grassRE,
+				}
+			};
 			var rationAlgorithm = new RationAlgorithmV2();
 			// Act
 			var feedRotation = await rationAlgorithm.CreateRationAsync(
 				feedProducts: new List<FeedProduct>()
 				{
-					prod1, prod2
+					prod1, prod2, prod3
 				},
-				herd: new Herd()
-				{
-					Name = "Herd1",
-					NumberOfAnimals = 100,
-					Type = "Koe"
-				},
-				totalGrassIntake: 1063.5f,
+				herd: herd,
+				totalGrassIntake: totalgrassIntake,
 				milkProductionAnalysis: milkProductionAnalysis,
 				grazingActivity: grazingActivity);
 
@@ -233,8 +236,8 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			Assert.NotNull(feedRotation.FeedProducts);
 			Assert.Contains(prod1, feedRotation.FeedProducts!.Keys);
 			Assert.Contains(prod2, feedRotation.FeedProducts.Keys);
-			Assert.AreEqual(1063.5f, feedRotation.GrassIntake);
-			Assert.AreEqual(herd, feedRotation.Herd);
+			Assert.AreEqual(totalgrassIntake, feedRotation.GrassIntake);
+			Assert.AreSame(herd, feedRotation.Herd);
 			//Assert.(feedRotation.Plot); plot nog een plekje gevene
 		}
 
