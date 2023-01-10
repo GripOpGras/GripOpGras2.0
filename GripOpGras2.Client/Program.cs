@@ -30,7 +30,7 @@ namespace GripOpGras2.Client
 			builder.Services.AddScoped<IFarmRepository, FarmRepository>(sp =>
 				new FarmRepository(sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi")));
 			
-			builder.Services.AddTransient<IRationAlgorithm, RationAlgorithmV2>();
+			builder.Services.AddTransient<IRationAlgorithm, RationAlgorithmV1>();
 			
 			builder.Services.AddOidcAuthentication(options =>
 			{

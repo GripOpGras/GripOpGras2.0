@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace GripOpGras2.Client.Features.CreateRation.Tests
 {
-	public static class TestAssetsForRationAlgorithmV2Tests
+	public static class TestAssetsForRationAlgorithmV1Tests
 	{
 		public static FeedProduct GetFeedProduct(string name, float re, float vem, bool isRoughage = true)
 		{
@@ -28,7 +28,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			mappedFeedProduct.setAppliedVEM(appliedVEM);
 			return mappedFeedProduct;
 		}
-		public static RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods CreateRationAlgorithm(List<FeedProduct> feedProducts, float totalGrassIntake = 0,
+		public static RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods CreateRationAlgorithm(List<FeedProduct> feedProducts, float totalGrassIntake = 0,
 			float lmilk = 3000, bool hasPlot = true, float PlotRE = 210, float PlotVEM = 1000)
 		{
 			// Arrange
@@ -59,7 +59,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			}
 
 
-			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm = new RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods();
+			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm = new RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods();
 			// Act
 			Assert.DoesNotThrow(() => rationAlgorithm.SetUp(feedProducts: feedProducts, herd: herd,
 				totalGrassIntake: totalGrassIntake, milkProductionAnalysis: milkProductionAnalysis,
