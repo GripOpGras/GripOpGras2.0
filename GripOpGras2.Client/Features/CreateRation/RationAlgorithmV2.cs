@@ -62,7 +62,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		public TargetValues targetValues;
 		
-		protected IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts;
+		protected IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts = new List<AbstractMappedFoodItem>();
 
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
@@ -94,6 +94,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public void SetUp(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity)
 		{
+			targetValues = new TargetValues(herd);
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity != null && grazingActivity.Plot != null & grazingActivity.Plot.FeedAnalysis != null)
 			{
@@ -149,8 +150,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			     currentRation.totalDM <= targetValues.TargetedMaxKgDm &&
 			     currentRation.totalDM_Bijprod <= targetValues.TargetedMaxKgDmSupplementeryFeedProduct);
 		}
-
-
+		//TODO: make this method more efficient.; taiga issue #192
 		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct(
 			bool allowSupplementeryFeedProducts = false)
 		{
@@ -160,18 +160,23 @@ namespace GripOpGras2.Client.Features.CreateRation
 			var products = (grassHasPositiveREdiff)
 				? availableFeedProducts
 				: availableFeedProducts.Where(x => x.partOfTotalVEMbijprod == 0);
+
+			//Check if products are availlable
 			if (products.Count() == 0 && allowSupplementeryFeedProducts == false)
 				return GetGrassRENuturalizerFeedProduct(true);
 			if (products.Count() == 0) throw new RationAlgorithmException("No roughage feed products available.");
-			AbstractMappedFoodItem bestproduct = (grassHasPositiveREdiff) ? products.First() : products.Last();
-			float vemNeeded = bestproduct.REdiffPerVEM / -currentRation.totalREdiff;
-			//if not possible, try with supplementeryFeedProducts.
-			if (vemNeeded < 0 && !grassHasPositiveREdiff) return GetGrassRENuturalizerFeedProduct(true);
+
+			//select the best product
+			var sortedProducts = products.OrderBy(x => x.REdiffPerVEM/x.KGDMperVEM);
+			AbstractMappedFoodItem bestproduct = (grassHasPositiveREdiff) ? sortedProducts.First() : sortedProducts.Last();
+			float vemNeeded = -currentRation.totalREdiff / bestproduct.REdiffPerVEM;
+
+			//check if product has the right REdiff
 			if (grassHasPositiveREdiff && bestproduct.REdiffPerVEM > 0)
 				throw new NoProductsWithPossibleREException("Products are missing to lower the REdiff");
 			if (!grassHasPositiveREdiff && bestproduct.REdiffPerVEM < 0)
 				throw new NoProductsWithPossibleREException("Products are missing to raise the REdiff");
-			//TODO: check if supplementeries don't have too much KG DS when using them, and throw exception if they do.
+			//TODO: check if supplementeries don't have too much KG DS when using them, and throw exception if they do; taiga issue 192
 			AbstractMappedFoodItem productclone = bestproduct.Clone();
 			productclone.setAppliedVEM(vemNeeded);
 			return new List<AbstractMappedFoodItem> { productclone };

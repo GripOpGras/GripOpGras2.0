@@ -265,24 +265,27 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 
 		[Test()]
-		[TestCase(1, 1800, 30, 1200, 1, 800, 70, 1000, 1)]
-		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2, float VEMPerDMprod2, float REperDMBijprod, float VEMPerDMbijprod, float KGgrass, float VEMgrass, float REgrass, string expectedProd, float expectedKGDM)
+		[TestCase(140, 1800, 140, 1200, 150, 1200, 200, "prod1" )] //prod 1 heeft meer VEM
+		[TestCase(170,1800,160,1200,140,1200,50,"prod1")] // prod 1 heeft een groter RE difference
+		[TestCase(170, 1800, 160, 1200, 140, 1200, 180, "bijprod")] //prod 1 en 2 hebben allebei net als het gras een overschot
+		[TestCase(170, 1800, 149, 1200, 100, 1200, 200, "prod2")] //ruwvoer gaat altijd voor bijvoer producten.
+		[TestCase(170, 1800, 160, 1200, 100, 1200, 130, "prod1")] 
+		[TestCase(160, 1800, 170, 1800, 100, 1200, 130, "prod2")] 
+		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2, float VEMPerDMprod2, float REperDMBijprod, float VEMPerDMbijprod, float REgrass, string expectedProd)
 		{
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", REperDMprod1, VEMPerDMprod1);
 			FeedProduct prod2 = GetFeedProduct("prod2", REperDMprod2, VEMPerDMprod2);
 			FeedProduct bijprod = GetFeedProduct("bijprod", REperDMBijprod, VEMPerDMbijprod, false);
 			RationAlgorithmV2Tests.RationAlgorithmV2WithTestMethods rationAlgorithm =
-				CreateRationAlgorithm(new List<FeedProduct> { prod1, prod2, bijprod }, KGgrass, PlotVEM: VEMgrass, PlotRE: REgrass);
+				CreateRationAlgorithm(new List<FeedProduct> { prod1, prod2, bijprod }, totalGrassIntake: 700, PlotVEM: 1000, PlotRE: REgrass);
 			//Act
 			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassRENuturalizerFeedProduct();
-			var ration = new Ration();
-			ration.RationList = foodlist;
+			rationAlgorithm.getsetcurrentRation.ApplyChangesToRationList(foodlist);
 			//Assert
 			Assert.AreEqual(1, foodlist.Count);
 			Assert.AreEqual(expectedProd, foodlist[0].GetProducts()[0].Item1.Name);
-			Assert.AreEqual(expectedKGDM, foodlist[0].appliedKGDM);
-			Assert.AreEqual(150, ration.totalREdiff, 1);
+			Assert.AreEqual(150, rationAlgorithm.getsetcurrentRation.totalRE/rationAlgorithm.getsetcurrentRation.totalDM, 1);
 		}
 
 		[Test()]
