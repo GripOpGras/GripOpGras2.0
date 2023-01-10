@@ -124,8 +124,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			//fill ration with feed product to get RE on the targeted level.
 			currentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
-			//generate RE natural FeedProductGroups
-			GenerateRENaturalFeedProductGroups();
+			//generate RE natural FeedProductGroups #TODO taiga #193
+			availableRENaturalFeedProductGroups = GenerateRENaturalFeedProductGroups();
 			//fill ration with best FeedProductGroups untill the VEM is on the targeted level, only containing roughage products.
 			currentRation.ApplyChangesToRationList(FindBestRENaturalFeedProductGroup(false));
 			//check if Ration is in line with target values, if not, improve the ration.
@@ -141,6 +141,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			currentRation.ApplyChangesToRationList(improvementChanges);
 			//check if Ration is in line with target values, if not, change Targetvalues.
 			currentRation.ApplyChangesToRationList(_improvementSelector.DetermineImprovemendRationsWithBijprod(new ImprovementRationMethodChangeTargetedCoverages()));
+			
 		}
 
 		private bool checkIfRationIsInLineWithTargetValues()
@@ -179,6 +180,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//TODO: check if supplementeries don't have too much KG DS when using them, and throw exception if they do; taiga issue 192
 			AbstractMappedFoodItem productclone = bestproduct.Clone();
 			productclone.setAppliedVEM(vemNeeded);
+			Console.WriteLine($"GrassNeuturilizer: totalREdiff = {currentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVEM}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVEM+1500)*productclone.appliedVEM} RE total and {productclone.appliedVEM} VEM total and {productclone.appliedREdiff.ToString()} RE difference of the target");
 			return new List<AbstractMappedFoodItem> { productclone };
 		}
 
@@ -186,7 +188,20 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public List<AbstractMappedFoodItem> GenerateRENaturalFeedProductGroups()
 		{
-			throw new NotImplementedException();
+			List<AbstractMappedFoodItem> naturalFeedProductGroups = new();
+			//add products that are allready natural as a group with 1 product.
+			naturalFeedProductGroups.AddRange(availableFeedProducts.Where(x => x.REdiffPerVEM == 0).Select(x => new MappedFeedProductGroup((x, 1f))).ToList());
+			foreach (AbstractMappedFoodItem product in availableFeedProducts.Where(x => x.REdiffPerVEM < 0))
+			{
+				foreach (AbstractMappedFoodItem? product2 in availableFeedProducts.Where(x => x.REdiffPerVEM > 0))
+				{
+					float prod2PerProd1 = product.REdiffPerVEM/product2.REdiffPerVEM;
+					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
+					Console.WriteLine($"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}");
+				}
+			}
+			if (naturalFeedProductGroups.Count == 0) throw new NoPossibleRENaturalProductGroupsException(targetValues.TargetedREcoveragePerKgDm.ToString());
+			return naturalFeedProductGroups;
 		}
 
 		public List<AbstractMappedFoodItem> FindBestRENaturalFeedProductGroup(bool supplementeryFeedProductAllowed)

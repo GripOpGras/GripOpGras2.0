@@ -310,10 +310,10 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			//Act
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
 			//Assert
-			Assert.AreEqual(3, groups.Count); //this can be more when more supplementery datapoints are added.
-			Assert.AreEqual(0, groups[0]);
-			Assert.AreEqual(0, groups[1]);
-			Assert.AreEqual(0, groups[2]);
+			Assert.AreEqual(3, groups.Count, "amount of expected groups"); //this can be more when more supplementery datapoints are added.
+			Assert.AreEqual(0, groups[0].REdiffPerVEM, 0.01, "group 0 RE");
+			Assert.AreEqual(0, groups[1].REdiffPerVEM, 0.01, "group 1 RE");
+			Assert.AreEqual(0, groups[2].REdiffPerVEM, 0.01, "group 2 RE");
 		}
 		public void GroupGenerateRENaturalFeedProductGroupsTest()
 		{

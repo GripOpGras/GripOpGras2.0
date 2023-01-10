@@ -23,7 +23,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public float totalDM { get { return this.RationList.Sum(x => x.appliedKGDM) + grassKGDM; } }
 		public float totalDM_Bijprod { get { return this.RationList.Sum(x => x.appliedVEM*x.KGDMPerVEM_bijprod); } }
 		public float totalREdiff { get { return this.RationList.Sum(x => x.appliedREdiff) + grassREdiff; } }
-		public float totalRE { get { return this.RationList.Sum(x => x.appliedREdiff) + grassRE; } }
+		public float totalRE { get { return this.RationList.Sum(x => x.appliedTotalRE) + grassRE; } }
 		//Reference to the original class, so clones can be matched.
 		public Ration? originalRefference { get; }
 

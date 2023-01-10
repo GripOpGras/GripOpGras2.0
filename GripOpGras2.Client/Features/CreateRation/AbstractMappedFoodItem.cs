@@ -14,12 +14,15 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float REdiffPerVEM { get; protected set; }
 		public float REdiffPerVEM_bijprod { get; protected set; }
+		public float REperVEM { get; protected set; }
+		public float REperVEM_bijprod { get; protected set; }
 
 		public float appliedVEM { get; private set; } = 0;
 
 		public float appliedKGDM { get; private set; }
 
 		public float appliedREdiff { get; private set; }
+		public float appliedTotalRE { get; private set; }
 
 		//Gives a number between 1 and 0, which reperesents the percentage of VEM that is bijproduct
 		public float partOfTotalVEMbijprod { get; protected set; }
@@ -36,6 +39,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			appliedVEM = VEM;
 			appliedKGDM = VEM * KGDMperVEM;
 			appliedREdiff = VEM * REdiffPerVEM;
+			appliedTotalRE = VEM * REperVEM;
 		}
 	}
 
@@ -53,7 +57,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			isSupplementaryFeedProduct = (feedProduct.GetType() == typeof(SupplementaryFeedProduct));
 			KGDMperVEM = (float)(1f/feedProduct.FeedAnalysis.VEM);
 			KGDMPerVEM_bijprod = (isSupplementaryFeedProduct) ? KGDMperVEM : 0;
-			REdiffPerVEM = (float)(feedProduct.FeedAnalysis.RE - 150);
+			REperVEM = (float)(feedProduct.FeedAnalysis.RE/feedProduct.FeedAnalysis.VEM);
+			REperVEM_bijprod = (isSupplementaryFeedProduct) ? REperVEM : 0;
+			REdiffPerVEM = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
 			REdiffPerVEM_bijprod = (isSupplementaryFeedProduct) ? REdiffPerVEM : 0;
 			partOfTotalVEMbijprod = (isSupplementaryFeedProduct) ? 1 : 0;
 			setAppliedVEM(0);
@@ -95,6 +101,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			float totalVEM = products.Sum(x => x.partOfGroupInVEM);
 			KGDMperVEM = (float)(products.Sum(x => x.FoodItem.KGDMperVEM * x.partOfGroupInVEM)) / totalVEM;
 			KGDMPerVEM_bijprod = products.Sum(x => x.FoodItem.KGDMPerVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
+			REperVEM = products.Sum(x => x.FoodItem.REperVEM * x.partOfGroupInVEM) / totalVEM;
+			REperVEM_bijprod = products.Sum(x => x.FoodItem.REperVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
 			REdiffPerVEM = products.Sum(x => x.FoodItem.REdiffPerVEM * x.partOfGroupInVEM) / totalVEM;
 			REdiffPerVEM_bijprod = products.Sum(x => x.FoodItem.REdiffPerVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
 			partOfTotalVEMbijprod = products.Sum(x => x.FoodItem.partOfTotalVEMbijprod * x.partOfGroupInVEM) / totalVEM;

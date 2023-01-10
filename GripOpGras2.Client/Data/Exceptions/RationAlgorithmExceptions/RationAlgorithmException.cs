@@ -22,4 +22,17 @@
 		{
 		}
 	}
+
+	public class NoPossibleRENaturalProductGroupsException : RationAlgorithmException
+	{
+		public NoPossibleRENaturalProductGroupsException() : base("It is not possible to make a feedproduct group with the targeted RE value. Make sure to add products with different RE values")
+		{
+		}
+
+
+		public NoPossibleRENaturalProductGroupsException(string message) : base(
+			$"It is not possible to make a feedproduct group with the targeted RE value of: {message}. Make sure to add products with different RE values")
+		{
+		}
+	}
 }
