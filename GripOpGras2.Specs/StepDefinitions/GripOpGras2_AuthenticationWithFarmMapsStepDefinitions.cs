@@ -32,8 +32,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 			NavigateWebDriverToApplication();
 		}
 
-		[Then(@"the application should navigate to the FarmMaps login page")]
-		public void ThenTheApplicationShouldNavigateToTheFarmMapsLoginPage()
+		[Then(@"I should be redirected to the FarmMaps login page")]
+		public void ThenIShouldBeRedirectedToTheFarmMapsLoginPageToTheFarmMapsLoginPage()
 		{
 			IWebElement loginPage = _driver.FindElement(By.ClassName("login-page"));
 			loginPage.Should().NotBeNull();

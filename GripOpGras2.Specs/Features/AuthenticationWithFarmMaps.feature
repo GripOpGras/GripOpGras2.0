@@ -4,7 +4,7 @@ The authentication feature that is being used by Grip op Gras 2.0 to get access 
 
 Scenario: The app navigates to the login page
 	When I open the Grip op Gras application
-	Then the application should navigate to the FarmMaps login page
+	Then I should be redirected to the FarmMaps login page
 
 Scenario: The user logs into the application with FarmMaps
 	Given that I am on the FarmMaps login page
