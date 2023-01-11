@@ -13,11 +13,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// The amount of VEM that needs to be added per L Meetmilk produced.
 		/// </summary>
 		public const float VemNeedsPerLiterMilk = 450;
+
 		/// <summary>
 		/// The amount of KG DM Supplementery Feed Products that should be given per cow per day.
 		/// </summary>
 		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
-		
+
 		/// <summary>
 		/// The maximum amount of KG DM Feed products (inc grass) that a cow should be able to eat a day. 
 		/// #TODO make this more dynamic. This should be an absolute maximum and in the feature be dynamic, based on the data of the cows, like their body weight. Taiga: #198
@@ -69,7 +70,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			TargetedREcoveragePerKgDm = targetedREcoveragePerKgDm;
 			TargetedMaxKgDmSupplementeryFeedProductPerCow = targetedMaxAmountOfSupplementeryFeedProductInKgPerCow;
 			TargetedMaxKgDmIntakePerCow = targetedMaxKgDmIntakePerCow;
-			TargetedVEM = (_milkProductionAnalysis.Amount * VemNeedsPerLiterMilk + DefaultVEMNeedsOfCow*herd.NumberOfAnimals) * OptimalVEMCoverage;
+			TargetedVEM =
+				(_milkProductionAnalysis.Amount * VemNeedsPerLiterMilk + DefaultVEMNeedsOfCow * herd.NumberOfAnimals) *
+				OptimalVEMCoverage;
 		}
 
 		public float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
@@ -80,10 +83,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
 
 		public float TargetedVEMPerCow => TargetedVEM / _herd.NumberOfAnimals;
-		public float TargetedMaxKgDm => TargetedMaxKgDmIntakePerCow*_herd.NumberOfAnimals;
-		public float TargetedMaxKgDmSupplementeryFeedProduct => TargetedMaxKgDmSupplementeryFeedProductPerCow * _herd.NumberOfAnimals;
+
+		public float TargetedMaxKgDm => TargetedMaxKgDmIntakePerCow * _herd.NumberOfAnimals;
+
+		public float TargetedMaxKgDmSupplementeryFeedProduct =>
+			TargetedMaxKgDmSupplementeryFeedProductPerCow * _herd.NumberOfAnimals;
 
 		public float TargetedVEM { get; set; }
-
 	}
 }

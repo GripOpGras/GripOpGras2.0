@@ -22,23 +22,27 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			};
 			return feedProduct;
 		}
-		public static MappedFeedProduct GetMappedFeedProduct(string name, float re, float vem, float appliedVEM, bool isRoughage = true)
+
+		public static MappedFeedProduct GetMappedFeedProduct(string name, float re, float vem, float appliedVEM,
+			bool isRoughage = true)
 		{
 			MappedFeedProduct mappedFeedProduct = new MappedFeedProduct(GetFeedProduct(name, re, vem, isRoughage));
 			mappedFeedProduct.setAppliedVEM(appliedVEM);
 			return mappedFeedProduct;
 		}
-		public static RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods CreateRationAlgorithm(List<FeedProduct> feedProducts, float totalGrassIntake = 0,
+
+		public static RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods CreateRationAlgorithm(
+			List<FeedProduct> feedProducts, float totalGrassIntake = 0,
 			float lmilk = 3000, bool hasPlot = true, float PlotRE = 210, float PlotVEM = 1000)
 		{
 			// Arrange
-			var herd = new Herd()
+			Herd herd = new Herd()
 			{
 				Name = "Herd1",
 				NumberOfAnimals = 100,
 				Type = "Koe"
 			};
-			var milkProductionAnalysis = new MilkProductionAnalysis
+			MilkProductionAnalysis milkProductionAnalysis = new MilkProductionAnalysis
 			{
 				Date = DateTime.Now,
 				Amount = lmilk
@@ -54,12 +58,12 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 					DryMatter = 80,
 					RE = PlotRE,
 					VEM = PlotVEM
-
 				};
 			}
 
 
-			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm = new RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods();
+			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm =
+				new RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods();
 			// Act
 			Assert.DoesNotThrow(() => rationAlgorithm.SetUp(feedProducts: feedProducts, herd: herd,
 				totalGrassIntake: totalGrassIntake, milkProductionAnalysis: milkProductionAnalysis,

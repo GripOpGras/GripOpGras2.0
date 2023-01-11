@@ -9,7 +9,9 @@
 	/// </summary>
 	public class ImprovementRationMethodGrassRENuterilizer : IImprovementRationMethod
 	{
-		public ImprovementRapport FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts, List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation)
+		public ImprovementRapport FindImprovementRationMethod(TargetValues targetValues,
+			List<AbstractMappedFoodItem> availableFeedProducts,
+			List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation)
 		{
 			throw new NotImplementedException();
 		}

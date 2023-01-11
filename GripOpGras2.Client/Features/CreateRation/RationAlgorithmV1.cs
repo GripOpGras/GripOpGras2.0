@@ -2,14 +2,13 @@
 using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
-using NUnit.Framework;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class RationAlgorithmV1 : IRationAlgorithm
 	{
 		public TargetValues targetValues;
-		
+
 		/// <summary>
 		/// Available feedproducts givven, converted to AbstractMappedoodItem (but will only contain MappedFeedProduct)
 		/// </summary>
@@ -64,9 +63,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity != null && grazingActivity.Plot != null & grazingActivity.Plot.FeedAnalysis != null)
 			{
-				_currentRation = new Ration(grassIntake: totalGrassIntake, grassAnalysis: grazingActivity.Plot.FeedAnalysis);
-
+				_currentRation = new Ration(grassIntake: totalGrassIntake,
+					grassAnalysis: grazingActivity.Plot.FeedAnalysis);
 			}
+
 			//add products
 			List<AbstractMappedFoodItem> availableFeedProductsList = new();
 			foreach (FeedProduct x in feedProducts)
@@ -92,60 +92,72 @@ namespace GripOpGras2.Client.Features.CreateRation
 			{
 				Console.WriteLine("no products available, return Feedproducts without products");
 				return;
-			};
+			}
+
+			;
 			//fill ration with feed product to get RE on the targeted level.
 			_currentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
 			//generate RE natural FeedProductGroups #TODO change targetRE when needed: taiga #193
 			availableRENaturalFeedProductGroups = GenerateRENaturalFeedProductGroups();
 			//fill ration with best FeedProductGroups untill the VEM is on the targeted level, only containing roughage products.
 			AbstractMappedFoodItem bestREnaturalFeedProductGroup = FindBestRENaturalFeedProductGroup(false);
-			bestREnaturalFeedProductGroup.setAppliedVEM(targetValues.TargetedVEM-currentRation.totalVEM);
+			bestREnaturalFeedProductGroup.setAppliedVEM(targetValues.TargetedVEM - currentRation.totalVEM);
 			Console.WriteLine($"Applying REnaturalFedproductgroep. amount: {bestREnaturalFeedProductGroup.appliedVEM}");
 			_currentRation.ApplyChangesToRationList(bestREnaturalFeedProductGroup);
 			//check if Ration is in line with target values, if not, improve the ration.
 			if (checkIfRationIsInLineWithTargetValues()) return;
 			//if not, improve the ration.
-			IImprovementRationMethod[] improvementMethods = 
+			IImprovementRationMethod[] improvementMethods =
 			{
 				new ImprovementRationMethodGrassRENuterilizer(),
 				new ImprovementRationMethodNaturalREGroups()
 			};
-			List<AbstractMappedFoodItem> improvementChanges = _improvementSelector.DetermineImprovemendRationsWithBijprod(
-				improvementMethods: improvementMethods.ToArray());
+			List<AbstractMappedFoodItem> improvementChanges =
+				_improvementSelector.DetermineImprovemendRationsWithBijprod(
+					improvementMethods: improvementMethods.ToArray());
 			currentRation.ApplyChangesToRationList(improvementChanges);
 			//check if Ration is in line with target values, if not, change Targetvalues.
-			currentRation.ApplyChangesToRationList(_improvementSelector.DetermineImprovemendRationsWithBijprod(new ImprovementRationMethodChangeTargetedCoverages()));
-			
-
+			currentRation.ApplyChangesToRationList(
+				_improvementSelector.DetermineImprovemendRationsWithBijprod(
+					new ImprovementRationMethodChangeTargetedCoverages()));
 		}
 
 		private bool checkIfRationIsInLineWithTargetValues()
 		{
 			bool inlinewithtargets = true;
 			Console.WriteLine("Checking if ration is in line with targetValues");
-			if (Math.Abs(currentRation.totalRE/currentRation.totalDM - targetValues.TargetedREcoveragePerKgDm) > 2)
+			if (Math.Abs(currentRation.totalRE / currentRation.totalDM - targetValues.TargetedREcoveragePerKgDm) > 2)
 			{
 				inlinewithtargets = false;
-				Console.WriteLine($"\t- RE is not in line with target, ration RE/DM:\t\t{currentRation.totalRE/currentRation.totalDM},\t\ttarget RE/DM:\t{targetValues.TargetedREcoveragePerKgDm}");
+				Console.WriteLine(
+					$"\t- RE is not in line with target, ration RE/DM:\t\t{currentRation.totalRE / currentRation.totalDM},\t\ttarget RE/DM:\t{targetValues.TargetedREcoveragePerKgDm}");
 			}
+
 			if (Math.Abs(currentRation.totalVEM - targetValues.TargetedVEM) > 5)
 			{
 				inlinewithtargets = false;
-				Console.WriteLine($"\t- VEM is not in line with target, ration VEM:\t\t{currentRation.totalVEM},\ttarget VEM:\t\t{targetValues.TargetedVEM}");
+				Console.WriteLine(
+					$"\t- VEM is not in line with target, ration VEM:\t\t{currentRation.totalVEM},\ttarget VEM:\t\t{targetValues.TargetedVEM}");
 			}
+
 			if (currentRation.totalDM > targetValues.TargetedMaxKgDm)
 			{
 				inlinewithtargets = false;
-				Console.WriteLine($"\t- DM not in line with target, ration KGDM:\t\t\t{currentRation.totalDM},\t\ttarget max DM:\t{targetValues.TargetedMaxKgDm}");
+				Console.WriteLine(
+					$"\t- DM not in line with target, ration KGDM:\t\t\t{currentRation.totalDM},\t\ttarget max DM:\t{targetValues.TargetedMaxKgDm}");
 			}
+
 			if (currentRation.totalDM_Bijprod > targetValues.TargetedMaxKgDmSupplementeryFeedProduct)
-			 {
-				 inlinewithtargets = false;
-				 Console.WriteLine($"\t- DM bijprod not in line with targt, ration KGDMbijprod:{currentRation.totalDM_Bijprod},\t\ttarget max DM: \t{targetValues.TargetedMaxKgDmSupplementeryFeedProduct}");
-			 }
-			 if (inlinewithtargets) Console.WriteLine($"\t- ration in line with targets");
-			 return inlinewithtargets;
+			{
+				inlinewithtargets = false;
+				Console.WriteLine(
+					$"\t- DM bijprod not in line with targt, ration KGDMbijprod:{currentRation.totalDM_Bijprod},\t\ttarget max DM: \t{targetValues.TargetedMaxKgDmSupplementeryFeedProduct}");
+			}
+
+			if (inlinewithtargets) Console.WriteLine($"\t- ration in line with targets");
+			return inlinewithtargets;
 		}
+
 		//TODO: make this method more efficient.; taiga issue #192
 		public List<AbstractMappedFoodItem> GetGrassRENuturalizerFeedProduct(
 			bool allowSupplementeryFeedProducts = false)
@@ -153,22 +165,25 @@ namespace GripOpGras2.Client.Features.CreateRation
 			if (currentRation.totalREdiff == 0) return new List<AbstractMappedFoodItem>();
 
 			bool grassHasPositiveREdiff = (currentRation.totalREdiff > 0);
-			var products = (allowSupplementeryFeedProducts)
+			IEnumerable<AbstractMappedFoodItem> products = (allowSupplementeryFeedProducts)
 				? availableFeedProducts
 				: availableFeedProducts.Where(x => x.partOfTotalVEMbijprod == 0);
 
 			//Check if products are availlable
 			if (products.Count() == 0 && allowSupplementeryFeedProducts == true)
 			{
-				Console.WriteLine("GetGrassRENuturalizerFeedProduct: No feedproducts without supplementeries available, trying again with supplementeries");
+				Console.WriteLine(
+					"GetGrassRENuturalizerFeedProduct: No feedproducts without supplementeries available, trying again with supplementeries");
 				return GetGrassRENuturalizerFeedProduct(true);
 			}
 
 			if (products.Count() == 0) throw new RationAlgorithmException("No roughage feed products available.");
 
 			//select the best product
-			var sortedProducts = products.OrderBy(x => x.REdiffPerVEM/x.KGDMperVEM);
-			AbstractMappedFoodItem bestproduct = (grassHasPositiveREdiff) ? sortedProducts.First() : sortedProducts.Last();
+			IOrderedEnumerable<AbstractMappedFoodItem> sortedProducts =
+				products.OrderBy(x => x.REdiffPerVEM / x.KGDMperVEM);
+			AbstractMappedFoodItem bestproduct =
+				(grassHasPositiveREdiff) ? sortedProducts.First() : sortedProducts.Last();
 			float vemNeeded = -currentRation.totalREdiff / bestproduct.REdiffPerVEM;
 
 			//check if product has the right REdiff
@@ -179,47 +194,54 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//TODO: check if supplementeries don't have too much KG DS when using them, and throw exception if they do; taiga issue 192
 			AbstractMappedFoodItem productclone = bestproduct.Clone();
 			productclone.setAppliedVEM(vemNeeded);
-			Console.WriteLine($"GrassNeuturilizer: totalREdiff = {currentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVEM}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVEM+1500)*productclone.appliedVEM} RE total and {productclone.appliedVEM} VEM total and {productclone.appliedREdiff.ToString()} RE difference of the target");
+			Console.WriteLine(
+				$"GrassNeuturilizer: totalREdiff = {currentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVEM}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVEM + 1500) * productclone.appliedVEM} RE total and {productclone.appliedVEM} VEM total and {productclone.appliedREdiff.ToString()} RE difference of the target");
 			Console.WriteLine($"GrassNeuturilizer: used product: {bestproduct.GetProductsForConsole()}");
-			Console.WriteLine($"VEM needed after GrassRENuturalizer: {targetValues.TargetedVEM - (currentRation.totalVEM+vemNeeded)}");
+			Console.WriteLine(
+				$"VEM needed after GrassRENuturalizer: {targetValues.TargetedVEM - (currentRation.totalVEM + vemNeeded)}");
 			return new List<AbstractMappedFoodItem> { productclone };
 		}
-
 
 
 		public List<AbstractMappedFoodItem> GenerateRENaturalFeedProductGroups()
 		{
 			List<AbstractMappedFoodItem> naturalFeedProductGroups = new();
 			//add products that are allready natural as a group with 1 product.
-			naturalFeedProductGroups.AddRange(availableFeedProducts.Where(x => x.REdiffPerVEM == 0).Select(x => new MappedFeedProductGroup((x, 1f))).ToList());
+			naturalFeedProductGroups.AddRange(availableFeedProducts.Where(x => x.REdiffPerVEM == 0)
+				.Select(x => new MappedFeedProductGroup((x, 1f))).ToList());
 			foreach (AbstractMappedFoodItem product in availableFeedProducts.Where(x => x.REdiffPerVEM < 0))
 			{
 				foreach (AbstractMappedFoodItem? product2 in availableFeedProducts.Where(x => x.REdiffPerVEM > 0))
 				{
-					float prod2PerProd1 = product.REdiffPerVEM/-product2.REdiffPerVEM;
+					float prod2PerProd1 = product.REdiffPerVEM / -product2.REdiffPerVEM;
 					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
-					Console.WriteLine($"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}. Part supplementery prod 1: {product.partOfTotalVEMbijprod}, prod2: {product2.partOfTotalVEMbijprod}");
+					Console.WriteLine(
+						$"group created, product 1 RE/vem: {product.REdiffPerVEM}, product 2 RE/vem: {product2.REdiffPerVEM}, product 2 per product 1 in VEM: {prod2PerProd1}. Part supplementery prod 1: {product.partOfTotalVEMbijprod}, prod2: {product2.partOfTotalVEMbijprod}");
 				}
 			}
-			if (naturalFeedProductGroups.Count == 0) throw new NoPossibleRENaturalProductGroupsException(targetValues.TargetedREcoveragePerKgDm.ToString());
+
+			if (naturalFeedProductGroups.Count == 0)
+				throw new NoPossibleRENaturalProductGroupsException(targetValues.TargetedREcoveragePerKgDm.ToString());
 			return naturalFeedProductGroups;
 		}
 
 		//Returns the RE natural feed product group with the least KG DM per VEM.
 		public AbstractMappedFoodItem FindBestRENaturalFeedProductGroup(bool supplementeryFeedProductAllowed)
 		{
-			IEnumerable<AbstractMappedFoodItem> availablegroups = availableRENaturalFeedProductGroups.Where(x => x.partOfTotalVEMbijprod == 0 || (supplementeryFeedProductAllowed));
+			IEnumerable<AbstractMappedFoodItem> availablegroups =
+				availableRENaturalFeedProductGroups.Where(x =>
+					x.partOfTotalVEMbijprod == 0 || (supplementeryFeedProductAllowed));
 			if (availablegroups.Count() == 0 && !supplementeryFeedProductAllowed)
 			{
-				Console.WriteLine("No RE natural feed product groups available of only roughages. Switching to supplementeryFeedProductAllowed == true");
+				Console.WriteLine(
+					"No RE natural feed product groups available of only roughages. Switching to supplementeryFeedProductAllowed == true");
 				return FindBestRENaturalFeedProductGroup(true);
 			}
 
 			AbstractMappedFoodItem bestgroup = availablegroups.OrderBy(x => x.KGDMperVEM).First();
-			Console.WriteLine($"FindBestReNaturalFeedProductGroup: supplementeryallowed = {supplementeryFeedProductAllowed}, partsupplementery: {bestgroup.partOfTotalVEMbijprod}, DM per VEM: {bestgroup.KGDMperVEM}, RE per VEM: {bestgroup.REperVEM}");
+			Console.WriteLine(
+				$"FindBestReNaturalFeedProductGroup: supplementeryallowed = {supplementeryFeedProductAllowed}, partsupplementery: {bestgroup.partOfTotalVEMbijprod}, DM per VEM: {bestgroup.KGDMperVEM}, RE per VEM: {bestgroup.REperVEM}");
 			return bestgroup;
-
 		}
-
 	};
 }

@@ -11,9 +11,11 @@
 		{
 		}
 	}
+
 	public class NoProductsWithPossibleREException : RationAlgorithmException
 	{
-		public NoProductsWithPossibleREException() : base("No products with possible RE. Make sure to add products with different RE values")
+		public NoProductsWithPossibleREException() : base(
+			"No products with possible RE. Make sure to add products with different RE values")
 		{
 		}
 
@@ -25,7 +27,8 @@
 
 	public class NoPossibleRENaturalProductGroupsException : RationAlgorithmException
 	{
-		public NoPossibleRENaturalProductGroupsException() : base("It is not possible to make a feedproduct group with the targeted RE value. Make sure to add products with different RE values")
+		public NoPossibleRENaturalProductGroupsException() : base(
+			"It is not possible to make a feedproduct group with the targeted RE value. Make sure to add products with different RE values")
 		{
 		}
 

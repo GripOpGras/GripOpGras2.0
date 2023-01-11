@@ -8,14 +8,16 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public abstract class AbstractMappedFoodItem
 	{
-
 		public float KGDMperVEM { get; protected set; }
 
 		public float KGDMPerVEM_bijprod { get; protected set; }
 
 		public float REdiffPerVEM { get; protected set; }
+
 		public float REdiffPerVEM_bijprod { get; protected set; }
+
 		public float REperVEM { get; protected set; }
+
 		public float REperVEM_bijprod { get; protected set; }
 
 		public float appliedVEM { get; private set; } = 0;
@@ -23,6 +25,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public float appliedKGDM { get; private set; }
 
 		public float appliedREdiff { get; private set; }
+
 		public float appliedTotalRE { get; private set; }
 
 		//Gives a number between 1 and 0, which reperesents the percentage of VEM that is bijproduct
@@ -31,6 +34,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public abstract List<Tuple<FeedProduct, float>> GetProducts();
 
 		public abstract AbstractMappedFoodItem Clone();
+
 		//reference to original
 		public AbstractMappedFoodItem originalRefference { get; protected set; } = null!;
 
@@ -49,7 +53,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			string result = "";
 			foreach (Tuple<FeedProduct, float> product in products)
 			{
-				result = result+ $"\t - Product: {product.Item1.Name + ",",-20} {product.Item2,5} KG DM\n";
+				result = result + $"\t - Product: {product.Item1.Name + ",",-20} {product.Item2,5} KG DM\n";
 			}
 
 			return result;
@@ -68,9 +72,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			if (feedProduct.FeedAnalysis.VEM == null) throw new GripOpGras2Exception("VEM cannot be null");
 			if (feedProduct.FeedAnalysis.RE == null) throw new GripOpGras2Exception("RE cannot be null");
 			isSupplementaryFeedProduct = (feedProduct.GetType() == typeof(SupplementaryFeedProduct));
-			KGDMperVEM = (float)(1f/feedProduct.FeedAnalysis.VEM);
+			KGDMperVEM = (float)(1f / feedProduct.FeedAnalysis.VEM);
 			KGDMPerVEM_bijprod = (isSupplementaryFeedProduct) ? KGDMperVEM : 0;
-			REperVEM = (float)(feedProduct.FeedAnalysis.RE/feedProduct.FeedAnalysis.VEM);
+			REperVEM = (float)(feedProduct.FeedAnalysis.RE / feedProduct.FeedAnalysis.VEM);
 			REperVEM_bijprod = (isSupplementaryFeedProduct) ? REperVEM : 0;
 			REdiffPerVEM = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
 			REdiffPerVEM_bijprod = (isSupplementaryFeedProduct) ? REdiffPerVEM : 0;
@@ -83,7 +87,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public override List<Tuple<FeedProduct, float>> GetProducts()
 		{
-			return new List<Tuple<FeedProduct, float>>() { new Tuple<FeedProduct, float>(containingFeedProduct, appliedKGDM) };
+			return new List<Tuple<FeedProduct, float>>()
+				{ new Tuple<FeedProduct, float>(containingFeedProduct, appliedKGDM) };
 		}
 
 
@@ -94,8 +99,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 			newMappedFeedProduct.originalRefference = originalRefference;
 			return newMappedFeedProduct;
 		}
-
-
 	}
 
 	public class MappedFeedProductGroup : AbstractMappedFoodItem
@@ -150,7 +153,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 					}
 
 					products.Add(new Tuple<FeedProduct, float>(product2.Item1, amountToBeAdded));
-
 				}
 			}
 
@@ -165,6 +167,4 @@ namespace GripOpGras2.Client.Features.CreateRation
 			return newMappedFeedProductGroup;
 		}
 	}
-
 }
-	

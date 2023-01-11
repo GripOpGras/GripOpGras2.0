@@ -8,6 +8,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			ref TargetValues targetValues,
 			ref IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
 			ref List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups);
+
 		///  <summary>
 		/// 		This method will consider the results of different improvement methods and combine them into one list of changes.
 		/// 		#TODO give an log.Info in console when a change is made
@@ -16,6 +17,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		///  <returns>List with values of the changes.</returns>
 		List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(
 			params ImprovementRapport[] improvementRapports);
+
 		List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(
 			params IImprovementRationMethod[] improvementMethods);
 	}
@@ -23,9 +25,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 	public class ImprovementSelectorV1 : IImprovementSelector
 	{
 		private Ration _currentRation;
+
 		private TargetValues _targetValues;
+
 		private IReadOnlyList<AbstractMappedFoodItem> _availableFeedProducts;
+
 		private List<AbstractMappedFoodItem> _availableRENaturalFeedProductGroups;
+
 		public void Initialize(ref Ration currentRation, ref TargetValues targetValues,
 			ref IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
 			ref List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups)
@@ -36,14 +42,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 			_availableRENaturalFeedProductGroups = availableRENaturalFeedProductGroups;
 		}
 
-		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(params ImprovementRapport[] improvementRapports)
+		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(
+			params ImprovementRapport[] improvementRapports)
 		{
-			throw new NotImplementedException("ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementRapports)");
+			throw new NotImplementedException(
+				"ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementRapports)");
 		}
 
-		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(params IImprovementRationMethod[] improvementMethods)
+		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithBijprod(
+			params IImprovementRationMethod[] improvementMethods)
 		{
-			throw new NotImplementedException("ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementmethods)");
+			throw new NotImplementedException(
+				"ImprovementSelectorV1: DetermineImprovedRationsWithBijprod (improvementmethods)");
 		}
 	}
 }
