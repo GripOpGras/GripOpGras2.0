@@ -6,9 +6,9 @@ using GripOpGras2.Specs.Drivers;
 namespace GripOpGras2.Specs.StepDefinitions
 {
 	[Binding]
-	public class GripOpGras2_RationAlgorithmV1StepDefinitions
+	public class GripOpGras2_RationAlgorithmStepDefinitions
 	{
-		private readonly RationAlgorithmV1 _rationAlgorithmV1 = new();
+		private readonly IRationAlgorithm _rationAlgorithm = new RationAlgorithmV1();
 
 		private readonly Herd _herd = new();
 
@@ -24,7 +24,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly ExceptionDriver _exceptionDriver;
 
-		public GripOpGras2_RationAlgorithmV1StepDefinitions(ExceptionDriver exceptionDriver)
+		public GripOpGras2_RationAlgorithmStepDefinitions(ExceptionDriver exceptionDriver)
 		{
 			_exceptionDriver = exceptionDriver;
 		}
@@ -101,7 +101,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void WhenILetGripOpGrasCreateARation()
 		{
 			_exceptionDriver.TryExecute(() =>
-				_result = _rationAlgorithmV1.CreateRationAsync(_feedProducts, _herd, _totalGrassIntake,
+				_result = _rationAlgorithm.CreateRationAsync(_feedProducts, _herd, _totalGrassIntake,
 					_milkProductionAnalysis, _grazingActivity).Result
 			);
 		}

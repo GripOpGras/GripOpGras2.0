@@ -1,6 +1,7 @@
 using GripOpGras2.Client.Features.FarmMapsLogin;
 using GripOpGras2.Plugins.FarmMaps;
 using GripOpGras2.Plugins.PluginInterfaces.RepositoryInterfaces;
+using GripOpGras2.Client.Features.CreateRation;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -28,7 +29,9 @@ namespace GripOpGras2.Client
 
 			builder.Services.AddScoped<IFarmRepository, FarmRepository>(sp =>
 				new FarmRepository(sp.GetRequiredService<IHttpClientFactory>().CreateClient("FarmMapsApi")));
-
+			
+			builder.Services.AddTransient<IRationAlgorithm, RationAlgorithmV1>();
+			
 			builder.Services.AddOidcAuthentication(options =>
 			{
 				// See the following link for the supported scopes: https://accounts.test.farmmaps.eu/.well-known/openid-configuration
