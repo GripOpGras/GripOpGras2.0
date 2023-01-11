@@ -335,25 +335,26 @@ public async Task CreateRationAsyncTest(float prod1RE, float prod1VEM, float pro
 		}
 
 		[Test()]
-		public void FindBestRENaturalFeedProductGroupTest()
+		[TestCase(false, "prod1", "prod2")] //prod 1 is de enige met een negatieve RE. maar omdat de VEM daar lager is dan product 2 en 3 die erbij kunnen, ligt de voorkeur voor in verhouding het meest prod 2&3. Daarom wordt er gekozen voor prod 3.
+		[TestCase(true, "prod4", "prod3")] //Wanneer het bijprod gekozen kan worden geeft deze het minste KG DM per VEM. Daarom wordt er zoveel mogenlijk van het bijprod gekozen in verhouding. Daarom wordt er niet voor prod 3 maar voor 2 gekozen. In de toekomst zou er beter voorkeur komen liggen op zo min mogenlijk bijporduct, zodat deze altijd nog in de verbeterrondes gekozen kunnen worden wanneer nodig.
+		[TestCase(true, "prod4", "prod2")] //#TODO Wanneer er gekozen wordt om wel bijproducten te gebruiken, probeer dan eerst van de bijproducten een verhouding te gebruiken waarvoor weinig bijrpoduct gebruikt wordt, zodat deze later nog verbeterd kan worden in de improvemet rondes.; Taiga: #196
+		
+		public void FindBestRENaturalFeedProductGroupTest(bool findREnaturalFeedproductGroup, string expectedproduct1, string expectedproduct2)
 		{
 			//Arrange
-			FeedProduct prod1 = GetFeedProduct("prod 1", 90, 100);
-			FeedProduct prod2 = GetFeedProduct("prod 2", 160, 200);
-			FeedProduct prod3 = GetFeedProduct("prod 3", 180, 200);
-			FeedProduct prod4 = GetFeedProduct("prod 4", 140, 400, false);
+			FeedProduct prod1 = GetFeedProduct("prod1", 90, 100);
+			FeedProduct prod2 = GetFeedProduct("prod2", 160, 200);
+			FeedProduct prod3 = GetFeedProduct("prod3", 180, 200);
+			FeedProduct prod4 = GetFeedProduct("prod4", 140, 400, false);
 			//make a rationAlgorithm
 			RationAlgorithmV1WithTestMethods ration = CreateRationAlgorithm(new List<FeedProduct>() { prod1, prod2, prod3, prod4 });
 			var groups = ration.GenerateRENaturalFeedProductGroups();
 			ration.getsetavailableRENaturalFeedProductGroups = groups;
 			//Act
-			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(false);
-			AbstractMappedFoodItem group2 = ration.FindBestRENaturalFeedProductGroup(true);
+			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(findREnaturalFeedproductGroup);
 			//Assert
-			Assert.Contains(prod1, group.GetProducts().Select(x => x.Item1).ToList(), "group1; prod1");
-			Assert.Contains(prod3, group.GetProducts().Select(x => x.Item1).ToList(), "group1, prod3");
-			Assert.Contains(prod4, group2.GetProducts().Select(x => x.Item1).ToList(), "group2, prod4");
-			Assert.Contains(prod2, group2.GetProducts().Select(x => x.Item1).ToList(),"group2, prod2");
+			Assert.Contains(expectedproduct1, group.GetProducts().Select(x => x.Item1.Name).ToList(), $"naturalFeedproductgroup: {findREnaturalFeedproductGroup}; prod: {expectedproduct1}");
+			Assert.Contains(expectedproduct2, group.GetProducts().Select(x => x.Item1.Name).ToList(), $"naturalFeedproductgroup: {findREnaturalFeedproductGroup}; prod: {expectedproduct1}");
 		}
 
 		//TODO: test for determine improvemend rations with bijprod test
