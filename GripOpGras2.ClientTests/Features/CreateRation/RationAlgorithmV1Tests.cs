@@ -187,7 +187,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 	
 		[Test()]
-		[TestCase(165f,884.2f,112f,1000.2f,88f,1338f, 1063.5f, 1210f, 210f)]
+		[TestCase(165f,884.2f,80f,1000.2f,88f,1338f, 1063.5f, 1210f, 210f)] //realistic input. but it gives an error. Taiga #197
 		[TestCase(165f, 2000.2f, 50f, 1800.2f, 88f, 1338f, 500.5f, 1600f, 210f)] //not realistic, but should give an output.
 public async Task CreateRationAsyncTest(float prod1RE, float prod1VEM, float prod2RE, float prod2VEM, float bijprodRE, float bijprodVEM, float totalgrassIntake, float grassVEM, float grassRE)
 		{
@@ -204,7 +204,7 @@ public async Task CreateRationAsyncTest(float prod1RE, float prod1VEM, float pro
 			var milkProductionAnalysis = new MilkProductionAnalysis
 			{
 				Date = DateTime.Now,
-				Amount = 2002.6f
+				Amount = 3220f
 			};
 			GrazingActivity grazingActivity = new GrazingActivity();
 			grazingActivity.Herd = herd;

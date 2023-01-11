@@ -8,36 +8,60 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class TargetValues
 	{
-
+		/// <summary>
+		/// The amount of VEM that a cow needs a day, if the cow doesn't product any milk
+		/// </summary>
 		public const float DefaultVEMNeedsOfCow = 5500;
 
+		/// <summary>
+		/// The amount of VEM that needs to be added per L Meetmilk produced.
+		/// </summary>
 		public const float VemNeedsPerLiterMilk = 450;
-
+		/// <summary>
+		/// The amount of KG DM Supplementery Feed Products that should be given per cow per day.
+		/// </summary>
 		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
+		
+		/// <summary>
+		/// The maximum amount of KG DM Feed products (inc grass) that a cow should be able to eat a day. 
+		/// #TODO make this more dynamic. This should be an absolute maximum and in the feature be dynamic, based on the data of the cows, like their body weight. Taiga: #198
+		/// </summary>
+		public const float MaxKgDmIntakePerCow = 20;
 
-		public const float MaxKgDmIntakePerCow = 18;
-
+		/// <summary>
+		/// The VEM should be between 100%-110% of what the cows should actually eat. 105% is in between of that
+		/// </summary>
 		public const float OptimalVEMCoverage = 1.05f;
 
+		/// <summary>
+		/// The RE has an optimum of 150 RE per KG DM
+		/// </summary>
 		public const float OptimalRECoverageInGramsPerKgDm = 150;
 
 		private Herd _herd;
 
 		private MilkProductionAnalysis _milkProductionAnalysis;
 
-		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
+		/// <summary>
+		/// When the RE needs to differ fromt e optimum, the max RE/KGDM shoud be 170.
+		/// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
+		/// </summary>
 		public const float MaxRECoverageInGramsPerKgDm = 170;
 
-		// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
+		/// <summary>
+		/// When the RE needs to differ from te optimum, the  RE/KGDM shoud not go below 140 .
+		/// TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet worden gewerkt
+		/// </summary>
 		public const float MinRECoverageInGramsPerKgDm = 140;
 
-		//public TargetValues(Herd herd, MilkProductionAnalysis milkProductionAnalysis)
-		//{
-		//	this._herd = herd;
-		//	this._milkProductionAnalysis = milkProductionAnalysis;
-
-		//}
-
+		/// <summary>
+		/// A class that's a centeral place while making the Rationalgorithm to refer to when values are needed that determine how much nutrients should be applied.
+		/// </summary>
+		/// <param name="herd">Herd class required for the amount of cows</param>
+		/// <param name="milkProductionAnalysis">milkProductionAnalysis required to determine the VEM needed</param>
+		/// <param name="targetedREcoveragePerKgDm">optional. how much RE should be applied per VEM (can differ while the algorithm is running)</param>
+		/// <param name="targetedMaxAmountOfSupplementeryFeedProductInKgPerCow">optional. max KGDM supplementery feedproduct per cow.</param>
+		/// <param name="targetedMaxKgDmIntakePerCow">optional. set the max KG DM intake per cow by hand, for testing purposes.</param>
 		public TargetValues(Herd herd,
 			MilkProductionAnalysis milkProductionAnalysis,
 			float targetedREcoveragePerKgDm = OptimalRECoverageInGramsPerKgDm,
@@ -49,7 +73,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			TargetedREcoveragePerKgDm = targetedREcoveragePerKgDm;
 			TargetedMaxKgDmSupplementeryFeedProductPerCow = targetedMaxAmountOfSupplementeryFeedProductInKgPerCow;
 			TargetedMaxKgDmIntakePerCow = targetedMaxKgDmIntakePerCow;
-			TargetedVEM = (_milkProductionAnalysis.Amount * 450 + 5500*herd.NumberOfAnimals) * OptimalVEMCoverage;
+			TargetedVEM = (_milkProductionAnalysis.Amount * VemNeedsPerLiterMilk + DefaultVEMNeedsOfCow*herd.NumberOfAnimals) * OptimalVEMCoverage;
 		}
 
 		public float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
@@ -71,8 +95,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		public TargetValues targetValues;
 		
+		/// <summary>
+		/// Available feedproducts givven, converted to AbstractMappedoodItem (but will only contain MappedFeedProduct)
+		/// </summary>
 		protected IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts = new List<AbstractMappedFoodItem>();
 
+		/// <summary>
+		/// List of all the generated RE natural Feed product groups. This should be combinations of feedproducts, so that the RE will be the same as the targeted RE per KGDM.
+		/// </summary>
 		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		/// <summary>
@@ -89,6 +119,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// </summary>
 		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
+		/// <summary>
+		/// _currentRation that can be called to apply changes.  
+		/// </summary>
 		protected Ration _currentRation = new();
 
 		public async Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
@@ -205,13 +238,17 @@ namespace GripOpGras2.Client.Features.CreateRation
 			if (currentRation.totalREdiff == 0) return new List<AbstractMappedFoodItem>();
 
 			bool grassHasPositiveREdiff = (currentRation.totalREdiff > 0);
-			var products = (grassHasPositiveREdiff)
+			var products = (allowSupplementeryFeedProducts)
 				? availableFeedProducts
 				: availableFeedProducts.Where(x => x.partOfTotalVEMbijprod == 0);
 
 			//Check if products are availlable
-			if (products.Count() == 0 && allowSupplementeryFeedProducts == false)
+			if (products.Count() == 0 && allowSupplementeryFeedProducts == true)
+			{
+				Console.WriteLine("GetGrassRENuturalizerFeedProduct: No feedproducts without supplementeries available, trying again with supplementeries");
 				return GetGrassRENuturalizerFeedProduct(true);
+			}
+
 			if (products.Count() == 0) throw new RationAlgorithmException("No roughage feed products available.");
 
 			//select the best product
@@ -228,7 +265,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			AbstractMappedFoodItem productclone = bestproduct.Clone();
 			productclone.setAppliedVEM(vemNeeded);
 			Console.WriteLine($"GrassNeuturilizer: totalREdiff = {currentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVEM}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVEM+1500)*productclone.appliedVEM} RE total and {productclone.appliedVEM} VEM total and {productclone.appliedREdiff.ToString()} RE difference of the target");
-			Console.WriteLine($"VEM needed after GrassRENuturalizer: {targetValues.TargetedVEM - currentRation.totalVEM-vemNeeded}");
+			Console.WriteLine($"GrassNeuturilizer: used product: {bestproduct.GetProductsForConsole()}");
+			Console.WriteLine($"VEM needed after GrassRENuturalizer: {targetValues.TargetedVEM - (currentRation.totalVEM+vemNeeded)}");
 			return new List<AbstractMappedFoodItem> { productclone };
 		}
 
