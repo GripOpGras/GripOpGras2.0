@@ -37,7 +37,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				grassVEM = (float)grassAnalysis.VEM * (float)grassIntake;
 				grassRE = (float)(grassAnalysis.RE * grassIntake);
 				grassKGDM = (float)grassIntake;
-				grassREdiff = (float)((grassAnalysis.RE - 150) * grassIntake);
+				grassREdiff = (float)((grassAnalysis.RE - TargetValues.OptimalRECoverageInGramsPerKgDm) * grassIntake);
 				grassFeedAnalysis = grassAnalysis;
 			}
 			else
