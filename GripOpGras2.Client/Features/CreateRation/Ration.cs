@@ -26,32 +26,32 @@ namespace GripOpGras2.Client.Features.CreateRation
 		//public float totalVEM  
 		public float totalVEM
 		{
-			get { return this.RationList.Sum(x => x.appliedVEM) + grassVEM; }
+			get { return this.RationList.Sum(x => x.AppliedVem) + grassVEM; }
 		}
 
 		public float totalVEM_Bijprod
 		{
-			get { return this.RationList.Sum(x => x.appliedVEM * x.partOfTotalVEMbijprod); }
+			get { return this.RationList.Sum(x => x.AppliedVem * x.SupplmenteryPartOfTotalVem); }
 		}
 
 		public float totalDM
 		{
-			get { return this.RationList.Sum(x => x.appliedKGDM) + grassKGDM; }
+			get { return this.RationList.Sum(x => x.AppliedKgdm) + grassKGDM; }
 		}
 
 		public float totalDM_Bijprod
 		{
-			get { return this.RationList.Sum(x => x.appliedVEM * x.KGDMPerVEM_bijprod); }
+			get { return this.RationList.Sum(x => x.AppliedVem * x.KgdmPerVemBijprod); }
 		}
 
 		public float totalREdiff
 		{
-			get { return this.RationList.Sum(x => x.appliedREdiff) + grassREdiff; }
+			get { return this.RationList.Sum(x => x.AppliedREdiff) + grassREdiff; }
 		}
 
 		public float totalRE
 		{
-			get { return this.RationList.Sum(x => x.appliedTotalRE) + grassRE; }
+			get { return this.RationList.Sum(x => x.AppliedTotalRe) + grassRE; }
 		}
 
 		//Reference to the original class, so clones can be matched.
@@ -63,6 +63,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 			originalRefference = reference ?? this;
 			if (grassIntake != null && grassAnalysis != null)
 			{
+				if (grassAnalysis.VEM == null || grassAnalysis.RE == null)
+				{
+					throw new RationAlgorithmException("Grass analysis is missing data");
+				}
+
 				grassVEM = (float)grassAnalysis.VEM * (float)grassIntake;
 				grassRE = (float)(grassAnalysis.RE * grassIntake);
 				grassKGDM = (float)grassIntake;
@@ -91,15 +96,15 @@ namespace GripOpGras2.Client.Features.CreateRation
 			foreach (AbstractMappedFoodItem foodItem in rationChanges)
 			{
 				AbstractMappedFoodItem? itemInRationList =
-					newList.Find(x => x.originalRefference == foodItem.originalRefference);
+					newList.Find(x => x.OriginalReference == foodItem.OriginalReference);
 				if (itemInRationList != null)
 				{
-					itemInRationList.setAppliedVEM(itemInRationList.appliedVEM + foodItem.appliedVEM);
-					if (itemInRationList.appliedVEM < 0) throw new Exception("Applied VEM cannot be negative");
+					itemInRationList.SetAppliedVem(itemInRationList.AppliedVem + foodItem.AppliedVem);
+					if (itemInRationList.AppliedVem < 0) throw new Exception("Applied VEM cannot be negative");
 				}
 				else
 				{
-					if (foodItem.appliedVEM < 0)
+					if (foodItem.AppliedVem < 0)
 						throw new RationAlgorithmException(
 							$"Cannot reduce an item that is not in the ration.\nChangedata:\n{foodItem.GetProductsForConsole()}");
 					newList.Add(foodItem);
@@ -123,10 +128,22 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public Dictionary<FeedProduct, float> getFeedProducts()
 		{
 			MappedFeedProductGroup feedproductgroup =
-				new MappedFeedProductGroup(RationList.Select(x => (x.originalRefference, x.appliedVEM)).ToArray());
-			feedproductgroup.setAppliedVEM(RationList.Sum(x => x.appliedVEM));
-			return feedproductgroup.GetProducts().ToDictionary(x => x.Item1, x => x.Item2);
+				new MappedFeedProductGroup(RationList
+					.Select(x => (originalRefference: x.OriginalReference, appliedVEM: x.AppliedVem)).ToArray());
+			feedproductgroup.SetAppliedVem(RationList.Sum(x => x.AppliedVem));
+			return feedproductgroup.GetProducts();
 			//new MappedFeedProductGroup(RationList.Select(x => (FoodItem: x, partOfGroupInVEM: x.appliedVEM).ToTuple()).ToList());
+		}
+
+		public void printProducts()
+		{
+			Console.WriteLine($"Rotation Algorithm finished, rotation:");
+			Console.WriteLine($"- {"grass",-25}|{grassKGDM,10} kg | type: grass");
+			foreach (var feedRationFeedProduct in getFeedProducts())
+			{
+				Console.WriteLine(
+					$"- {feedRationFeedProduct.Key.Name,-25}|{feedRationFeedProduct.Value,10} kg | type: {feedRationFeedProduct.Key.GetType().Name}");
+			}
 		}
 	}
 }

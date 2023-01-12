@@ -8,63 +8,61 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public abstract class AbstractMappedFoodItem
 	{
-		public float KGDMperVEM { get; protected set; }
+		public float KgdMperVem { get; protected set; }
 
-		public float KGDMPerVEM_bijprod { get; protected set; }
+		public float KgdmPerVemBijprod { get; protected set; }
 
-		public float REdiffPerVEM { get; protected set; }
+		public float REdiffPerVem { get; protected set; }
 
-		public float REdiffPerVEM_bijprod { get; protected set; }
+		public float REdiffPerVemSupplementeryFeedProduct { get; protected set; }
 
-		public float REperVEM { get; protected set; }
+		public float REperVem { get; protected set; }
 
-		public float REperVEM_bijprod { get; protected set; }
+		public float REperVemSupplmenteryFeedProduct { get; protected set; }
 
-		public float appliedVEM { get; private set; } = 0;
+		public float AppliedVem { get; private set; } = 0;
 
-		public float appliedKGDM { get; private set; }
+		public float AppliedKgdm { get; private set; }
 
-		public float appliedREdiff { get; private set; }
+		public float AppliedREdiff { get; private set; }
 
-		public float appliedTotalRE { get; private set; }
+		public float AppliedTotalRe { get; private set; }
 
 		//Gives a number between 1 and 0, which reperesents the percentage of VEM that is bijproduct
-		public float partOfTotalVEMbijprod { get; protected set; }
+		public float SupplmenteryPartOfTotalVem { get; protected set; }
 
-		public abstract List<Tuple<FeedProduct, float>> GetProducts();
+		public abstract Dictionary<FeedProduct, float> GetProducts();
 
 		public abstract AbstractMappedFoodItem Clone();
 
 		//reference to original
-		public AbstractMappedFoodItem originalRefference { get; protected set; } = null!;
+		public AbstractMappedFoodItem OriginalReference { get; protected set; } = null!;
 
 
-		public void setAppliedVEM(float VEM)
+		public void SetAppliedVem(float VEM)
 		{
-			appliedVEM = VEM;
-			appliedKGDM = VEM * KGDMperVEM;
-			appliedREdiff = VEM * REdiffPerVEM;
-			appliedTotalRE = VEM * REperVEM;
+			AppliedVem = VEM;
+			AppliedKgdm = VEM * KgdMperVem;
+			AppliedREdiff = VEM * REdiffPerVem;
+			AppliedTotalRe = VEM * REperVem;
 		}
 
 		public string GetProductsForConsole()
 		{
-			List<Tuple<FeedProduct, float>> products = GetProducts();
-			string result = "";
-			foreach (Tuple<FeedProduct, float> product in products)
-			{
-				result = result + $"\t - Product: {product.Item1.Name + ",",-20} {product.Item2,5} KG DM\n";
-			}
+			Dictionary<FeedProduct, float> products = GetProducts();
 
-			return result;
+			return products.Aggregate("",
+					(current, product) =>
+						current + $"\t - Product: {product.Key.Name + ",",-20} {product.Value,5} KG DM")
+				.TrimEnd();
 		}
 	}
 
 	public class MappedFeedProduct : AbstractMappedFoodItem
 	{
-		FeedProduct containingFeedProduct;
+		private readonly FeedProduct _containingFeedProduct;
 
-		private bool isSupplementaryFeedProduct;
+		private readonly bool isSupplementaryFeedProduct;
 
 		public MappedFeedProduct(FeedProduct feedProduct, float REtarget = 150)
 		{
@@ -72,40 +70,38 @@ namespace GripOpGras2.Client.Features.CreateRation
 			if (feedProduct.FeedAnalysis.VEM == null) throw new GripOpGras2Exception("VEM cannot be null");
 			if (feedProduct.FeedAnalysis.RE == null) throw new GripOpGras2Exception("RE cannot be null");
 			isSupplementaryFeedProduct = (feedProduct.GetType() == typeof(SupplementaryFeedProduct));
-			KGDMperVEM = (float)(1f / feedProduct.FeedAnalysis.VEM);
-			KGDMPerVEM_bijprod = (isSupplementaryFeedProduct) ? KGDMperVEM : 0;
-			REperVEM = (float)(feedProduct.FeedAnalysis.RE / feedProduct.FeedAnalysis.VEM);
-			REperVEM_bijprod = (isSupplementaryFeedProduct) ? REperVEM : 0;
-			REdiffPerVEM = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
-			REdiffPerVEM_bijprod = (isSupplementaryFeedProduct) ? REdiffPerVEM : 0;
-			partOfTotalVEMbijprod = (isSupplementaryFeedProduct) ? 1 : 0;
-			setAppliedVEM(0);
-			originalRefference = this;
-			containingFeedProduct = feedProduct;
+			KgdMperVem = (float)(1f / feedProduct.FeedAnalysis.VEM);
+			KgdmPerVemBijprod = (isSupplementaryFeedProduct) ? KgdMperVem : 0;
+			REperVem = (float)(feedProduct.FeedAnalysis.RE / feedProduct.FeedAnalysis.VEM);
+			REperVemSupplmenteryFeedProduct = (isSupplementaryFeedProduct) ? REperVem : 0;
+			REdiffPerVem = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
+			REdiffPerVemSupplementeryFeedProduct = (isSupplementaryFeedProduct) ? REdiffPerVem : 0;
+			SupplmenteryPartOfTotalVem = (isSupplementaryFeedProduct) ? 1 : 0;
+			SetAppliedVem(0);
+			OriginalReference = this;
+			_containingFeedProduct = feedProduct;
 		}
 
 
-		public override List<Tuple<FeedProduct, float>> GetProducts()
+		public override Dictionary<FeedProduct, float> GetProducts()
 		{
-			return new List<Tuple<FeedProduct, float>>()
-				{ new Tuple<FeedProduct, float>(containingFeedProduct, appliedKGDM) };
+			return new Dictionary<FeedProduct, float>()
+				{ { _containingFeedProduct, AppliedKgdm } };
 		}
 
 
 		public override AbstractMappedFoodItem Clone()
 		{
-			MappedFeedProduct newMappedFeedProduct = new MappedFeedProduct(containingFeedProduct);
-			newMappedFeedProduct.setAppliedVEM(appliedVEM);
-			newMappedFeedProduct.originalRefference = originalRefference;
+			MappedFeedProduct newMappedFeedProduct = new(_containingFeedProduct);
+			newMappedFeedProduct.SetAppliedVem(AppliedVem);
+			newMappedFeedProduct.OriginalReference = OriginalReference;
 			return newMappedFeedProduct;
 		}
 	}
 
 	public class MappedFeedProductGroup : AbstractMappedFoodItem
 	{
-		private float _currentREtarget;
-
-		private IReadOnlyList<(AbstractMappedFoodItem FoodItem, float partOfVemInGroup)> sourceproducts;
+		private readonly IReadOnlyList<(AbstractMappedFoodItem FoodItem, float partOfVemInGroup)> _sourceProducts;
 
 		/// <summary>
 		/// Constructor for a combination of multiple products. Takes a list with products and how much VEM is in .
@@ -116,43 +112,45 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			//TODO check if the group contains only 1 product, if so, return that product instead of a group
 			float totalVEM = products.Sum(x => x.partOfGroupInVEM);
-			KGDMperVEM = (float)(products.Sum(x => x.FoodItem.KGDMperVEM * x.partOfGroupInVEM)) / totalVEM;
-			KGDMPerVEM_bijprod = products.Sum(x => x.FoodItem.KGDMPerVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
-			REperVEM = products.Sum(x => x.FoodItem.REperVEM * x.partOfGroupInVEM) / totalVEM;
-			REperVEM_bijprod = products.Sum(x => x.FoodItem.REperVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
-			REdiffPerVEM = products.Sum(x => x.FoodItem.REdiffPerVEM * x.partOfGroupInVEM) / totalVEM;
-			REdiffPerVEM_bijprod = products.Sum(x => x.FoodItem.REdiffPerVEM_bijprod * x.partOfGroupInVEM) / totalVEM;
-			partOfTotalVEMbijprod = products.Sum(x => x.FoodItem.partOfTotalVEMbijprod * x.partOfGroupInVEM) / totalVEM;
-			setAppliedVEM(0);
-			originalRefference = this;
+			KgdMperVem = (float)(products.Sum(x => x.FoodItem.KgdMperVem * x.partOfGroupInVEM)) / totalVEM;
+			KgdmPerVemBijprod = products.Sum(x => x.FoodItem.KgdmPerVemBijprod * x.partOfGroupInVEM) / totalVEM;
+			REperVem = products.Sum(x => x.FoodItem.REperVem * x.partOfGroupInVEM) / totalVEM;
+			REperVemSupplmenteryFeedProduct =
+				products.Sum(x => x.FoodItem.REperVemSupplmenteryFeedProduct * x.partOfGroupInVEM) / totalVEM;
+			REdiffPerVem = products.Sum(x => x.FoodItem.REdiffPerVem * x.partOfGroupInVEM) / totalVEM;
+			REdiffPerVemSupplementeryFeedProduct =
+				products.Sum(x => x.FoodItem.REdiffPerVemSupplementeryFeedProduct * x.partOfGroupInVEM) / totalVEM;
+			SupplmenteryPartOfTotalVem = products.Sum(x => x.FoodItem.SupplmenteryPartOfTotalVem * x.partOfGroupInVEM) /
+			                             totalVEM;
+			SetAppliedVem(0);
+			OriginalReference = this;
 			//fixing the partOfGroupInVem so that it combines to a maximum of 1
 			List<(AbstractMappedFoodItem FoodItem, float partOfGroupInVEM)> productsFixedList = new();
-			foreach ((AbstractMappedFoodItem FoodItem, float partOfGroupInVEM) product in products.ToList())
+			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in products.ToList())
 			{
-				productsFixedList.Add((FoodItem: product.FoodItem,
-					partOfGroupInVEM: (product.partOfGroupInVEM / totalVEM)));
+				productsFixedList.Add((FoodItem: foodItem,
+					partOfGroupInVEM: (partOfGroupInVem / totalVEM)));
 			}
 
-			sourceproducts = productsFixedList;
+			_sourceProducts = productsFixedList;
 		}
 
 		//Returns a list of products and the amount of KGDM that is needed. When the soruce gives a product that is allrady listed, it will be combined.
-		public override List<Tuple<FeedProduct, float>> GetProducts()
+		public override Dictionary<FeedProduct, float> GetProducts()
 		{
-			List<Tuple<FeedProduct, float>> products = new();
-			foreach ((AbstractMappedFoodItem FoodItem, float partOfGroupInVEM) product in
-			         sourceproducts) //sourceproducts. use this PartOfGroupInVem.
+			Dictionary<FeedProduct, float> products = new();
+			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in
+			         _sourceProducts) //sourceproducts. use this PartOfGroupInVem.
 			{
-				foreach (Tuple<FeedProduct, float> product2 in product.FoodItem.GetProducts())
-				{
-					float amountToBeAdded = product.FoodItem.KGDMperVEM * appliedVEM * product.partOfGroupInVEM;
-					if (products.Any(x => x.Item1 == product2.Item1))
-					{
-						amountToBeAdded = products.First(x => x.Item1 == product2.Item1).Item2 + amountToBeAdded;
-						products.Remove(products.First(x => x.Item1 == product2.Item1));
-					}
+				AbstractMappedFoodItem product_customized = foodItem.Clone();
+				product_customized.SetAppliedVem(partOfGroupInVem * AppliedVem);
 
-					products.Add(new Tuple<FeedProduct, float>(product2.Item1, amountToBeAdded));
+				foreach (KeyValuePair<FeedProduct, float> item in product_customized.GetProducts())
+				{
+					if (products.ContainsKey(item.Key))
+						products[item.Key] += item.Value;
+					else
+						products.Add(item.Key, item.Value);
 				}
 			}
 
@@ -161,9 +159,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public override AbstractMappedFoodItem Clone()
 		{
-			MappedFeedProductGroup newMappedFeedProductGroup = new MappedFeedProductGroup(sourceproducts.ToArray());
-			newMappedFeedProductGroup.setAppliedVEM(appliedVEM);
-			newMappedFeedProductGroup.originalRefference = originalRefference;
+			MappedFeedProductGroup newMappedFeedProductGroup = new(_sourceProducts.ToArray());
+			newMappedFeedProductGroup.SetAppliedVem(AppliedVem);
+			newMappedFeedProductGroup.OriginalReference = OriginalReference;
 			return newMappedFeedProductGroup;
 		}
 	}
