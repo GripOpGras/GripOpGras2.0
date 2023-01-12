@@ -29,7 +29,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			get { return this.RationList.Sum(x => x.AppliedVem) + grassVEM; }
 		}
 
-		public float totalVEM_Bijprod
+		public float totalVEM_SupplementaryFeedProduct
 		{
 			get { return this.RationList.Sum(x => x.AppliedVem * x.SupplmenteryPartOfTotalVem); }
 		}
@@ -39,9 +39,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			get { return this.RationList.Sum(x => x.AppliedKgdm) + grassKGDM; }
 		}
 
-		public float totalDM_Bijprod
+		public float totalDM_SupplementaryFeedProduct
 		{
-			get { return this.RationList.Sum(x => x.AppliedVem * x.KgdmPerVemBijprod); }
+			get { return this.RationList.Sum(x => x.AppliedVem * x.KgdmSupplementaryFeedProductPerVem); }
 		}
 
 		public float totalREdiff

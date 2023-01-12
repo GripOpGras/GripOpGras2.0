@@ -21,41 +21,41 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 	{
 		[Test()]
 		[TestCase(1000, 500, 500, 5000, 150, 200, 5500, 5000, 10.5f, 10, 500)]
-		public void TestTotalCalculations(float vem, float vem_bijprod, float appliedVEM, float appliedVEMbijpord,
-			float RE, float RE_bijprod, float expectedVEM, float expectedVEM_bijprod,
-			float expectedDM, float expectedDM_bijprod, float expectedRediff)
+		public void TestTotalCalculations(float vem, float vem_SupplementaryFeedProduct, float appliedVEM, float appliedVEMbijpord,
+			float RE, float RE_SupplementaryFeedProduct, float expectedVEM, float expectedVEM_SupplementaryFeedProduct,
+			float expectedDM, float expectedDM_SupplementaryFeedProduct, float expectedRediff)
 		{
 			Ration ration = new();
 			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 1", RE, vem, appliedVEM));
-			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 2", RE_bijprod, vem_bijprod,
+			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 2", RE_SupplementaryFeedProduct, vem_SupplementaryFeedProduct,
 				appliedVEMbijpord, false));
 
 			Console.WriteLine(ration.RationList[0].AppliedKgdm);
 			Console.WriteLine(ration.RationList[1].AppliedKgdm);
 			Assert.AreEqual(expectedVEM, ration.totalVEM, "total vem");
-			Assert.AreEqual(expectedVEM_bijprod, ration.totalVEM_Bijprod, "total vem bijprod");
+			Assert.AreEqual(expectedVEM_SupplementaryFeedProduct, ration.totalVEM_SupplementaryFeedProduct, "total vem SupplementaryFeedProduct");
 			Assert.AreEqual(expectedDM, ration.totalDM, "total dm");
-			Assert.AreEqual(expectedDM_bijprod, ration.totalDM_Bijprod, "total dm bijprod");
+			Assert.AreEqual(expectedDM_SupplementaryFeedProduct, ration.totalDM_SupplementaryFeedProduct, "total dm SupplementaryFeedProduct");
 			Assert.AreEqual(expectedRediff, ration.totalREdiff, "total rediff");
 		}
 
 		[Test()]
 		[TestCase(1000, 500, 500, 150, 200, 500, 250, 0.75f, 0.5f, 25)]
-		public void TestAllCalculationsWithCombos(float vem, float vem_bijprod, float appliedVEM, float RE,
-			float RE_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod,
+		public void TestAllCalculationsWithCombos(float vem, float vem_SupplementaryFeedProduct, float appliedVEM, float RE,
+			float RE_SupplementaryFeedProduct, float expectedVEM, float expectedVEM_SupplementaryFeedProduct, float expectedDM, float expectedDM_SupplementaryFeedProduct,
 			float expectedRediff)
 		{
 			Ration ration = new();
 			MappedFeedProduct mappeditem1 = GetMappedFeedProduct("product 1", RE, vem, 5);
-			MappedFeedProduct mappeditem2 = GetMappedFeedProduct("product 2", RE_bijprod, vem_bijprod, 5, false);
+			MappedFeedProduct mappeditem2 = GetMappedFeedProduct("product 2", RE_SupplementaryFeedProduct, vem_SupplementaryFeedProduct, 5, false);
 			MappedFeedProductGroup mappedcombo = new((mappeditem1, 0.5f), (mappeditem2, 0.5f));
 			mappedcombo.SetAppliedVem(appliedVEM);
 			ration.ApplyChangesToRationList(mappedcombo);
 
 			Assert.AreEqual(expectedVEM, ration.totalVEM);
-			Assert.AreEqual(expectedVEM_bijprod, ration.totalVEM_Bijprod);
+			Assert.AreEqual(expectedVEM_SupplementaryFeedProduct, ration.totalVEM_SupplementaryFeedProduct);
 			Assert.AreEqual(expectedDM, ration.totalDM);
-			Assert.AreEqual(expectedDM_bijprod, ration.totalDM_Bijprod);
+			Assert.AreEqual(expectedDM_SupplementaryFeedProduct, ration.totalDM_SupplementaryFeedProduct);
 			Assert.AreEqual(expectedRediff, ration.totalREdiff);
 		}
 
@@ -204,12 +204,12 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		[TestCase(160f, 920f, 60f, 960f, 0, 0, 1062.5f, 1000, 210)] // HF5.4.5
 		[TestCase(160f, 920f, 60f, 960f, 60, 1300, 1062.5f, 1000, 210)] // HF5.4.5 aangepast
 		public async Task CreateRationAsyncTest(float prod1RE, float prod1VEM, float prod2RE, float prod2VEM,
-			float bijprodRE, float bijprodVEM, float totalgrassIntake, float grassVEM, float grassRE)
+			float SupplementaryFeedProductRE, float SupplementaryFeedProductVEM, float totalgrassIntake, float grassVEM, float grassRE)
 		{
 			// Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", prod1RE, prod1VEM);
 			FeedProduct prod2 = GetFeedProduct("prod2", prod2RE, prod2VEM);
-			FeedProduct prod3 = GetFeedProduct("bijprod", bijprodRE, bijprodVEM, false);
+			FeedProduct prod3 = GetFeedProduct("bijprod", SupplementaryFeedProductRE, SupplementaryFeedProductVEM, false);
 			Herd herd = new()
 			{
 				Name = "Herd1",
@@ -295,17 +295,17 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		[TestCase(170, 1800, 160, 1200, 100, 1200, 130, "prod1")]
 		[TestCase(160, 1800, 170, 1800, 100, 1200, 130, "prod2")]
 		public void GetGrassRENuturalizerFeedProductTest(float REperDMprod1, float VEMPerDMprod1, float REperDMprod2,
-			float VEMPerDMprod2, float REperDMBijprod, float VEMPerDMbijprod, float REgrass, string expectedProd)
+			float VEMPerDMprod2, float REperDMSupplementaryFeedProduct, float VEMPerDMSupplementaryFeedProduct, float REgrass, string expectedProd)
 		{
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", REperDMprod1, VEMPerDMprod1);
 			FeedProduct prod2 = GetFeedProduct("prod2", REperDMprod2, VEMPerDMprod2);
-			FeedProduct bijprod = GetFeedProduct("bijprod", REperDMBijprod, VEMPerDMbijprod, false);
+			FeedProduct SupplementaryFeedProduct = GetFeedProduct("bijprod", REperDMSupplementaryFeedProduct, VEMPerDMSupplementaryFeedProduct, false);
 			RationAlgorithmV1 rationAlgorithm =
-				CreateRationAlgorithm(new List<FeedProduct> { prod1, prod2, bijprod }, totalGrassIntake: 700,
+				CreateRationAlgorithm(new List<FeedProduct> { prod1, prod2, SupplementaryFeedProduct }, totalGrassIntake: 700,
 					PlotVEM: 1000, PlotRE: REgrass);
 			//Act
-			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassRENuturalizerFeedProduct();
+			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassReNeutralizerFeedProduct();
 			rationAlgorithm.CurrentRation.ApplyChangesToRationList(foodlist);
 			//Assert
 			Assert.AreEqual(1, foodlist.Count);
@@ -321,7 +321,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			FeedProduct prod2 = GetFeedProduct("prod 2", 190, 11000);
 			RationAlgorithmV1 ration = CreateRationAlgorithm(new List<FeedProduct>() { prod1, prod2 },
 				PlotRE: 200, PlotVEM: 1000, totalGrassIntake: 500);
-			Assert.Throws<NoProductsWithPossibleREException>(() => ration.GetGrassRENuturalizerFeedProduct());
+			Assert.Throws<NoProductsWithPossibleREException>(() => ration.GetGrassReNeutralizerFeedProduct());
 		}
 
 		[Test()]
@@ -339,7 +339,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
 			//Assert
 			Assert.AreEqual(3, groups.Count,
-				"amount of expected groups"); //this can be more when more supplementery datapoints are added.
+				"amount of expected groups"); //this can be more when more Supplementary datapoints are added.
 			Assert.AreEqual(0, groups[0].REdiffPerVem, 0.01, "group 0 RE");
 			Assert.AreEqual(0, groups[1].REdiffPerVem, 0.01, "group 1 RE");
 			Assert.AreEqual(0, groups[2].REdiffPerVem, 0.01, "group 2 RE");
@@ -383,7 +383,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
 			ration.availableRENaturalFeedProductGroups = groups;
 			//Act
-			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(findREnaturalFeedproductGroup);
+			AbstractMappedFoodItem group = ration.FindBestReNaturalFeedProductGroup(findREnaturalFeedproductGroup);
 			//Assert
 			Assert.Contains(expectedproduct1, group.GetProducts().Select(x => x.Key.Name).ToList(),
 				$"naturalFeedproductgroup: {findREnaturalFeedproductGroup}; prod: {expectedproduct1}");
@@ -393,7 +393,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 
 		//TODO: test for determine improvemend rations with bijprod test
 		[Test()]
-		public void DetermineImprovemendRationsWithBijprodTest()
+		public void DetermineImprovemendRationsWithSupplementaryFeedProductTest()
 		{
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod 1", 90, 50);
@@ -406,8 +406,8 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
 			ration.availableRENaturalFeedProductGroups = groups;
 			//Act
-			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(false);
-			AbstractMappedFoodItem group2 = ration.FindBestRENaturalFeedProductGroup(true);
+			AbstractMappedFoodItem group = ration.FindBestReNaturalFeedProductGroup(false);
+			AbstractMappedFoodItem group2 = ration.FindBestReNaturalFeedProductGroup(true);
 			//Assert
 			Assert.Contains(prod1.Name, group.GetProducts().Select(x => x.Key.Name).ToList());
 			Assert.Contains(prod2.Name, group.GetProducts().Select(x => x.Key.Name).ToList());
