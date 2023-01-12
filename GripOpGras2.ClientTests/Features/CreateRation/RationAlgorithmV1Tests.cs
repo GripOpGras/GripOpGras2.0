@@ -2,6 +2,7 @@
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GripOpGras2.Client.Features.CreateRation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,12 +20,12 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 	public class RationTests
 	{
 		[Test()]
-		[TestCase(1000, 500, 500, 5000, 150, 200, 500, 5500, 5000, 10.5f, 10, 500)]
+		[TestCase(1000, 500, 500, 5000, 150, 200, 5500, 5000, 10.5f, 10, 500)]
 		public void TestTotalCalculations(float vem, float vem_bijprod, float appliedVEM, float appliedVEMbijpord,
-			float RE, float RE_bijprod, float dm_bijprod, float expectedVEM, float expectedVEM_bijprod,
+			float RE, float RE_bijprod, float expectedVEM, float expectedVEM_bijprod,
 			float expectedDM, float expectedDM_bijprod, float expectedRediff)
 		{
-			Ration ration = new Ration();
+			Ration ration = new();
 			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 1", RE, vem, appliedVEM));
 			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 2", RE_bijprod, vem_bijprod,
 				appliedVEMbijpord, false));
@@ -44,10 +45,10 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			float RE_bijprod, float expectedVEM, float expectedVEM_bijprod, float expectedDM, float expectedDM_bijprod,
 			float expectedRediff)
 		{
-			Ration ration = new Ration();
+			Ration ration = new();
 			MappedFeedProduct mappeditem1 = GetMappedFeedProduct("product 1", RE, vem, 5);
 			MappedFeedProduct mappeditem2 = GetMappedFeedProduct("product 2", RE_bijprod, vem_bijprod, 5, false);
-			MappedFeedProductGroup mappedcombo = new MappedFeedProductGroup((mappeditem1, 0.5f), (mappeditem2, 0.5f));
+			MappedFeedProductGroup mappedcombo = new((mappeditem1, 0.5f), (mappeditem2, 0.5f));
 			mappedcombo.SetAppliedVem(appliedVEM);
 			ration.ApplyChangesToRationList(mappedcombo);
 
@@ -69,7 +70,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			ration.ApplyChangesToRationList(item1);
 			ration.ApplyChangesToRationList(item2);
 			AbstractMappedFoodItem item3 = GetMappedFeedProduct("product 3", 20f, 200f, 8f);
-			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
+			List<AbstractMappedFoodItem> changes = new()
 			{
 				item1.Clone(),
 				item2.Clone(),
@@ -93,13 +94,13 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		public void ErrorOnIllegalChangesToRationListTest()
 		{
 			// Arrange
-			Ration ration = new Ration();
+			Ration ration = new();
 			AbstractMappedFoodItem item1 = GetMappedFeedProduct("product 1", 10f, 100f, 10f);
 			AbstractMappedFoodItem item2 = GetMappedFeedProduct("product 2", 20f, 200f, 20f);
 			ration.ApplyChangesToRationList(item1);
 			ration.ApplyChangesToRationList(item2);
 			AbstractMappedFoodItem item3 = GetMappedFeedProduct("product 3", 20f, 200f, -2f);
-			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
+			List<AbstractMappedFoodItem> changes = new()
 			{
 				item1.Clone(),
 				item2.Clone(),
@@ -115,12 +116,12 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		public void CloneTest()
 		{
 			// Arrange
-			Ration ration = new Ration();
+			Ration ration = new();
 			AbstractMappedFoodItem item1 = GetMappedFeedProduct("product 1", 10f, 100f, 10f);
 			ration.ApplyChangesToRationList(item1);
 			//Act
 			Ration clone = ration.Clone();
-			List<AbstractMappedFoodItem> changes = new List<AbstractMappedFoodItem>
+			List<AbstractMappedFoodItem> changes = new()
 			{
 				item1.Clone()
 			};
@@ -145,15 +146,15 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			FeedProduct prod1 = GetFeedProduct("prod1", 189f, VEMPerDMprod1);
 			FeedProduct prod2 = GetFeedProduct("prod2", 88f, VEMPerDMprod2);
 			FeedProduct bijvprod = GetFeedProduct("bijvprod", 189f, VEMPerDMBijvProd, false);
-			MappedFeedProduct mappedProd1 = new MappedFeedProduct(prod1);
-			MappedFeedProduct mappedProd2 = new MappedFeedProduct(prod2);
-			MappedFeedProduct mappedBijvprod = new MappedFeedProduct(bijvprod);
+			MappedFeedProduct mappedProd1 = new(prod1);
+			MappedFeedProduct mappedProd2 = new(prod2);
+			MappedFeedProduct mappedBijvprod = new(bijvprod);
 			mappedProd1.SetAppliedVem(VEMprod1);
 			mappedProd2.SetAppliedVem(VEMprod2);
 			mappedBijvprod.SetAppliedVem(VEMBijvoerProd);
 			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm =
 				CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
-			rationAlgorithm.getsetcurrentRation.RationList =
+			rationAlgorithm.SetCurrentRation.RationList =
 				new List<AbstractMappedFoodItem> { mappedProd1, mappedProd2, mappedBijvprod };
 			//Act
 			float totalVEM = rationAlgorithm.CurrentRation.totalVEM;
@@ -171,18 +172,18 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", 189f, VEMPerDMprod1);
 			FeedProduct prod2 = GetFeedProduct("prod2", 88f, VEMPerDMprod2);
-			MappedFeedProduct mappedProd1 = new MappedFeedProduct(prod1);
-			MappedFeedProduct mappedProd2 = new MappedFeedProduct(prod2);
+			MappedFeedProduct mappedProd1 = new(prod1);
+			MappedFeedProduct mappedProd2 = new(prod2);
 			mappedProd1.SetAppliedVem(VEMprod1);
 			mappedProd2.SetAppliedVem(VEMprod2);
 
-			MappedFeedProductGroup mappedgroup = new MappedFeedProductGroup(
+			MappedFeedProductGroup mappedgroup = new(
 				(mappedProd1, percentProd1),
 				(mappedProd2, 100 - percentProd1));
 			mappedgroup.SetAppliedVem(VEMofGroup);
 			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm =
 				CreateRationAlgorithm(new List<FeedProduct>(), KGgrass, PlotVEM: VEMgrass);
-			rationAlgorithm.getsetcurrentRation.RationList = new List<AbstractMappedFoodItem>
+			rationAlgorithm.SetCurrentRation.RationList = new List<AbstractMappedFoodItem>
 				{ mappedProd1, mappedProd2, mappedgroup };
 			//Act
 			float totalVEM = rationAlgorithm.CurrentRation.totalVEM;
@@ -209,32 +210,34 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			FeedProduct prod1 = GetFeedProduct("prod1", prod1RE, prod1VEM);
 			FeedProduct prod2 = GetFeedProduct("prod2", prod2RE, prod2VEM);
 			FeedProduct prod3 = GetFeedProduct("bijprod", bijprodRE, bijprodVEM, false);
-			Herd herd = new Herd()
+			Herd herd = new()
 			{
 				Name = "Herd1",
 				NumberOfAnimals = 100,
 				Type = "Koe"
 			};
-			MilkProductionAnalysis milkProductionAnalysis = new MilkProductionAnalysis
+			MilkProductionAnalysis milkProductionAnalysis = new()
 			{
 				Date = DateTime.Now,
 				Amount = 3000f
 			};
-			GrazingActivity grazingActivity = new GrazingActivity();
-			grazingActivity.Herd = herd;
-			grazingActivity.Plot = new Plot()
+			GrazingActivity grazingActivity = new()
 			{
-				Area = 100,
-				Name = "TestcaseGrass",
-				NetDryMatter = totalgrassIntake * 1.1f,
-				FeedAnalysis = new FeedAnalysis()
+				Herd = herd,
+				Plot = new Plot()
 				{
-					VEM = grassVEM,
-					RE = grassRE,
+					Area = 100,
+					Name = "TestcaseGrass",
+					NetDryMatter = totalgrassIntake * 1.1f,
+					FeedAnalysis = new FeedAnalysis()
+					{
+						VEM = grassVEM,
+						RE = grassRE,
+					}
 				}
 			};
-			RationAlgorithmV1 rationAlgorithm = new RationAlgorithmV1();
-			List<FeedProduct> feedProducts = new List<FeedProduct>();
+			RationAlgorithmV1 rationAlgorithm = new();
+			List<FeedProduct> feedProducts = new();
 			if (prod1.FeedAnalysis.VEM != 0) feedProducts.Add(prod1);
 			if (prod2.FeedAnalysis.VEM != 0) feedProducts.Add(prod2);
 			if (prod3.FeedAnalysis.VEM != 0) feedProducts.Add(prod3);
@@ -267,13 +270,13 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod1", 189f, 884.2f);
 			FeedProduct prod2 = GetFeedProduct("prod2", 88f, 1238f);
-			MappedFeedProduct mappedProd1 = new MappedFeedProduct(prod1);
-			MappedFeedProduct mappedProd2 = new MappedFeedProduct(prod2);
+			MappedFeedProduct mappedProd1 = new(prod1);
+			MappedFeedProduct mappedProd2 = new(prod2);
 			mappedProd1.SetAppliedVem(KGprod1 * 884.2f);
 			mappedProd2.SetAppliedVem(KGprod2 * 1238f);
 			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm =
 				CreateRationAlgorithm(new List<FeedProduct>() { prod1, prod2 }, KGgrass);
-			rationAlgorithm.getsetcurrentRation.ApplyChangesToRationList(new List<AbstractMappedFoodItem>()
+			rationAlgorithm.SetCurrentRation.ApplyChangesToRationList(new List<AbstractMappedFoodItem>()
 				{ mappedProd1, mappedProd2 });
 
 			//Act
@@ -303,12 +306,12 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 					PlotVEM: 1000, PlotRE: REgrass);
 			//Act
 			List<AbstractMappedFoodItem> foodlist = rationAlgorithm.GetGrassRENuturalizerFeedProduct();
-			rationAlgorithm.getsetcurrentRation.ApplyChangesToRationList(foodlist);
+			rationAlgorithm.SetCurrentRation.ApplyChangesToRationList(foodlist);
 			//Assert
 			Assert.AreEqual(1, foodlist.Count);
 			Assert.AreEqual(expectedProd, foodlist[0].GetProducts().First().Key.Name);
 			Assert.AreEqual(150,
-				rationAlgorithm.getsetcurrentRation.totalRE / rationAlgorithm.getsetcurrentRation.totalDM, 1);
+				rationAlgorithm.SetCurrentRation.totalRE / rationAlgorithm.SetCurrentRation.totalDM, 1);
 		}
 
 		[Test()]
@@ -342,7 +345,8 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			Assert.AreEqual(0, groups[2].REdiffPerVem, 0.01, "group 2 RE");
 		}
 
-		public void GroupGenerateRENaturalFeedProductGroupsTest()
+		[Test()]
+		public void GroupGenerateReNaturalFeedProductGroupsTest()
 		{
 			//Arrange
 			FeedProduct prod1 = GetFeedProduct("prod 1", 90, 100);
@@ -353,9 +357,9 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
 			//Assert
 			Assert.AreEqual(1, groups.Count);
-			Assert.Contains(prod1, groups[0].GetProducts());
-			Assert.Contains(prod2, groups[0].GetProducts());
-			Assert.AreEqual((0.917), groups[0].SupplmenteryPartOfTotalVem);
+			Assert.Contains(prod1.Name, groups[0].GetProducts().Select(x => x.Key.Name).ToList());
+			Assert.Contains(prod2.Name, groups[0].GetProducts().Select(x => x.Key.Name).ToList());
+			Assert.AreEqual((0.917), groups[0].SupplmenteryPartOfTotalVem, 0.01);
 		}
 
 		[Test()]
@@ -377,7 +381,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			RationAlgorithmV1WithTestMethods ration = CreateRationAlgorithm(new List<FeedProduct>()
 				{ prod1, prod2, prod3, prod4 });
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
-			ration.getsetavailableRENaturalFeedProductGroups = groups;
+			ration.SetAvailableReNaturalFeedProductGroups = groups;
 			//Act
 			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(findREnaturalFeedproductGroup);
 			//Assert
@@ -392,7 +396,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		public void DetermineImprovemendRationsWithBijprodTest()
 		{
 			//Arrange
-			FeedProduct prod1 = GetFeedProduct("prod 1", 90, 100);
+			FeedProduct prod1 = GetFeedProduct("prod 1", 90, 50);
 			FeedProduct prod2 = GetFeedProduct("prod 2", 160, 200);
 			FeedProduct prod3 = GetFeedProduct("prod 3", 180, 200);
 			FeedProduct prod4 = GetFeedProduct("prod 4", 140, 400, false);
@@ -400,15 +404,15 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			RationAlgorithmV1WithTestMethods ration = CreateRationAlgorithm(new List<FeedProduct>()
 				{ prod1, prod2, prod3, prod4 });
 			List<AbstractMappedFoodItem> groups = ration.GenerateRENaturalFeedProductGroups();
-			ration.getsetavailableRENaturalFeedProductGroups = groups;
+			ration.SetAvailableReNaturalFeedProductGroups = groups;
 			//Act
 			AbstractMappedFoodItem group = ration.FindBestRENaturalFeedProductGroup(false);
 			AbstractMappedFoodItem group2 = ration.FindBestRENaturalFeedProductGroup(true);
 			//Assert
-			Assert.Contains(prod1, group.GetProducts());
-			Assert.Contains(prod3, group.GetProducts());
-			Assert.Contains(prod4, group2.GetProducts());
-			Assert.Contains(prod2, group2.GetProducts());
+			Assert.Contains(prod1.Name, group.GetProducts().Select(x => x.Key.Name).ToList());
+			Assert.Contains(prod2.Name, group.GetProducts().Select(x => x.Key.Name).ToList());
+			Assert.Contains(prod4.Name, group2.GetProducts().Select(x => x.Key.Name).ToList());
+			Assert.Contains(prod2.Name, group2.GetProducts().Select(x => x.Key.Name).ToList());
 		}
 
 		[Test()]
@@ -432,19 +436,13 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		//RationAlgorithmV1 Class with public getters and setters for testing purposes
 		public class RationAlgorithmV1WithTestMethods : RationAlgorithmV1
 		{
-			public List<AbstractMappedFoodItem> getsetavailableFeedProducts
-			{
-				get => availableFeedProducts.ToList();
-				set => availableFeedProducts = value.ToList();
-			}
-
-			public List<AbstractMappedFoodItem> getsetavailableRENaturalFeedProductGroups
+			public List<AbstractMappedFoodItem> SetAvailableReNaturalFeedProductGroups
 			{
 				get => availableRENaturalFeedProductGroups;
 				set => availableRENaturalFeedProductGroups = value;
 			}
 
-			public Ration getsetcurrentRation
+			public Ration SetCurrentRation
 			{
 				get => _currentRation;
 				set => _currentRation = value;
