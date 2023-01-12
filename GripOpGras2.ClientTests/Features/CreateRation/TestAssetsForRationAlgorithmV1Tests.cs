@@ -31,7 +31,7 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			return mappedFeedProduct;
 		}
 
-		public static RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods CreateRationAlgorithm(
+		public static RationAlgorithmV1 CreateRationAlgorithm(
 			List<FeedProduct> feedProducts, float totalGrassIntake = 0,
 			float lmilk = 3000, bool hasPlot = true, float PlotRE = 210, float PlotVEM = 1000)
 		{
@@ -47,22 +47,26 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 				Date = DateTime.Now,
 				Amount = lmilk
 			};
-			GrazingActivity grazingActivity = new();
-			grazingActivity.Herd = herd;
+			GrazingActivity grazingActivity = new()
+			{
+				Herd = herd
+			};
 			if (hasPlot)
 			{
-				grazingActivity.Plot = new Plot();
-				grazingActivity.Plot.FeedAnalysis = new FeedAnalysis
+				grazingActivity.Plot = new Plot
 				{
-					Date = DateTime.Now,
-					DryMatter = 80,
-					RE = PlotRE,
-					VEM = PlotVEM
+					FeedAnalysis = new FeedAnalysis
+					{
+						Date = DateTime.Now,
+						DryMatter = 80,
+						RE = PlotRE,
+						VEM = PlotVEM
+					}
 				};
 			}
 
 
-			RationAlgorithmV1Tests.RationAlgorithmV1WithTestMethods rationAlgorithm = new();
+			RationAlgorithmV1 rationAlgorithm = new();
 			// Act
 			Assert.DoesNotThrow(() => rationAlgorithm.SetUp(feedProducts: feedProducts, herd: herd,
 				totalGrassIntake: totalGrassIntake, milkProductionAnalysis: milkProductionAnalysis,

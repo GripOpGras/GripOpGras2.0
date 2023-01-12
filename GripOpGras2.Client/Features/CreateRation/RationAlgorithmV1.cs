@@ -18,26 +18,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// <summary>
 		/// List of all the generated RE natural Feed product groups. This should be combinations of feedproducts, so that the RE will be the same as the targeted RE per KGDM.
 		/// </summary>
-		protected List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
+		public List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		/// <summary>
 		/// This property will be used to save and fill the ration with possible products. It has a .Clone get, to make sure the ration won't be changed by accident.
 		/// </summary>
-		public Ration CurrentRation
-		{
-			get => _currentRation.Clone();
-			protected set => _currentRation = value;
-		}
+		public Ration CurrentRation = null!;
 
 		/// <summary>
 		/// The improvementSelector will be used to combine various ImprovementRapports to improve the ration based on various 
 		/// </summary>
 		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
-		/// <summary>
-		/// _currentRation that can be called to apply changes.  
-		/// </summary>
-		protected Ration _currentRation = new();
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
 			float totalGrassIntake,
@@ -50,20 +42,20 @@ namespace GripOpGras2.Client.Features.CreateRation
 			{
 				Plot = grazingActivity?.Plot,
 				Date = DateTime.Now,
-				FeedProducts = _currentRation.getFeedProducts(),
+				FeedProducts = CurrentRation.getFeedProducts(),
 				GrassIntake = totalGrassIntake,
 				Herd = herd
 			};
 			Console.WriteLine("Results:");
-			_currentRation.printProducts();
+			CurrentRation.printProducts();
 			Console.WriteLine(
-				$"{"VEM",20}: target: {targetValues.TargetedVEM,5:0.00} actual: {_currentRation.totalVEM,5:0.00}");
+				$"{"VEM",20}: target: {targetValues.TargetedVEM,5:0.00} actual: {CurrentRation.totalVEM,5:0.00}");
 			Console.WriteLine(
-				$"{"RE",20}:  target: {targetValues.TargetedREcoveragePerKgDm,5:0.00} actual: {_currentRation.totalRE / CurrentRation.totalDM,5:0.00}");
+				$"{"RE",20}:  target: {targetValues.TargetedREcoveragePerKgDm,5:0.00} actual: {CurrentRation.totalRE / CurrentRation.totalDM,5:0.00}");
 			Console.WriteLine(
-				$"{"DM",20}:  target: {targetValues.TargetedMaxKgDm,5:0.00} actual: {_currentRation.totalDM,5:0.00}");
+				$"{"DM",20}:  target: {targetValues.TargetedMaxKgDm,5:0.00} actual: {CurrentRation.totalDM,5:0.00}");
 			Console.WriteLine(
-				$"{"DM supplementerys",20}:  target: {targetValues.TargetedMaxKgDmSupplementeryFeedProduct,5:0.00} actual: {_currentRation.totalDM_Bijprod,5:0.00}");
+				$"{"DM supplementerys",20}:  target: {targetValues.TargetedMaxKgDmSupplementeryFeedProduct,5:0.00} actual: {CurrentRation.totalDM_Bijprod,5:0.00}");
 			return Task.FromResult(feedRation);
 		}
 
@@ -74,7 +66,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity?.Plot?.FeedAnalysis != null)
 			{
-				_currentRation = new Ration(grassIntake: totalGrassIntake,
+				CurrentRation = new Ration(grassIntake: totalGrassIntake,
 					grassAnalysis: grazingActivity.Plot.FeedAnalysis);
 			}
 
@@ -91,7 +83,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			availableFeedProducts = availableFeedProductsList;
 			;
-			_improvementSelector.Initialize(currentRation: ref _currentRation,
+			_improvementSelector.Initialize(currentRation: ref CurrentRation,
 				targetValues: ref targetValues);
 			//TODO: set the needs of cows based on the milk production analysis and Herd. (fill TargetValues)
 			//TODO: Fill the availableFeedProducts with the available feedProducts, converted to MappedFeedProduct.
@@ -108,18 +100,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			;
 			//fill ration with feed product to get RE on the targeted level.
-			_currentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
+			CurrentRation.ApplyChangesToRationList(GetGrassRENuturalizerFeedProduct());
 			Console.WriteLine("Ration after applying grassREnuturalizerFeedProduct");
-			_currentRation.printProducts();
+			CurrentRation.printProducts();
 			//generate RE natural FeedProductGroups #TODO change targetRE when needed: taiga #193
 			availableRENaturalFeedProductGroups = GenerateRENaturalFeedProductGroups();
 			//fill ration with best FeedProductGroups untill the VEM is on the targeted level, only containing roughage products.
 			AbstractMappedFoodItem bestREnaturalFeedProductGroup = FindBestRENaturalFeedProductGroup(false);
 			bestREnaturalFeedProductGroup.SetAppliedVem(targetValues.TargetedVEM - CurrentRation.totalVEM);
 			Console.WriteLine($"Applying REnaturalFedproductgroep. amount: {bestREnaturalFeedProductGroup.AppliedVem}");
-			_currentRation.ApplyChangesToRationList(bestREnaturalFeedProductGroup);
+			CurrentRation.ApplyChangesToRationList(bestREnaturalFeedProductGroup);
 			Console.WriteLine("Ration after applying REnaturalFedproductgroep");
-			_currentRation.printProducts();
+			CurrentRation.printProducts();
 			//check if Ration is in line with target values, if not, improve the ration.
 			if (CheckIfRationIsInLineWithTargetValues()) return;
 			//if not, improve the ration.
@@ -133,7 +125,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					availableFeedProducts: availableFeedProducts,
 					availableRENaturalFeedProductGroups: availableRENaturalFeedProductGroups,
 					improvementMethods: improvementMethods.ToArray());
-			_currentRation.ApplyChangesToRationList(improvementChanges);
+			CurrentRation.ApplyChangesToRationList(improvementChanges);
 			//check if Ration is in line with target values, if not, change Targetvalues.
 		}
 
