@@ -6,7 +6,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 	public interface IRationAlgorithm
 	{
 		/// <summary>
-		/// Calculates the ration for the herd.
+		///     Calculates the ration for the herd.
 		/// </summary>
 		/// <param name="feedProducts"></param>
 		/// <param name="herd"></param>

@@ -1,6 +1,4 @@
-﻿using System.Data;
-using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
-using System.Linq;
+﻿using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
@@ -17,20 +15,39 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 	public class ImprovementSelectorV1 : IImprovementSelector
 	{
-		private Ration _currentRation = null!;
-
-		private TargetValues _targetValues = null!;
-
 		private readonly IImprovementRationMethod[] _basicImprovementMethods =
 		{
 			new ImprovementRationMethodNaturalReGroups(),
 			new ImprovementRationMethodGrassRENuterilizer()
 		};
 
+		private Ration _currentRation = null!;
+
+		private TargetValues _targetValues = null!;
+
 		public void Initialize(ref Ration currentRation, ref TargetValues targetValues)
 		{
 			_currentRation = currentRation;
 			_targetValues = targetValues;
+		}
+
+		public List<AbstractMappedFoodItem> DetermineImprovementRationsWithSupplementaryFeedProduct(
+			IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
+			List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups,
+			params IImprovementRationMethod[] improvementMethods)
+		{
+			IEnumerable<List<ImprovementRapport>> thing = improvementMethods.Select(x =>
+				x.FindImprovementRationMethod(_targetValues,
+					(List<AbstractMappedFoodItem>)availableFeedProducts,
+					availableRENaturalFeedProductGroups,
+					_currentRation.Clone()));
+			return RunImprovementAlgorithm(
+				improvementMethods.Select(x => x.FindImprovementRationMethod(_targetValues,
+						(List<AbstractMappedFoodItem>)availableFeedProducts,
+						availableRENaturalFeedProductGroups,
+						_currentRation.Clone())).SelectMany(x => x)
+					.ToArray(), availableFeedProducts, availableRENaturalFeedProductGroups,
+				improvementMethods);
 		}
 
 		private List<AbstractMappedFoodItem> RunImprovementAlgorithm(ImprovementRapport[] improvementRapports,
@@ -48,10 +65,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 			    && testRation.totalDM_SupplementaryFeedProduct < _targetValues.TargetedMaxKgDmSupplementaryFeedProduct)
 			{
 				ImprovementRapport[] newRapports = improvementMethods.SelectMany(x => x.FindImprovementRationMethod(
-						targetValues: _targetValues,
-						availableFeedProducts: (List<AbstractMappedFoodItem>)availableFeedProducts,
-						availableRENaturalFeedProductGroups: availableReNaturalFeedProductGroups,
-						currentRation: testRation.Clone()))
+						_targetValues,
+						(List<AbstractMappedFoodItem>)availableFeedProducts,
+						availableReNaturalFeedProductGroups,
+						testRation.Clone()))
 					.ToArray();
 				Ration testRation2 = TestImprovements(newRapports,
 					out Dictionary<ImprovementRapport, float> secondRoundChanges, testRation);
@@ -90,9 +107,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 				float changeInVem = kgChangeNeeded / rapport.KgdmChangePerVem;
 				if (changeInVem > rapport.GetMaxChangeInVem(testRation))
 					changeInVem = rapport.GetMaxChangeInVem(testRation);
-				if (changeInVem > (_targetValues.TargetedMaxKgDmSupplementaryFeedProduct - testRation.totalDM_SupplementaryFeedProduct) /
+				if (changeInVem > (_targetValues.TargetedMaxKgDmSupplementaryFeedProduct -
+				                   testRation.totalDM_SupplementaryFeedProduct) /
 				    rapport.KgdmSupplementaryFeedProductChangePerVem)
-					changeInVem = (_targetValues.TargetedMaxKgDmSupplementaryFeedProduct - testRation.totalDM_SupplementaryFeedProduct) /
+					changeInVem = (_targetValues.TargetedMaxKgDmSupplementaryFeedProduct -
+					               testRation.totalDM_SupplementaryFeedProduct) /
 					              rapport.KgdmSupplementaryFeedProductChangePerVem;
 				dictionary.Add(rapport, changeInVem);
 				testRation.ApplyChangesToRationList(SetVemPerFoodItem(rapport, changeInVem));
@@ -125,25 +144,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 			}
 
 			return returnList;
-		}
-
-		public List<AbstractMappedFoodItem> DetermineImprovementRationsWithSupplementaryFeedProduct(
-			IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups,
-			params IImprovementRationMethod[] improvementMethods)
-		{
-			IEnumerable<List<ImprovementRapport>> thing = improvementMethods.Select(x =>
-				x.FindImprovementRationMethod(targetValues: _targetValues,
-					availableFeedProducts: (List<AbstractMappedFoodItem>)availableFeedProducts,
-					availableRENaturalFeedProductGroups: availableRENaturalFeedProductGroups,
-					currentRation: _currentRation.Clone()));
-			return RunImprovementAlgorithm(
-				improvementMethods.Select(x => x.FindImprovementRationMethod(targetValues: _targetValues,
-						availableFeedProducts: (List<AbstractMappedFoodItem>)availableFeedProducts,
-						availableRENaturalFeedProductGroups: availableRENaturalFeedProductGroups,
-						currentRation: _currentRation.Clone())).SelectMany(x => x)
-					.ToArray(), availableFeedProducts, availableRENaturalFeedProductGroups,
-				improvementMethods);
 		}
 	}
 }

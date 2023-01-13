@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
-using GripOpGras2.Client.Data.Exceptions;
-using GripOpGras2.Domain;
+﻿using GripOpGras2.Client.Data.Exceptions;
 using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
@@ -20,7 +17,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float REperVemSupplmenteryFeedProduct { get; protected set; }
 
-		public float AppliedVem { get; private set; } = 0;
+		public float AppliedVem { get; private set; }
 
 		public float AppliedKgdm { get; private set; }
 
@@ -31,12 +28,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 		//Gives a number between 1 and 0, which reperesents the percentage of VEM that is bijproduct
 		public float SupplmenteryPartOfTotalVem { get; protected set; }
 
+		//reference to original
+		public AbstractMappedFoodItem OriginalReference { get; protected set; } = null!;
+
 		public abstract Dictionary<FeedProduct, float> GetProducts();
 
 		public abstract AbstractMappedFoodItem Clone();
-
-		//reference to original
-		public AbstractMappedFoodItem OriginalReference { get; protected set; } = null!;
 
 
 		public void SetAppliedVem(float VEM)
@@ -69,14 +66,14 @@ namespace GripOpGras2.Client.Features.CreateRation
 			if (feedProduct.FeedAnalysis == null) throw new GripOpGras2Exception("FeedAnalysis cannot be null");
 			if (feedProduct.FeedAnalysis.VEM == null) throw new GripOpGras2Exception("VEM cannot be null");
 			if (feedProduct.FeedAnalysis.RE == null) throw new GripOpGras2Exception("RE cannot be null");
-			isSupplementaryFeedProduct = (feedProduct.GetType() == typeof(SupplementaryFeedProduct));
+			isSupplementaryFeedProduct = feedProduct.GetType() == typeof(SupplementaryFeedProduct);
 			KgdMperVem = (float)(1f / feedProduct.FeedAnalysis.VEM);
-			KgdmSupplementaryFeedProductPerVem = (isSupplementaryFeedProduct) ? KgdMperVem : 0;
+			KgdmSupplementaryFeedProductPerVem = isSupplementaryFeedProduct ? KgdMperVem : 0;
 			REperVem = (float)(feedProduct.FeedAnalysis.RE / feedProduct.FeedAnalysis.VEM);
-			REperVemSupplmenteryFeedProduct = (isSupplementaryFeedProduct) ? REperVem : 0;
+			REperVemSupplmenteryFeedProduct = isSupplementaryFeedProduct ? REperVem : 0;
 			REdiffPerVem = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
-			REdiffPerVemSupplementaryFeedProduct = (isSupplementaryFeedProduct) ? REdiffPerVem : 0;
-			SupplmenteryPartOfTotalVem = (isSupplementaryFeedProduct) ? 1 : 0;
+			REdiffPerVemSupplementaryFeedProduct = isSupplementaryFeedProduct ? REdiffPerVem : 0;
+			SupplmenteryPartOfTotalVem = isSupplementaryFeedProduct ? 1 : 0;
 			SetAppliedVem(0);
 			OriginalReference = this;
 			_containingFeedProduct = feedProduct;
@@ -85,8 +82,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public override Dictionary<FeedProduct, float> GetProducts()
 		{
-			return new Dictionary<FeedProduct, float>()
-				{ { _containingFeedProduct, AppliedKgdm } };
+			return new Dictionary<FeedProduct, float> { { _containingFeedProduct, AppliedKgdm } };
 		}
 
 
@@ -104,16 +100,20 @@ namespace GripOpGras2.Client.Features.CreateRation
 		private readonly IReadOnlyList<(AbstractMappedFoodItem FoodItem, float partOfVemInGroup)> _sourceProducts;
 
 		/// <summary>
-		/// Constructor for a combination of multiple products. Takes a list with products and how much VEM is in .
+		///     Constructor for a combination of multiple products. Takes a list with products and how much VEM is in .
 		/// </summary>
-		/// <param name="products">A list with tuples of 1. another abstractmappedFeedItem and 2. a number that represents the amount in VEM in comparison to the other products. </param>
+		/// <param name="products">
+		///     A list with tuples of 1. another abstractmappedFeedItem and 2. a number that represents the
+		///     amount in VEM in comparison to the other products.
+		/// </param>
 		/// <exception cref="NotImplementedException"></exception>
 		public MappedFeedProductGroup(params (AbstractMappedFoodItem FoodItem, float partOfGroupInVEM)[] products)
 		{
 			//TODO check if the group contains only 1 product, if so, return that product instead of a group
 			float totalVEM = products.Sum(x => x.partOfGroupInVEM);
-			KgdMperVem = (float)(products.Sum(x => x.FoodItem.KgdMperVem * x.partOfGroupInVEM)) / totalVEM;
-			KgdmSupplementaryFeedProductPerVem = products.Sum(x => x.FoodItem.KgdmSupplementaryFeedProductPerVem * x.partOfGroupInVEM) / totalVEM;
+			KgdMperVem = products.Sum(x => x.FoodItem.KgdMperVem * x.partOfGroupInVEM) / totalVEM;
+			KgdmSupplementaryFeedProductPerVem =
+				products.Sum(x => x.FoodItem.KgdmSupplementaryFeedProductPerVem * x.partOfGroupInVEM) / totalVEM;
 			REperVem = products.Sum(x => x.FoodItem.REperVem * x.partOfGroupInVEM) / totalVEM;
 			REperVemSupplmenteryFeedProduct =
 				products.Sum(x => x.FoodItem.REperVemSupplmenteryFeedProduct * x.partOfGroupInVEM) / totalVEM;
@@ -127,10 +127,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//fixing the partOfGroupInVem so that it combines to a maximum of 1
 			List<(AbstractMappedFoodItem FoodItem, float partOfGroupInVEM)> productsFixedList = new();
 			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in products.ToList())
-			{
 				productsFixedList.Add((FoodItem: foodItem,
-					partOfGroupInVEM: (partOfGroupInVem / totalVEM)));
-			}
+					partOfGroupInVEM: partOfGroupInVem / totalVEM));
 
 			_sourceProducts = productsFixedList;
 		}
@@ -146,12 +144,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 				product_customized.SetAppliedVem(partOfGroupInVem * AppliedVem);
 
 				foreach (KeyValuePair<FeedProduct, float> item in product_customized.GetProducts())
-				{
 					if (products.ContainsKey(item.Key))
 						products[item.Key] += item.Value;
 					else
 						products.Add(item.Key, item.Value);
-				}
 			}
 
 			return products;

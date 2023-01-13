@@ -8,27 +8,29 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public class RationAlgorithmV1 : IRationAlgorithm
 	{
-		public TargetValues targetValues = null!;
+		/// <summary>
+		///     The improvementSelector will be used to combine various ImprovementRapports to improve the ration based on various
+		/// </summary>
+		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
 
 		/// <summary>
-		/// Available feedproducts given, converted to AbstractMappedFoodItem (but will only contain MappedFeedProduct)
+		///     Available feedproducts given, converted to AbstractMappedFoodItem (but will only contain MappedFeedProduct)
 		/// </summary>
 		protected IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts = new List<AbstractMappedFoodItem>();
 
 		/// <summary>
-		/// List of all the generated RE natural Feed product groups. This should be combinations of feedproducts, so that the RE will be the same as the targeted RE per KGDM.
+		///     List of all the generated RE natural Feed product groups. This should be combinations of feedproducts, so that the
+		///     RE will be the same as the targeted RE per KGDM.
 		/// </summary>
 		public List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups = new();
 
 		/// <summary>
-		/// This property will be used to save and fill the ration with possible products. It has a .Clone get, to make sure the ration won't be changed by accident.
+		///     This property will be used to save and fill the ration with possible products. It has a .Clone get, to make sure
+		///     the ration won't be changed by accident.
 		/// </summary>
 		public Ration CurrentRation = null!;
 
-		/// <summary>
-		/// The improvementSelector will be used to combine various ImprovementRapports to improve the ration based on various 
-		/// </summary>
-		private readonly IImprovementSelector _improvementSelector = new ImprovementSelectorV1();
+		public TargetValues targetValues = null!;
 
 
 		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
@@ -65,10 +67,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			targetValues = new TargetValues(herd, milkProductionAnalysis);
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity?.Plot?.FeedAnalysis != null)
-			{
 				CurrentRation = new Ration(grassIntake: totalGrassIntake,
 					grassAnalysis: grazingActivity.Plot.FeedAnalysis);
-			}
 
 			//add products
 			List<AbstractMappedFoodItem> availableFeedProductsList = new();
@@ -83,18 +83,18 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 			availableFeedProducts = availableFeedProductsList;
 			;
-			_improvementSelector.Initialize(currentRation: ref CurrentRation,
-				targetValues: ref targetValues);
+			_improvementSelector.Initialize(ref CurrentRation,
+				ref targetValues);
 			//TODO: set the needs of cows based on the milk production analysis and Herd. (fill TargetValues)
 			//TODO: Fill the availableFeedProducts with the available feedProducts, converted to MappedFeedProduct.
-			return;
 		}
 
 		public void RunAlgorithm()
 		{
 			if (availableFeedProducts.Count == 0)
 			{
-				Console.WriteLine("RationAlgorithm | RunAlgorithm: no products available, return Feedproducts without products");
+				Console.WriteLine(
+					"RationAlgorithm | RunAlgorithm: no products available, return Feedproducts without products");
 				return;
 			}
 
@@ -108,7 +108,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//fill ration with best FeedProductGroups untill the VEM is on the targeted level, only containing roughage products.
 			AbstractMappedFoodItem bestREnaturalFeedProductGroup = FindBestReNaturalFeedProductGroup(false);
 			bestREnaturalFeedProductGroup.SetAppliedVem(targetValues.TargetedVEM - CurrentRation.totalVEM);
-			Console.WriteLine($"RationAlgorithm | RunAlgorithm: Applying REnaturalFedproductgroep. amount: {bestREnaturalFeedProductGroup.AppliedVem}");
+			Console.WriteLine(
+				$"RationAlgorithm | RunAlgorithm: Applying REnaturalFedproductgroep. amount: {bestREnaturalFeedProductGroup.AppliedVem}");
 			CurrentRation.ApplyChangesToRationList(bestREnaturalFeedProductGroup);
 			Console.WriteLine("RationAlgorithm | RunAlgorithm: Ration after applying REnaturalFedproductgroep");
 			CurrentRation.printProducts();
@@ -122,9 +123,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			};
 			List<AbstractMappedFoodItem> improvementChanges =
 				_improvementSelector.DetermineImprovementRationsWithSupplementaryFeedProduct(
-					availableFeedProducts: availableFeedProducts,
-					availableReNaturalFeedProductGroups: availableRENaturalFeedProductGroups,
-					improvementMethods: improvementMethods.ToArray());
+					availableFeedProducts,
+					availableRENaturalFeedProductGroups,
+					improvementMethods.ToArray());
 			CurrentRation.ApplyChangesToRationList(improvementChanges);
 			//check if Ration is in line with target values, if not, change Targetvalues.
 		}
@@ -132,7 +133,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 		private bool CheckIfRationIsInLineWithTargetValues()
 		{
 			bool inlinewithtargets = true;
-			Console.WriteLine("RationAlgorithm | CheckIfRationIsInLineWithTargetValues: Checking if ration is in line with targetValues");
+			Console.WriteLine(
+				"RationAlgorithm | CheckIfRationIsInLineWithTargetValues: Checking if ration is in line with targetValues");
 			if (Math.Abs(CurrentRation.totalRE / CurrentRation.totalDM - targetValues.TargetedREcoveragePerKgDm) > 2)
 			{
 				inlinewithtargets = false;
@@ -161,7 +163,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 					$"RationAlgorithm | CheckIfRationIsInLineWithTargetValues: DM SupplementaryFeedProduct not in line with targt, ration KGDMSupplementaryFeedProduct:{CurrentRation.totalDM_SupplementaryFeedProduct},\t\ttarget max DM: \t{targetValues.TargetedMaxKgDmSupplementaryFeedProduct}");
 			}
 
-			if (inlinewithtargets) Console.WriteLine($"RationAlgorithm | CheckIfRationIsInLineWithTargetValues: The ration is in line with targets");
+			if (inlinewithtargets)
+				Console.WriteLine(
+					"RationAlgorithm | CheckIfRationIsInLineWithTargetValues: The ration is in line with targets");
 			return inlinewithtargets;
 		}
 
@@ -171,13 +175,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			if (CurrentRation.totalREdiff == 0) return new List<AbstractMappedFoodItem>();
 
-			bool grassHasPositiveREdiff = (CurrentRation.totalREdiff > 0);
-			IEnumerable<AbstractMappedFoodItem> products = (allowSupplementaryFeedProducts)
+			bool grassHasPositiveREdiff = CurrentRation.totalREdiff > 0;
+			IEnumerable<AbstractMappedFoodItem> products = allowSupplementaryFeedProducts
 				? availableFeedProducts
 				: availableFeedProducts.Where(x => x.SupplmenteryPartOfTotalVem == 0);
 
 			//Check if products are availlable
-			if (!products.Any() && allowSupplementaryFeedProducts == true)
+			if (!products.Any() && allowSupplementaryFeedProducts)
 			{
 				Console.WriteLine(
 					"RationAlgorithm | GetGrassRENeutralizerFeedProduct: No feedproducts without supplementeries available, trying again with supplementeries");
@@ -190,7 +194,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			IOrderedEnumerable<AbstractMappedFoodItem> sortedProducts =
 				products.OrderBy(x => x.REdiffPerVem / x.KgdMperVem);
 			AbstractMappedFoodItem bestproduct =
-				(grassHasPositiveREdiff) ? sortedProducts.First() : sortedProducts.Last();
+				grassHasPositiveREdiff ? sortedProducts.First() : sortedProducts.Last();
 			float vemNeeded = -CurrentRation.totalREdiff / bestproduct.REdiffPerVem;
 
 			switch (grassHasPositiveREdiff)
@@ -207,7 +211,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 			productclone.SetAppliedVem(vemNeeded);
 			Console.WriteLine(
 				$"RationAlgorithm | GetGrassRENuturalizerFeedProduct: totalREdiff = {CurrentRation.totalREdiff}, bestproduct.REdiffPerVEM = {bestproduct.REdiffPerVem}, vemNeeded = {vemNeeded}. product contains now: {(productclone.REdiffPerVem + 1500) * productclone.AppliedVem} RE total and {productclone.AppliedVem} VEM total and {productclone.AppliedREdiff.ToString(CultureInfo.CurrentCulture)} RE difference of the target");
-			Console.WriteLine($"RationAlgorithm | GetGrassRENuturalizerFeedProduct: used product: {bestproduct.GetProductsForConsole()}");
+			Console.WriteLine(
+				$"RationAlgorithm | GetGrassRENuturalizerFeedProduct: used product: {bestproduct.GetProductsForConsole()}");
 			Console.WriteLine(
 				$"RationAlgorithm | GetGrassRENuturalizerFeedProduct: VEM needed after GrassRENeutralizer: {targetValues.TargetedVEM - (CurrentRation.totalVEM + vemNeeded)}");
 			return new List<AbstractMappedFoodItem> { productclone };
@@ -221,14 +226,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 			naturalFeedProductGroups.AddRange(availableFeedProducts.Where(x => x.REdiffPerVem == 0)
 				.Select(x => new MappedFeedProductGroup((x, 1f))).ToList());
 			foreach (AbstractMappedFoodItem product in availableFeedProducts.Where(x => x.REdiffPerVem < 0))
+			foreach (AbstractMappedFoodItem? product2 in availableFeedProducts.Where(x => x.REdiffPerVem > 0))
 			{
-				foreach (AbstractMappedFoodItem? product2 in availableFeedProducts.Where(x => x.REdiffPerVem > 0))
-				{
-					float prod2PerProd1 = product.REdiffPerVem / -product2.REdiffPerVem;
-					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
-					Console.WriteLine(
-						$"RationAlgorithm | GenerateRENaturalFeedProductGroups: group created, product 1 RE/vem: {product.REdiffPerVem}, product 2 RE/vem: {product2.REdiffPerVem}, product 2 per product 1 in VEM: {prod2PerProd1}. Part Supplementary prod 1: {product.SupplmenteryPartOfTotalVem}, prod2: {product2.SupplmenteryPartOfTotalVem}");
-				}
+				float prod2PerProd1 = product.REdiffPerVem / -product2.REdiffPerVem;
+				naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
+				Console.WriteLine(
+					$"RationAlgorithm | GenerateRENaturalFeedProductGroups: group created, product 1 RE/vem: {product.REdiffPerVem}, product 2 RE/vem: {product2.REdiffPerVem}, product 2 per product 1 in VEM: {prod2PerProd1}. Part Supplementary prod 1: {product.SupplmenteryPartOfTotalVem}, prod2: {product2.SupplmenteryPartOfTotalVem}");
 			}
 
 			if (naturalFeedProductGroups.Count == 0)
@@ -241,7 +244,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			IEnumerable<AbstractMappedFoodItem> availablegroups =
 				availableRENaturalFeedProductGroups.Where(x =>
-					x.SupplmenteryPartOfTotalVem == 0 || (SupplementaryFeedProductAllowed));
+					x.SupplmenteryPartOfTotalVem == 0 || SupplementaryFeedProductAllowed);
 			if (!availablegroups.Any() && !SupplementaryFeedProductAllowed)
 			{
 				Console.WriteLine(
@@ -254,5 +257,5 @@ namespace GripOpGras2.Client.Features.CreateRation
 				$"RationAlgorithm | FindBestReNaturalFeedProductGroup: Supplementaryallowed = {SupplementaryFeedProductAllowed}, partSupplementary: {bestgroup.SupplmenteryPartOfTotalVem}, DM per VEM: {bestgroup.KgdMperVem}, RE per VEM: {bestgroup.REperVem}");
 			return bestgroup;
 		}
-	};
+	}
 }
