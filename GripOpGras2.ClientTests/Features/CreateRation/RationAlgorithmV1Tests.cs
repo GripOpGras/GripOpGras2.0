@@ -1,19 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GripOpGras2.Client.Features.CreateRation;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
+using static GripOpGras2.ClientTests.Features.CreateRation.TestAssetsForRationAlgorithmV1Tests;
 using Assert = NUnit.Framework.Assert;
-using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
-using static GripOpGras2.Client.Features.CreateRation.Tests.TestAssetsForRationAlgorithmV1Tests;
 
 namespace GripOpGras2.Client.Features.CreateRation.Tests
 {
@@ -432,6 +423,6 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 		{
 			Assert.Fail();
 		}
-		
+
 	}
 }

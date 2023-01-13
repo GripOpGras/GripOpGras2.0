@@ -1,8 +1,9 @@
-﻿using GripOpGras2.Domain;
+﻿using GripOpGras2.Client.Features.CreateRation;
+using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 using NUnit.Framework;
 
-namespace GripOpGras2.Client.Features.CreateRation.Tests
+namespace GripOpGras2.ClientTests.Features.CreateRation
 {
 	public static class TestAssetsForRationAlgorithmV1Tests
 	{

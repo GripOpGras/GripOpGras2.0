@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
+﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
-using NUnit.Framework.Internal;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
