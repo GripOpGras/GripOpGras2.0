@@ -55,7 +55,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			Console.WriteLine(
 				$"RationAlgorithm | CreateRationAsync: {"DM",20}:  target: {targetValues.TargetedMaxKgDm,5:0.00} actual: {CurrentRation.totalDM,5:0.00}");
 			Console.WriteLine(
-				$"{"RationAlgorithm | CreateRationAsync: DM Supplementarys",20}:  target: {targetValues.TargetedMaxKgDmSupplementaryFeedProduct,5:0.00} actual: {CurrentRation.totalDM_SupplementaryFeedProduct,5:0.00}");
+				$"RationAlgorithm | CreateRationAsync: {"DM Supplementarys",20}:  target: {targetValues.TargetedMaxKgDmSupplementaryFeedProduct,5:0.00} actual: {CurrentRation.totalDM_SupplementaryFeedProduct,5:0.00}");
 			return Task.FromResult(feedRation);
 		}
 
@@ -121,9 +121,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 				new ImprovementRationMethodNaturalReGroups()
 			};
 			List<AbstractMappedFoodItem> improvementChanges =
-				_improvementSelector.DetermineImprovemendRationsWithSupplementaryFeedProduct(
+				_improvementSelector.DetermineImprovementRationsWithSupplementaryFeedProduct(
 					availableFeedProducts: availableFeedProducts,
-					availableRENaturalFeedProductGroups: availableRENaturalFeedProductGroups,
+					availableReNaturalFeedProductGroups: availableRENaturalFeedProductGroups,
 					improvementMethods: improvementMethods.ToArray());
 			CurrentRation.ApplyChangesToRationList(improvementChanges);
 			//check if Ration is in line with target values, if not, change Targetvalues.

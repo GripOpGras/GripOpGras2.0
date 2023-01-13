@@ -6,7 +6,7 @@
 	/// </summary>
 	public class ImprovementRationMethodChangeTargetedCoverages : IImprovementRationMethod
 	{
-		public ImprovementRapport FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts, List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation)
+		public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts, List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation)
 		{
 			throw new NotImplementedException();
 		}

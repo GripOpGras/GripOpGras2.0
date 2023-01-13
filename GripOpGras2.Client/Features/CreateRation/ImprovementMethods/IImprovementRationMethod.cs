@@ -8,6 +8,6 @@
 	/// </summary>
 	public interface IImprovementRationMethod
 	{
-		ImprovementRapport FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts, List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation);
+		List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts, List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation);
 	}
 }
