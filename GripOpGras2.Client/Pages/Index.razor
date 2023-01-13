@@ -5,117 +5,136 @@
 
 @if (_isRunning)
 {
-	<LoadingAnimationComponent Text="Creating ration" />
+	<LoadingAnimationComponent Text="Creating ration"/>
 }
 else
 {
-    @if (_error != string.Empty)
-    {
-	    <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-		    <div class="card-body">
-			    <h5 class="card-title">Error</h5>
-			    <p class="card-text">@_error</p>
-		    </div>
-	    </div>
-    }
+	@if (_errorMessage != string.Empty)
+	{
+		<div class="card text-white bg-danger mb-3">
+			<div class="card-body">
+				<h5 class="card-title">Error</h5>
+				<p class="card-text">@_errorMessage</p>
+			</div>
+		</div>
+	}
 	@if (_feedRation != null)
 	{
-		<br />
+		<br/>
 
 		<h1>Ration</h1>
-		<RationWidget Ration="@_feedRation" />
+		<RationWidget Ration="@_feedRation"/>
 	}
 
 	<h1>Data</h1>
 
-	<h5>Add roughage product</h5>
-	<EditForm OnSubmit="@AddRoughage">
+	<h5>Add feedproduct</h5>
+	<EditForm Model="@_feedProductToAdd" OnSubmit="@AddFeedProduct">
 		<div class="form-group">
 			<label for="Name">Name</label>
-			<InputText @bind-Value="_feedprobuctName" class="form-control" id="Name" />
+			<InputText @bind-Value="_feedProductToAdd.Name" class="form-control" id="Name"/>
 		</div>
 		<div class="form-group">
 			<label for="VEM">VEM in /kg</label>
-			<InputNumber @bind-Value="_feedprobuctVEM" class="form-control" id="VEM" />
+			<InputNumber @bind-Value="_feedProductToAdd.Vem" class="form-control" id="VEM"/>
 		</div>
 		<div class="form-group">
 			<label for="RE">RE in g/kg</label>
-			<InputNumber @bind-Value="_feedprobuctRE" class="form-control" id="RE" />
+			<InputNumber @bind-Value="_feedProductToAdd.Re" class="form-control" id="RE"/>
 		</div>
-		<div class="form-group"><label for="TYPE">Type product</label>
-			<div>
-				<input type="radio" id="TYPE" name="TYPE" value=@typeof(Roughage) @bind:checked="_feedprobuctType" />
-				<label for="TYPE">Roughage</label>
-			</div>
-			<div>
-                <input type="radio" id="TYPE" name="TYPE" value=@typeof(SupplementaryFeedProduct) @bind:checked="_feedprobuctType" />
-                <label for="TYPE">Supplementary FeedProduct</label>
-			</div>
+		<div class="form-group">
+			<label for="ProductTypeName">Type</label>
+			<InputRadioGroup @bind-Value="@_feedProductToAdd.ProductTypeName">
+				<br>
+				@foreach (string productType in _productTypes)
+				{
+					<InputRadio Value="productType"/>
+					@productType
+					<br>
+				}
+			</InputRadioGroup>
 		</div>
-		<br />
-		<input type="submit" class="btn btn-primary" value="Add product" />
+
+		<br/>
+		<input type="submit" class="btn btn-primary" value="Add product"/>
 	</EditForm>
 
-	<br />
+	<br/>
 
-	@if (_feedproducts.Any())
+	@if (_feedProducts.Any())
 	{
-		<h5>Roughage products</h5>
+		<h5>Products</h5>
 
 		<table class="table table-bordered">
 			<thead>
-				<tr>
-					<th scope="col">Product</th>
-					<th scope="col">VEM</th>
-					<th scope="col">RE</th>
-				</tr>
+			<tr>
+				<th scope="col">Product</th>
+				<th scope="col">VEM</th>
+				<th scope="col">RE</th>
+				<th scope="col">Type</th>
+			</tr>
 			</thead>
 			<tbody>
-				@foreach (Roughage roughage in _feedproducts)
-				{
-					<tr>
-						<th scope="row">@roughage.Name</th>
-						<td>@roughage.FeedAnalysis!.VEM</td>
-						<td>@roughage.FeedAnalysis!.RE</td>
-					</tr>
-				}
+			@foreach (FeedProduct feedProduct in _feedProducts)
+			{
+				<tr>
+					<th scope="row">@feedProduct.Name</th>
+					<td>@feedProduct.FeedAnalysis!.VEM</td>
+					<td>@feedProduct.FeedAnalysis!.RE</td>
+					<td>@feedProduct.GetType().Name</td>
+				</tr>
+			}
 			</tbody>
 		</table>
 	}
 
-	<br />
+	<br/>
 
 	<h5>Other data</h5>
 
 	<div class="form-group">
 		<label>Number of cows</label>
-		<input class="form-control" @bind="_herd.NumberOfAnimals" />
+		<input class="form-control" @bind="_herd.NumberOfAnimals"/>
 	</div>
 	<div class="form-group">
 		<label>Total amount of milk produced in liters by the herd</label>
-		<input class="form-control" @bind="_milkProduced.Amount" />
+		<input class="form-control" @bind="_milkProduced.Amount"/>
 	</div>
 	<div class="form-group">
 		<label>Total net grass intake in kg dm</label>
-		<input class="form-control" @bind="_grassIntakeInKgDm" />
+		<input class="form-control" @bind="_grassIntakeInKgDm"/>
 	</div>
 	<div class="form-group">
 		<label>Amount of VEM in each kg dm of grass</label>
-		<input class="form-control" @bind="_vemInGrass" />
+		<input class="form-control" @bind="_vemInGrass"/>
 	</div>
 	<div class="form-group">
 		<label>Amount of RE in each kg dm of grass in grams</label>
-		<input class="form-control" @bind="_reInGrassInGrams" />
+		<input class="form-control" @bind="_reInGrassInGrams"/>
 	</div>
-
-	<br />
+	<br/>
 	<div>
 		<button class="btn btn-primary" @onclick="CreateRation">Create ration</button>
 	</div>
-	<br />
+	<br/>
 }
 
 @code {
+
+	private class FeedProductToAdd
+	{
+		public float Vem;
+
+		public float Re;
+
+		public string Name = string.Empty;
+
+		public string ProductTypeName = nameof(Roughage);
+	}
+
+	private readonly List<string> _productTypes = new() { nameof(Roughage), nameof(SupplementaryFeedProduct) };
+
+	private FeedProductToAdd _feedProductToAdd = new();
 
 	private bool _isRunning;
 
@@ -123,15 +142,7 @@ else
 
 	private readonly Herd _herd = new();
 
-	private float _feedprobuctVEM;
-
-	private float _feedprobuctRE;
-
-	private string _feedprobuctName = "";
-
-	private Type _feedprobuctType = typeof(Roughage);
-
-	private readonly List<FeedProduct> _feedproducts = new();
+	private readonly List<FeedProduct> _feedProducts = new();
 
 	private readonly MilkProductionAnalysis _milkProduced = new();
 
@@ -140,8 +151,10 @@ else
 	private float _vemInGrass;
 
 	private float _reInGrassInGrams;
-    
-    private string _error = string.Empty;
+
+	private string _errorMessage = string.Empty;
+
+		private const string NamespaceOfFeedProductTypes = "GripOpGras2.Domain.FeedProducts.";
 
 	private async Task CreateRation()
 	{
@@ -156,25 +169,49 @@ else
 		await Task.Delay(1);
 
 		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrassInGrams, VEM = _vemInGrass } } };
-		_feedRation = await RationAlgorithm.CreateRationAsync(_feedproducts, _herd, _grassIntakeInKgDm, _milkProduced, grazingActivity);
+
+		bool finishedWithException = false;
+		try
+		{
+			_feedRation = await RationAlgorithm.CreateRationAsync(_feedProducts, _herd, _grassIntakeInKgDm, _milkProduced, grazingActivity);
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e);
+			_errorMessage = e.Message;
+			finishedWithException = true;
+		}
+		if (!finishedWithException)
+		{
+			_errorMessage = string.Empty;
+		}
 
 		_isRunning = false;
 	}
 
-	private void AddRoughage()
+	private void AddFeedProduct()
 	{
-		if (string.IsNullOrEmpty(_feedprobuctName)) return;
-		if (_feedprobuctVEM == 0)
+		if (_feedProductToAdd.Name == string.Empty)
 		{
-            _error = "VEM must be greater than 0";
+			_errorMessage = "The product name is not specified.";
+			return;
+		}
+		;
+		if (_feedProductToAdd.Vem == 0)
+		{
+			_errorMessage = "VEM must be greater than 0.";
 			return;
 		}
 
+		FeedProduct feedProduct = TypeUtils.CreateInstance<FeedProduct>(NamespaceOfFeedProductTypes + _feedProductToAdd.ProductTypeName);
 
-        _feedproducts.Add((FeedProduct)Activator.CreateInstance(_feedprobuctType, _feedprobuctName, new FeedAnalysis { VEM = _feedprobuctVEM, RE = _feedprobuctRE }, true)!);
-        _feedprobuctName = string.Empty;
-        _feedprobuctVEM = 0;
-        _feedprobuctRE = 0;
+		feedProduct.Available = true;
+		feedProduct.FeedAnalysis = new FeedAnalysis { RE = _feedProductToAdd.Re, VEM = _feedProductToAdd.Vem };
+		feedProduct.Name = _feedProductToAdd.Name;
+
+		_feedProducts.Add(feedProduct);
+
+		_feedProductToAdd = new FeedProductToAdd();
 	}
 
 }

@@ -7,10 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="Shared\LoadingAnimationComponent.razor" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.13" PrivateAssets="all" />
@@ -21,14 +17,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\GripOpGras2.Domain\GripOpGras2.Domain.csproj" />
 		<ProjectReference Include="..\GripOpGras2.Plugins.FarmMaps\GripOpGras2.Plugins.FarmMaps.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Data\Exceptions\RationAlgorithmExceptions\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Shared\LoadingAnimationComponent.razor" />
 	</ItemGroup>
 
 </Project>

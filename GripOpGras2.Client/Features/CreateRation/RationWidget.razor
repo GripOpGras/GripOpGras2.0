@@ -15,8 +15,8 @@
 			<td>@Ration.GrassIntake</td>
 			@if (Ration.Plot != null)
 			{
-				<td>@CalculateAmountOfVEM(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
-				<td>@CalculateAmountOfREInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td>@CalculateAmountOfVem(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td>@CalculateAmountOfReInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
 			}
 			else
 			{
@@ -27,13 +27,13 @@
 
 		@if (Ration?.FeedProducts != null)
 		{
-                @foreach (KeyValuePair<FeedProduct, float> feedproduct in Ration.FeedProducts)
+                @foreach (KeyValuePair<FeedProduct, float> feedProduct in Ration.FeedProducts)
                 {
 				<tr>
-					<th scope="row">@feedproduct.Key.Name</th>
-					<td>@feedproduct.Value</td>
-					<td>@CalculateAmountOfVEM(feedproduct.Key.FeedAnalysis, feedproduct.Value)</td>
-					<td>@CalculateAmountOfREInKg(feedproduct.Key.FeedAnalysis, feedproduct.Value)</td>
+					<th scope="row">@feedProduct.Key.Name</th>
+					<td>@feedProduct.Value</td>
+					<td>@CalculateAmountOfVem(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>
+					<td>@CalculateAmountOfReInKg(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>
 				</tr>
 			}
 		}
@@ -46,7 +46,7 @@
 	[Parameter]
 	public FeedRation? Ration { get; set; }
 
-	private float CalculateAmountOfVEM(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
+	private float CalculateAmountOfVem(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
 	{
 		if (feedAnalysis?.VEM == null || dmIntakeInKg is null or 0)
 		{
@@ -56,7 +56,7 @@
 		return (float)(dmIntakeInKg * feedAnalysis.VEM);
 	}
 
-	private float CalculateAmountOfREInKg(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
+	private float CalculateAmountOfReInKg(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
 	{
 		if (feedAnalysis?.RE == null || dmIntakeInKg is null or 0)
 		{
