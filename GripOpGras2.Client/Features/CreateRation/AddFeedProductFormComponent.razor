@@ -1,0 +1,89 @@
+﻿<EditForm Model="@_feedProductToAdd" OnSubmit="@AddFeedProduct">
+	<div class="form-group">
+		<label for="Name">Name</label>
+		<InputText @bind-Value="_feedProductToAdd.Name" class="form-control" id="Name"/>
+	</div>
+	<div class="form-group">
+		<label for="VEM">VEM in /kg</label>
+		<InputNumber @bind-Value="_feedProductToAdd.Vem" class="form-control" id="VEM"/>
+	</div>
+	<div class="form-group">
+		<label for="RE">RE in g/kg</label>
+		<InputNumber @bind-Value="_feedProductToAdd.Re" class="form-control" id="RE"/>
+	</div>
+	<div class="form-group">
+		<label for="ProductTypeName">Type</label>
+		<InputRadioGroup @bind-Value="@_feedProductToAdd.ProductTypeName">
+			<br>
+			@foreach (string productType in _productTypes)
+			{
+				<InputRadio Value="productType"/>
+				@productType
+				<br>
+			}
+		</InputRadioGroup>
+	</div>
+
+	<br/>
+	<input type="submit" class="btn btn-primary" value="Add product"/>
+</EditForm>
+
+@code {
+
+	[Parameter]
+	public EventCallback<FeedProduct> OnFeedProductAdded { get; set; }
+
+	[Parameter]
+	public EventCallback<Exception> ExceptionEventCallback { get; set; }
+
+	private FeedProductToAdd _feedProductToAdd = new();
+
+	private readonly List<string> _productTypes = new() { nameof(Roughage), nameof(SupplementaryFeedProduct) };
+
+	    private const string NamespaceOfFeedProductTypes = "GripOpGras2.Domain.FeedProducts.";
+
+	private string _errorMessage = string.Empty;
+
+	private class FeedProductToAdd
+	{
+		public float Vem;
+
+		public float Re;
+
+		public string Name = string.Empty;
+
+		public string ProductTypeName = nameof(Roughage);
+	}
+
+	private void AddFeedProduct()
+	{
+		if (_feedProductToAdd.Name == string.Empty)
+		{
+			ExceptionEventCallback.InvokeAsync(new Exception("The product name is not specified."));
+			return;
+		}
+		;
+		if (_feedProductToAdd.Vem == 0)
+		{
+			ExceptionEventCallback.InvokeAsync(new Exception("VEM must be greater than 0."));
+			return;
+		}
+
+		FeedProduct? feedProduct = TypeUtils.CreateInstance<FeedProduct>(NamespaceOfFeedProductTypes + _feedProductToAdd.ProductTypeName);
+
+		if (feedProduct == null)
+		{
+			ExceptionEventCallback.InvokeAsync(new Exception("The product could not be created."));
+			return;
+		}
+
+		feedProduct.Available = true;
+		feedProduct.FeedAnalysis = new FeedAnalysis { RE = _feedProductToAdd.Re, VEM = _feedProductToAdd.Vem };
+		feedProduct.Name = _feedProductToAdd.Name;
+
+		OnFeedProductAdded.InvokeAsync(feedProduct);
+
+		_feedProductToAdd = new FeedProductToAdd();
+	}
+
+}
