@@ -1,8 +1,180 @@
 ﻿@page "/"
-<VisitorsTracking/>
+@inject IRationAlgorithm RationAlgorithm
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Create test ration</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (_isRunning)
+{
+	<LoadingAnimationComponent Text="Creating ration" />
+}
+else
+{
+    @if (_error != string.Empty)
+    {
+	    <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+		    <div class="card-body">
+			    <h5 class="card-title">Error</h5>
+			    <p class="card-text">@_error</p>
+		    </div>
+	    </div>
+    }
+	@if (_feedRation != null)
+	{
+		<br />
 
-Welcome to your new app.
+		<h1>Ration</h1>
+		<RationWidget Ration="@_feedRation" />
+	}
+
+	<h1>Data</h1>
+
+	<h5>Add roughage product</h5>
+	<EditForm OnSubmit="@AddRoughage">
+		<div class="form-group">
+			<label for="Name">Name</label>
+			<InputText @bind-Value="_feedprobuctName" class="form-control" id="Name" />
+		</div>
+		<div class="form-group">
+			<label for="VEM">VEM in /kg</label>
+			<InputNumber @bind-Value="_feedprobuctVEM" class="form-control" id="VEM" />
+		</div>
+		<div class="form-group">
+			<label for="RE">RE in g/kg</label>
+			<InputNumber @bind-Value="_feedprobuctRE" class="form-control" id="RE" />
+		</div>
+		<div class="form-group"><label for="TYPE">Type product</label>
+			<div>
+				<input type="radio" id="TYPE" name="TYPE" value=@typeof(Roughage) @bind:checked="_feedprobuctType" />
+				<label for="TYPE">Roughage</label>
+			</div>
+			<div>
+                <input type="radio" id="TYPE" name="TYPE" value=@typeof(SupplementaryFeedProduct) @bind:checked="_feedprobuctType" />
+                <label for="TYPE">Supplementary FeedProduct</label>
+			</div>
+		</div>
+		<br />
+		<input type="submit" class="btn btn-primary" value="Add product" />
+	</EditForm>
+
+	<br />
+
+	@if (_feedproducts.Any())
+	{
+		<h5>Roughage products</h5>
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th scope="col">Product</th>
+					<th scope="col">VEM</th>
+					<th scope="col">RE</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (Roughage roughage in _feedproducts)
+				{
+					<tr>
+						<th scope="row">@roughage.Name</th>
+						<td>@roughage.FeedAnalysis!.VEM</td>
+						<td>@roughage.FeedAnalysis!.RE</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+
+	<br />
+
+	<h5>Other data</h5>
+
+	<div class="form-group">
+		<label>Number of cows</label>
+		<input class="form-control" @bind="_herd.NumberOfAnimals" />
+	</div>
+	<div class="form-group">
+		<label>Total amount of milk produced in liters by the herd</label>
+		<input class="form-control" @bind="_milkProduced.Amount" />
+	</div>
+	<div class="form-group">
+		<label>Total net grass intake in kg dm</label>
+		<input class="form-control" @bind="_grassIntakeInKgDm" />
+	</div>
+	<div class="form-group">
+		<label>Amount of VEM in each kg dm of grass</label>
+		<input class="form-control" @bind="_vemInGrass" />
+	</div>
+	<div class="form-group">
+		<label>Amount of RE in each kg dm of grass in grams</label>
+		<input class="form-control" @bind="_reInGrassInGrams" />
+	</div>
+
+	<br />
+	<div>
+		<button class="btn btn-primary" @onclick="CreateRation">Create ration</button>
+	</div>
+	<br />
+}
+
+@code {
+
+	private bool _isRunning;
+
+	private FeedRation? _feedRation;
+
+	private readonly Herd _herd = new();
+
+	private float _feedprobuctVEM;
+
+	private float _feedprobuctRE;
+
+	private string _feedprobuctName = "";
+
+	private Type _feedprobuctType = typeof(Roughage);
+
+	private readonly List<FeedProduct> _feedproducts = new();
+
+	private readonly MilkProductionAnalysis _milkProduced = new();
+
+	private float _grassIntakeInKgDm;
+
+	private float _vemInGrass;
+
+	private float _reInGrassInGrams;
+    
+    private string _error = string.Empty;
+
+	private async Task CreateRation()
+	{
+		if (_isRunning)
+		{
+			return;
+		}
+
+		_isRunning = true;
+
+		// Give Blazor WebAssembly time to update the ui
+		await Task.Delay(1);
+
+		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = _herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = _reInGrassInGrams, VEM = _vemInGrass } } };
+		_feedRation = await RationAlgorithm.CreateRationAsync(_feedproducts, _herd, _grassIntakeInKgDm, _milkProduced, grazingActivity);
+
+		_isRunning = false;
+	}
+
+	private void AddRoughage()
+	{
+		if (string.IsNullOrEmpty(_feedprobuctName)) return;
+		if (_feedprobuctVEM == 0)
+		{
+            _error = "VEM must be greater than 0";
+			return;
+		}
+
+
+        _feedproducts.Add((FeedProduct)Activator.CreateInstance(_feedprobuctType, _feedprobuctName, new FeedAnalysis { VEM = _feedprobuctVEM, RE = _feedprobuctRE }, true)!);
+        _feedprobuctName = string.Empty;
+        _feedprobuctVEM = 0;
+        _feedprobuctRE = 0;
+	}
+
+}
