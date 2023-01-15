@@ -250,6 +250,50 @@ namespace GripOpGras2.Client.Features.CreateRation.Tests
 			//Assert.(feedRotation.Plot); plot nog een plekje gevene
 		}
 
+		[Test()]
+		public void ProofOfConceptDataTest()
+		{
+			Herd herd = new()
+			{
+				Name = "Herd1",
+				NumberOfAnimals = 100,
+				Type = "Koe"
+			};
+			MilkProductionAnalysis milkProductionAnalysis = new()
+			{
+				Date = DateTime.Now,
+				Amount = 3000f
+			};
+			GrazingActivity grazingActivity = new()
+			{
+				Herd = herd,
+				Plot = new Plot()
+				{
+					Area = 1000,
+					Name = "TestcaseGrass",
+					NetDryMatter = 1062.5f * 1.1f,
+					FeedAnalysis = new FeedAnalysis()
+					{
+						VEM = 1000,
+						RE = 210,
+					}
+				}
+			};
+			FeedProduct product1 = GetFeedProduct("prod1", 160, 920);
+			FeedProduct product2 = GetFeedProduct("prod2", 60, 960);
+			FeedProduct product3 = GetFeedProduct("prod3", 84, 900);
+			FeedProduct productvem = GetFeedProduct("bijprod(vem)", 88,1264 ,false);
+			FeedProduct productRE = GetFeedProduct("bijprod(RE)", 242,942,false);
+			RationAlgorithmV1 rationAlgorithm = new RationAlgorithmV1();
+			//act
+			FeedRation ration = rationAlgorithm.CreateRationAsync(
+				new[] { product1, product2, product3, productvem, productRE }, herd, 1062.5f, milkProductionAnalysis,
+				grazingActivity).Result;
+			//assert
+			Assert.LessOrEqual(20, ration.FeedProducts.Sum(x => x.Value));
+			Assert.True(true);
+		}
+
 
 		[Test()]
 		[TestCase(30, 30, 1800.5f, 1860.5f)]
