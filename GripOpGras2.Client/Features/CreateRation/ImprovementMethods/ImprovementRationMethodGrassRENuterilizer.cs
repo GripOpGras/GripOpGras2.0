@@ -11,7 +11,7 @@
 	///     #TODO: return not only 1 improvementRapport, but a few for these catogories: 1. Best improvement with roughages (if
 	///     possible), 2. Best improvement in KGDM improvement per KGDM Supplementary, 3. Best improvement per VEM.
 	/// </summary>
-	public class ImprovementRationMethodGrassRENuterilizer : IImprovementRationMethod
+	public class ImprovementRationMethodGrassReNuterilizer : IImprovementRationMethod
 	{
 		public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
 			List<AbstractMappedFoodItem> availableFeedProducts,

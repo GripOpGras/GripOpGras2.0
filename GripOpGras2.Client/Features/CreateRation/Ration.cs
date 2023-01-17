@@ -11,73 +11,73 @@ namespace GripOpGras2.Client.Features.CreateRation
 		//Constructor, with an optional originalReference. When not given, it wil create a reference to self.
 		public Ration(Ration? reference = null, float? grassIntake = null, FeedAnalysis? grassAnalysis = null)
 		{
-			originalRefference = reference ?? this;
+			OriginalRefference = reference ?? this;
 			if (grassIntake != null && grassAnalysis != null)
 			{
-				if (grassAnalysis.VEM == null || grassAnalysis.RE == null)
+				if (grassAnalysis.Vem == null || grassAnalysis.Re == null)
 					throw new RationAlgorithmException("Grass analysis is missing data");
 
-				grassVEM = (float)grassAnalysis.VEM * (float)grassIntake;
-				grassRE = (float)(grassAnalysis.RE * grassIntake);
-				grassKGDM = (float)grassIntake;
-				grassREdiff = (float)((grassAnalysis.RE - TargetValues.OptimalRECoverageInGramsPerKgDm) * grassIntake);
-				grassFeedAnalysis = grassAnalysis;
+				GrassVem = (float)grassAnalysis.Vem * (float)grassIntake;
+				GrassRe = (float)(grassAnalysis.Re * grassIntake);
+				GrassKgdm = (float)grassIntake;
+				GrassREdiff = (float)((grassAnalysis.Re - TargetValues.OptimalReCoverageInGramsPerKgDm) * grassIntake);
+				GrassFeedAnalysis = grassAnalysis;
 			}
 			else
 			{
-				grassVEM = 0;
-				grassRE = 0;
-				grassKGDM = 0;
-				grassREdiff = 0;
+				GrassVem = 0;
+				GrassRe = 0;
+				GrassKgdm = 0;
+				GrassREdiff = 0;
 			}
 		}
 
-		private FeedAnalysis? grassFeedAnalysis { get; }
+		private FeedAnalysis? GrassFeedAnalysis { get; }
 
-		private float grassVEM { get; }
+		private float GrassVem { get; }
 
-		private float grassRE { get; }
+		private float GrassRe { get; }
 
-		private float grassKGDM { get; }
+		private float GrassKgdm { get; }
 
-		private float grassREdiff { get; }
+		private float GrassREdiff { get; }
 
 
 		//public Herd GrassHerd{ get; private set; }
 
 		//public float totalVEM  
-		public float totalVEM
+		public float TotalVem
 		{
-			get { return RationList.Sum(x => x.AppliedVem) + grassVEM; }
+			get { return RationList.Sum(x => x.AppliedVem) + GrassVem; }
 		}
 
-		public float totalVEM_SupplementaryFeedProduct
+		public float TotalVemSupplementaryFeedProduct
 		{
 			get { return RationList.Sum(x => x.AppliedVem * x.SupplmenteryPartOfTotalVem); }
 		}
 
-		public float totalDM
+		public float TotalDm
 		{
-			get { return RationList.Sum(x => x.AppliedKgdm) + grassKGDM; }
+			get { return RationList.Sum(x => x.AppliedKgdm) + GrassKgdm; }
 		}
 
-		public float totalDM_SupplementaryFeedProduct
+		public float TotalDmSupplementaryFeedProduct
 		{
 			get { return RationList.Sum(x => x.AppliedVem * x.KgdmSupplementaryFeedProductPerVem); }
 		}
 
-		public float totalREdiff
+		public float TotalReDiff
 		{
-			get { return RationList.Sum(x => x.AppliedREdiff) + grassREdiff; }
+			get { return RationList.Sum(x => x.AppliedREdiff) + GrassREdiff; }
 		}
 
-		public float totalRE
+		public float TotalRe
 		{
-			get { return RationList.Sum(x => x.AppliedTotalRe) + grassRE; }
+			get { return RationList.Sum(x => x.AppliedTotalRe) + GrassRe; }
 		}
 
 		//Reference to the original class, so clones can be matched.
-		public Ration? originalRefference { get; }
+		public Ration? OriginalRefference { get; }
 
 		//adds or subtracts the amount of applied VEM to the RationList
 		public void ApplyChangesToRationList(List<AbstractMappedFoodItem> rationChanges)
@@ -112,13 +112,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public Ration Clone()
 		{
-			Ration clone = new(originalRefference, grassKGDM, grassFeedAnalysis);
+			Ration clone = new(OriginalRefference, GrassKgdm, GrassFeedAnalysis);
 			foreach (AbstractMappedFoodItem item in RationList) clone.ApplyChangesToRationList(item.Clone());
 
 			return clone;
 		}
 
-		public Dictionary<FeedProduct, float> getFeedProducts()
+		public Dictionary<FeedProduct, float> GetFeedProducts()
 		{
 			MappedFeedProductGroup feedproductgroup =
 				new(RationList
@@ -128,11 +128,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 			//new MappedFeedProductGroup(RationList.Select(x => (FoodItem: x, partOfGroupInVEM: x.appliedVEM).ToTuple()).ToList());
 		}
 
-		public void printProducts()
+		public void PrintProducts()
 		{
 			Console.WriteLine("Rotation Algorithm finished, rotation:");
-			Console.WriteLine($"- {"grass",-25}|{grassKGDM,10} kg | type: grass");
-			foreach (KeyValuePair<FeedProduct, float> feedRationFeedProduct in getFeedProducts())
+			Console.WriteLine($"- {"grass",-25}|{GrassKgdm,10} kg | type: grass");
+			foreach (KeyValuePair<FeedProduct, float> feedRationFeedProduct in GetFeedProducts())
 				Console.WriteLine(
 					$"- {feedRationFeedProduct.Key.Name,-25}|{feedRationFeedProduct.Value,10} kg | type: {feedRationFeedProduct.Key.GetType().Name}");
 		}

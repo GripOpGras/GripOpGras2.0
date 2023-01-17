@@ -6,7 +6,7 @@ using GripOpGras2.Specs.Drivers;
 namespace GripOpGras2.Specs.StepDefinitions
 {
 	[Binding]
-	public class GripOpGras2_RationAlgorithmStepDefinitions
+	public class GripOpGras2RationAlgorithmStepDefinitions
 	{
 		private readonly IRationAlgorithm _rationAlgorithm = new RationAlgorithmV1();
 
@@ -24,28 +24,28 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly ExceptionDriver _exceptionDriver;
 
-		public GripOpGras2_RationAlgorithmStepDefinitions(ExceptionDriver exceptionDriver)
+		public GripOpGras2RationAlgorithmStepDefinitions(ExceptionDriver exceptionDriver)
 		{
 			_exceptionDriver = exceptionDriver;
 		}
 
 		[Given(@"I have the roughage product (.*) that contains (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheRoughageProductThatContainsProteinAndVEM(string roughageName, float protein, float vem)
+		public void GivenIHaveTheRoughageProductThatContainsProteinAndVem(string roughageName, float protein, float vem)
 		{
 			_feedProducts.Add(new Roughage
 			{
 				Name = roughageName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					RE = protein,
-					VEM = vem
+					Re = protein,
+					Vem = vem
 				},
 				Available = true
 			});
 		}
 
 		[Given(@"I have the supplementary product (.*) that contains (.*) g protein, and (.*) VEM")]
-		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVEM(string supplementaryName,
+		public void GivenIHaveTheSupplementaryProductThatContainsDmProteinAndVem(string supplementaryName,
 			float protein, float vem)
 		{
 			_feedProducts.Add(new SupplementaryFeedProduct()
@@ -53,8 +53,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 				Name = supplementaryName,
 				FeedAnalysis = new FeedAnalysis
 				{
-					RE = protein,
-					VEM = vem
+					Re = protein,
+					Vem = vem
 				},
 				Available = true
 			});
@@ -78,15 +78,15 @@ namespace GripOpGras2.Specs.StepDefinitions
 		}
 
 		[Given(@"each kg dm grass contains (.*) VEM and (.*) g protein")]
-		public void GivenEachKgDmGrassContainsVEMAndProtein(float vem, float protein)
+		public void GivenEachKgDmGrassContainsVemAndProtein(float vem, float protein)
 		{
 			_grazingActivity.Plot = new Plot
 			{
 				Name = "Test plot",
 				FeedAnalysis = new FeedAnalysis
 				{
-					VEM = vem,
-					RE = protein
+					Vem = vem,
+					Re = protein
 				}
 			};
 		}
@@ -138,7 +138,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_result!.FeedProducts.Should().NotBeNull();
 
 			float totalAmountOfProtein =
-				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.RE * feedProduct.Value)!;
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.Re * feedProduct.Value)!;
 			totalAmountOfProtein.Should().BeInRange(min, max);
 		}
 
@@ -148,9 +148,9 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_result.Should().NotBeNull();
 			_result!.FeedProducts.Should().NotBeNull();
 
-			float totalAmountOfVEM =
-				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.VEM * feedProduct.Value)!;
-			totalAmountOfVEM.Should().BeInRange(min, max);
+			float totalAmountOfVem =
+				(float)_result.FeedProducts!.Sum(feedProduct => feedProduct.Key.FeedAnalysis!.Vem * feedProduct.Value)!;
+			totalAmountOfVem.Should().BeInRange(min, max);
 		}
 
 		[Then(@"the ration must contain (.*) kg of grass")]

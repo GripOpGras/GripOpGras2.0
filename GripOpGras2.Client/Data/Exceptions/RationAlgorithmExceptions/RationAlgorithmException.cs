@@ -12,28 +12,28 @@
 		}
 	}
 
-	public class NoProductsWithPossibleREException : RationAlgorithmException
+	public class NoProductsWithPossibleReException : RationAlgorithmException
 	{
-		public NoProductsWithPossibleREException() : base(
+		public NoProductsWithPossibleReException() : base(
 			"No products with possible RE. Make sure to add products with different RE values")
 		{
 		}
 
-		public NoProductsWithPossibleREException(string message) : base(
+		public NoProductsWithPossibleReException(string message) : base(
 			$"The feed ration cannot be made because there are some products missing: {message}.")
 		{
 		}
 	}
 
-	public class NoPossibleRENaturalProductGroupsException : RationAlgorithmException
+	public class NoPossibleReNaturalProductGroupsException : RationAlgorithmException
 	{
-		public NoPossibleRENaturalProductGroupsException() : base(
+		public NoPossibleReNaturalProductGroupsException() : base(
 			"It is not possible to make a feedproduct group with the targeted RE value. Make sure to add products with different RE values")
 		{
 		}
 
 
-		public NoPossibleRENaturalProductGroupsException(string message) : base(
+		public NoPossibleReNaturalProductGroupsException(string message) : base(
 			$"It is not possible to make a feedproduct group with the targeted RE value of: {message}. Make sure to add products with different RE values")
 		{
 		}

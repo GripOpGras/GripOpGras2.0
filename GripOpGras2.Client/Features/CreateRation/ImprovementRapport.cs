@@ -19,22 +19,22 @@
 		private readonly TargetValues _targetValues;
 
 
-		public ImprovementRapport(List<AbstractMappedFoodItem> changesPerVEM, TargetValues targetValues,
+		public ImprovementRapport(List<AbstractMappedFoodItem> changesPerVem, TargetValues targetValues,
 			Ration currentRation)
 		{
 			_targetValues = targetValues;
 			Ration currentRationClone = currentRation.Clone();
-			ChangesPerVem = changesPerVEM.Select(x => x.Clone()).ToList();
+			ChangesPerVem = changesPerVem.Select(x => x.Clone()).ToList();
 			float totalKgSupplementaryFeedProductPerVem =
-				changesPerVEM.Sum(x => x.AppliedVem * x.KgdmSupplementaryFeedProductPerVem);
+				changesPerVem.Sum(x => x.AppliedVem * x.KgdmSupplementaryFeedProductPerVem);
 			ChangeInVemRequired = GetChangeInVemRequired(currentRationClone);
 			//make a copy of the list and the items in the list
-			ChangesPerKgSupplementaryFeedProduct = changesPerVEM.Select(x => x.Clone()).ToList();
+			ChangesPerKgSupplementaryFeedProduct = changesPerVem.Select(x => x.Clone()).ToList();
 			ChangesPerKgSupplementaryFeedProduct.ForEach(x =>
 				x.SetAppliedVem(x.AppliedVem / totalKgSupplementaryFeedProductPerVem));
 			MaxChangeInVem = GetMaxChangeInVem(currentRationClone);
 			Console.WriteLine($"improvementrapport|setup: Change in VEM required: {ChangeInVemRequired}, Products:");
-			changesPerVEM.ForEach(x =>
+			changesPerVem.ForEach(x =>
 				Console.WriteLine(
 					$"improvementrapport|setup|singleFoodItemChange: Amount of KGDM change: {x.AppliedKgdm}, KGDM change pr VM:{x.KgdMperVem}, Products: {x.GetProductsForConsole()}"));
 		}
@@ -54,7 +54,7 @@
 		/// <returns></returns>
 		public float GetChangeInVemRequired(Ration ration)
 		{
-			float kgOversupply = ration.totalDM - _targetValues.TargetedMaxKgDm;
+			float kgOversupply = ration.TotalDm - _targetValues.TargetedMaxKgDm;
 			return kgOversupply / -KgdmChangePerVem;
 		}
 

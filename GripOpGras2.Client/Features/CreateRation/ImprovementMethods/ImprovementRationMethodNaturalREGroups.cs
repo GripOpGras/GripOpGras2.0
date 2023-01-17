@@ -8,11 +8,11 @@
 	{
 		public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
 			List<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableRENaturalFeedProductGroups, Ration currentRation)
+			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, Ration currentRation)
 		{
 			List<ImprovementRapport> improvementRapportOptions = new();
 			foreach (AbstractMappedFoodItem foodItem in currentRation.RationList.Where(x => x.REdiffPerVem < 0.001f))
-			foreach (AbstractMappedFoodItem availableGroup in availableRENaturalFeedProductGroups)
+			foreach (AbstractMappedFoodItem availableGroup in availableReNaturalFeedProductGroups)
 			{
 				if (foodItem.KgdMperVem < availableGroup.KgdMperVem || foodItem.AppliedVem < 1)
 					continue;

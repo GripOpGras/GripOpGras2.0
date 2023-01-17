@@ -78,7 +78,7 @@
 		}
 
 		feedProduct.Available = true;
-		feedProduct.FeedAnalysis = new FeedAnalysis { RE = _feedProductToAdd.Re, VEM = _feedProductToAdd.Vem };
+		feedProduct.FeedAnalysis = new FeedAnalysis { Re = _feedProductToAdd.Re, Vem = _feedProductToAdd.Vem };
 		feedProduct.Name = _feedProductToAdd.Name;
 
 		OnFeedProductAdded.InvokeAsync(feedProduct);

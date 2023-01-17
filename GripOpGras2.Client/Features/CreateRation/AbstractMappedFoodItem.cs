@@ -36,12 +36,12 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public abstract AbstractMappedFoodItem Clone();
 
 
-		public void SetAppliedVem(float VEM)
+		public void SetAppliedVem(float vem)
 		{
-			AppliedVem = VEM;
-			AppliedKgdm = VEM * KgdMperVem;
-			AppliedREdiff = VEM * REdiffPerVem;
-			AppliedTotalRe = VEM * REperVem;
+			AppliedVem = vem;
+			AppliedKgdm = vem * KgdMperVem;
+			AppliedREdiff = vem * REdiffPerVem;
+			AppliedTotalRe = vem * REperVem;
 		}
 
 		public string GetProductsForConsole()
@@ -59,21 +59,21 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		private readonly FeedProduct _containingFeedProduct;
 
-		private readonly bool isSupplementaryFeedProduct;
+		private readonly bool _isSupplementaryFeedProduct;
 
-		public MappedFeedProduct(FeedProduct feedProduct, float REtarget = 150)
+		public MappedFeedProduct(FeedProduct feedProduct, float reTarget = 150)
 		{
 			if (feedProduct.FeedAnalysis == null) throw new GripOpGras2Exception("FeedAnalysis cannot be null");
-			if (feedProduct.FeedAnalysis.VEM == null) throw new GripOpGras2Exception("VEM cannot be null");
-			if (feedProduct.FeedAnalysis.RE == null) throw new GripOpGras2Exception("RE cannot be null");
-			isSupplementaryFeedProduct = feedProduct.GetType() == typeof(SupplementaryFeedProduct);
-			KgdMperVem = (float)(1f / feedProduct.FeedAnalysis.VEM);
-			KgdmSupplementaryFeedProductPerVem = isSupplementaryFeedProduct ? KgdMperVem : 0;
-			REperVem = (float)(feedProduct.FeedAnalysis.RE / feedProduct.FeedAnalysis.VEM);
-			REperVemSupplmenteryFeedProduct = isSupplementaryFeedProduct ? REperVem : 0;
-			REdiffPerVem = (float)((feedProduct.FeedAnalysis.RE - REtarget) / feedProduct.FeedAnalysis.VEM);
-			REdiffPerVemSupplementaryFeedProduct = isSupplementaryFeedProduct ? REdiffPerVem : 0;
-			SupplmenteryPartOfTotalVem = isSupplementaryFeedProduct ? 1 : 0;
+			if (feedProduct.FeedAnalysis.Vem == null) throw new GripOpGras2Exception("VEM cannot be null");
+			if (feedProduct.FeedAnalysis.Re == null) throw new GripOpGras2Exception("RE cannot be null");
+			_isSupplementaryFeedProduct = feedProduct.GetType() == typeof(SupplementaryFeedProduct);
+			KgdMperVem = (float)(1f / feedProduct.FeedAnalysis.Vem);
+			KgdmSupplementaryFeedProductPerVem = _isSupplementaryFeedProduct ? KgdMperVem : 0;
+			REperVem = (float)(feedProduct.FeedAnalysis.Re / feedProduct.FeedAnalysis.Vem);
+			REperVemSupplmenteryFeedProduct = _isSupplementaryFeedProduct ? REperVem : 0;
+			REdiffPerVem = (float)((feedProduct.FeedAnalysis.Re - reTarget) / feedProduct.FeedAnalysis.Vem);
+			REdiffPerVemSupplementaryFeedProduct = _isSupplementaryFeedProduct ? REdiffPerVem : 0;
+			SupplmenteryPartOfTotalVem = _isSupplementaryFeedProduct ? 1 : 0;
 			SetAppliedVem(0);
 			OriginalReference = this;
 			_containingFeedProduct = feedProduct;
@@ -110,25 +110,25 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public MappedFeedProductGroup(params (AbstractMappedFoodItem FoodItem, float partOfGroupInVEM)[] products)
 		{
 			//TODO check if the group contains only 1 product, if so, return that product instead of a group
-			float totalVEM = products.Sum(x => x.partOfGroupInVEM);
-			KgdMperVem = products.Sum(x => x.FoodItem.KgdMperVem * x.partOfGroupInVEM) / totalVEM;
+			float totalVem = products.Sum(x => x.partOfGroupInVEM);
+			KgdMperVem = products.Sum(x => x.FoodItem.KgdMperVem * x.partOfGroupInVEM) / totalVem;
 			KgdmSupplementaryFeedProductPerVem =
-				products.Sum(x => x.FoodItem.KgdmSupplementaryFeedProductPerVem * x.partOfGroupInVEM) / totalVEM;
-			REperVem = products.Sum(x => x.FoodItem.REperVem * x.partOfGroupInVEM) / totalVEM;
+				products.Sum(x => x.FoodItem.KgdmSupplementaryFeedProductPerVem * x.partOfGroupInVEM) / totalVem;
+			REperVem = products.Sum(x => x.FoodItem.REperVem * x.partOfGroupInVEM) / totalVem;
 			REperVemSupplmenteryFeedProduct =
-				products.Sum(x => x.FoodItem.REperVemSupplmenteryFeedProduct * x.partOfGroupInVEM) / totalVEM;
-			REdiffPerVem = products.Sum(x => x.FoodItem.REdiffPerVem * x.partOfGroupInVEM) / totalVEM;
+				products.Sum(x => x.FoodItem.REperVemSupplmenteryFeedProduct * x.partOfGroupInVEM) / totalVem;
+			REdiffPerVem = products.Sum(x => x.FoodItem.REdiffPerVem * x.partOfGroupInVEM) / totalVem;
 			REdiffPerVemSupplementaryFeedProduct =
-				products.Sum(x => x.FoodItem.REdiffPerVemSupplementaryFeedProduct * x.partOfGroupInVEM) / totalVEM;
+				products.Sum(x => x.FoodItem.REdiffPerVemSupplementaryFeedProduct * x.partOfGroupInVEM) / totalVem;
 			SupplmenteryPartOfTotalVem = products.Sum(x => x.FoodItem.SupplmenteryPartOfTotalVem * x.partOfGroupInVEM) /
-			                             totalVEM;
+			                             totalVem;
 			SetAppliedVem(0);
 			OriginalReference = this;
 			//fixing the partOfGroupInVem so that it combines to a maximum of 1
 			List<(AbstractMappedFoodItem FoodItem, float partOfGroupInVEM)> productsFixedList = new();
 			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in products.ToList())
 				productsFixedList.Add((FoodItem: foodItem,
-					partOfGroupInVEM: partOfGroupInVem / totalVEM));
+					partOfGroupInVEM: partOfGroupInVem / totalVem));
 
 			_sourceProducts = productsFixedList;
 		}
@@ -140,10 +140,10 @@ namespace GripOpGras2.Client.Features.CreateRation
 			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in
 			         _sourceProducts) //sourceproducts. use this PartOfGroupInVem.
 			{
-				AbstractMappedFoodItem product_customized = foodItem.Clone();
-				product_customized.SetAppliedVem(partOfGroupInVem * AppliedVem);
+				AbstractMappedFoodItem productCustomized = foodItem.Clone();
+				productCustomized.SetAppliedVem(partOfGroupInVem * AppliedVem);
 
-				foreach (KeyValuePair<FeedProduct, float> item in product_customized.GetProducts())
+				foreach (KeyValuePair<FeedProduct, float> item in productCustomized.GetProducts())
 					if (products.ContainsKey(item.Key))
 						products[item.Key] += item.Value;
 					else

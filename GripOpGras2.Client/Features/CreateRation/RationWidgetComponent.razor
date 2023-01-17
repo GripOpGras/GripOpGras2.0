@@ -48,22 +48,22 @@
 
 	private float CalculateAmountOfVem(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
 	{
-		if (feedAnalysis?.VEM == null || dmIntakeInKg is null or 0)
+		if (feedAnalysis?.Vem == null || dmIntakeInKg is null or 0)
 		{
 			return 0;
 		}
 
-		return (float)(dmIntakeInKg * feedAnalysis.VEM);
+		return (float)(dmIntakeInKg * feedAnalysis.Vem);
 	}
 
 	private float CalculateAmountOfReInKg(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
 	{
-		if (feedAnalysis?.RE == null || dmIntakeInKg is null or 0)
+		if (feedAnalysis?.Re == null || dmIntakeInKg is null or 0)
 		{
 			return 0;
 		}
 
-		return (float)(dmIntakeInKg * feedAnalysis.RE / 1000);
+		return (float)(dmIntakeInKg * feedAnalysis.Re / 1000);
 	}
 
 }

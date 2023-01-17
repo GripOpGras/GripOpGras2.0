@@ -7,7 +7,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// <summary>
 		///     The amount of VEM that a cow needs a day, if the cow doesn't product any milk
 		/// </summary>
-		public const float DefaultVEMNeedsOfCow = 5500;
+		public const float DefaultVemNeedsOfCow = 5500;
 
 		/// <summary>
 		///     The amount of VEM that needs to be added per L Meetmilk produced.
@@ -17,7 +17,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// <summary>
 		///     The amount of KG DM Supplementary Feed Products that should be given per cow per day.
 		/// </summary>
-		public const float MaxAmountOfSupplementaryFeedProductInKGPerCow = 4.5f;
+		public const float MaxAmountOfSupplementaryFeedProductInKgPerCow = 4.5f;
 
 		/// <summary>
 		///     The maximum amount of KG DM Feed products (inc grass) that a cow should be able to eat a day.
@@ -29,26 +29,26 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// <summary>
 		///     The VEM should be between 100%-110% of what the cows should actually eat. 105% is in between of that
 		/// </summary>
-		public const float OptimalVEMCoverage = 1.05f;
+		public const float OptimalVemCoverage = 1.05f;
 
 		/// <summary>
 		///     The RE has an optimum of 150 RE per KG DM
 		/// </summary>
-		public const float OptimalRECoverageInGramsPerKgDm = 150;
+		public const float OptimalReCoverageInGramsPerKgDm = 150;
 
 		/// <summary>
 		///     When the RE needs to differ fromt e optimum, the max RE/KGDM shoud be 170.
 		///     TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet
 		///     worden gewerkt
 		/// </summary>
-		public const float MaxRECoverageInGramsPerKgDm = 170;
+		public const float MaxReCoverageInGramsPerKgDm = 170;
 
 		/// <summary>
 		///     When the RE needs to differ from te optimum, the  RE/KGDM shoud not go below 140 .
 		///     TODO alleen deze gebruiken wanneer bij de uitkomsten is gebleken dat 150 niet te doen is, dus dat er opnieuw moet
 		///     worden gewerkt
 		/// </summary>
-		public const float MinRECoverageInGramsPerKgDm = 140;
+		public const float MinReCoverageInGramsPerKgDm = 140;
 
 		private readonly Herd _herd;
 
@@ -71,8 +71,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 		/// <param name="targetedMaxKgDmIntakePerCow">optional. set the max KG DM intake per cow by hand, for testing purposes.</param>
 		public TargetValues(Herd herd,
 			MilkProductionAnalysis milkProductionAnalysis,
-			float targetedREcoveragePerKgDm = OptimalRECoverageInGramsPerKgDm,
-			float targetedMaxAmountOfSupplementaryFeedProductInKgPerCow = MaxAmountOfSupplementaryFeedProductInKGPerCow,
+			float targetedREcoveragePerKgDm = OptimalReCoverageInGramsPerKgDm,
+			float targetedMaxAmountOfSupplementaryFeedProductInKgPerCow = MaxAmountOfSupplementaryFeedProductInKgPerCow,
 			float targetedMaxKgDmIntakePerCow = MaxKgDmIntakePerCow)
 		{
 			_herd = herd;
@@ -80,25 +80,25 @@ namespace GripOpGras2.Client.Features.CreateRation
 			TargetedREcoveragePerKgDm = targetedREcoveragePerKgDm;
 			TargetedMaxKgDmSupplementaryFeedProductPerCow = targetedMaxAmountOfSupplementaryFeedProductInKgPerCow;
 			TargetedMaxKgDmIntakePerCow = targetedMaxKgDmIntakePerCow;
-			TargetedVEM =
-				(_milkProductionAnalysis.Amount * VemNeedsPerLiterMilk + DefaultVEMNeedsOfCow * herd.NumberOfAnimals) *
-				OptimalVEMCoverage;
+			TargetedVem =
+				(_milkProductionAnalysis.Amount * VemNeedsPerLiterMilk + DefaultVemNeedsOfCow * herd.NumberOfAnimals) *
+				OptimalVemCoverage;
 		}
 
-		public float TargetedREcoveragePerKgDm { get; set; } = OptimalRECoverageInGramsPerKgDm;
+		public float TargetedREcoveragePerKgDm { get; set; } = OptimalReCoverageInGramsPerKgDm;
 
 		public float TargetedMaxKgDmSupplementaryFeedProductPerCow { get; set; } =
-			MaxAmountOfSupplementaryFeedProductInKGPerCow;
+			MaxAmountOfSupplementaryFeedProductInKgPerCow;
 
 		public float TargetedMaxKgDmIntakePerCow { get; set; } = MaxKgDmIntakePerCow;
 
-		public float TargetedVEMPerCow => TargetedVEM / _herd.NumberOfAnimals;
+		public float TargetedVemPerCow => TargetedVem / _herd.NumberOfAnimals;
 
 		public float TargetedMaxKgDm => TargetedMaxKgDmIntakePerCow * _herd.NumberOfAnimals;
 
 		public float TargetedMaxKgDmSupplementaryFeedProduct =>
 			TargetedMaxKgDmSupplementaryFeedProductPerCow * _herd.NumberOfAnimals;
 
-		public float TargetedVEM { get; set; }
+		public float TargetedVem { get; set; }
 	}
 }

@@ -18,23 +18,23 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			{
 				Date = DateTime.Now,
 				DryMatter = dryMatter,
-				RE = re,
-				VEM = vem
+				Re = re,
+				Vem = vem
 			};
 			return feedProduct;
 		}
 
-		public static MappedFeedProduct GetMappedFeedProduct(string name, float re, float vem, float appliedVEM,
+		public static MappedFeedProduct GetMappedFeedProduct(string name, float re, float vem, float appliedVem,
 			bool isRoughage = true)
 		{
 			MappedFeedProduct mappedFeedProduct = new(GetFeedProduct(name, re, vem, isRoughage));
-			mappedFeedProduct.SetAppliedVem(appliedVEM);
+			mappedFeedProduct.SetAppliedVem(appliedVem);
 			return mappedFeedProduct;
 		}
 
 		public static RationAlgorithmV1 CreateRationAlgorithm(
 			List<FeedProduct> feedProducts, float totalGrassIntake = 0,
-			float lmilk = 3000, bool hasPlot = true, float PlotRE = 210, float PlotVEM = 1000)
+			float lmilk = 3000, bool hasPlot = true, float plotRe = 210, float plotVem = 1000)
 		{
 			// Arrange
 			Herd herd = new()
@@ -60,8 +60,8 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 					{
 						Date = DateTime.Now,
 						DryMatter = 80,
-						RE = PlotRE,
-						VEM = PlotVEM
+						Re = plotRe,
+						Vem = plotVem
 					}
 				};
 			}

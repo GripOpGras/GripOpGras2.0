@@ -51,7 +51,7 @@
 		// Give Blazor WebAssembly time to update the ui
 		await Task.Delay(1);
 
-		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = Herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { RE = ReInGrassInGrams, VEM = VemInGrass } } };
+		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = Herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { Re = ReInGrassInGrams, Vem = VemInGrass } } };
 
 		FeedRation? feedRation = null;
 		
