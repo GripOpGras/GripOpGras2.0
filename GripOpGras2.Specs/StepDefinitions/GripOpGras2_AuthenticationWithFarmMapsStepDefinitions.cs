@@ -12,8 +12,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 	{
 		private readonly IWebDriver _driver;
 
-		private const string BaseUrl = "http://localhost:4200";
-
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
 		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(8);
@@ -30,7 +28,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I open the Grip op Gras application")]
 		public void WhenIOpenTheGripOpGrasApplication()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl);
+			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 		}
 
 		[Then(@"I should be redirected to the FarmMaps login page")]
@@ -50,7 +48,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Given(@"that I am on the FarmMaps login page")]
 		public void GivenThatIAmOnTheFarmMapsLoginPage()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl);
+			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 
 			// Give the page time to load
 			_driver.FindElement(By.ClassName("login-page"));
@@ -81,8 +79,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication()
 		{
 			Thread.Sleep(_pageLoadDelay);
-
-			_driver.Url.Should().Be(BaseUrl + "/");
+			Uri driverUrl = new(_driver.Url);
+			driverUrl.LocalPath.Should().Be("/");
 		}
 
 		[Then(@"the page should show my email address")]
@@ -111,7 +109,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Given(@"that I am logged into the application")]
 		public void GivenThatIAmLoggedIntoTheApplication()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl);
+			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 
 			WebDriverUtils.LoginToApplication(_driver, _farmMapsTestAccount, _pageLoadDelay);
 		}
@@ -119,9 +117,11 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Given(@"that I am currently on the home page")]
 		public void GivenThatIAmCurrentlyOnTheHomePage()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl);
+			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 			Thread.Sleep(_pageLoadDelay);
-			if (_driver.Url != BaseUrl + "/")
+			Uri driverUrl = new(_driver.Url);
+
+			if (driverUrl.LocalPath != "/")
 			{
 				throw new UnexpectedPageUrlException(_driver.Url, "home page");
 			}
@@ -141,7 +141,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"I should be logged out of the application")]
 		public void ThenIShouldBeLoggedOutOfTheApplication()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl);
+			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 
 			IWebElement loginPage = _driver.FindElement(By.ClassName("login-page"));
 			loginPage.Should().NotBeNull();
@@ -153,7 +153,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I visit the test page")]
 		public void WhenIVisitTheTestPage()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl + "/testpage");
+			WebDriverUtils.NavigateWebDriverToApplication(_driver, "/testpage");
 			Thread.Sleep(_pageLoadDelay);
 		}
 
@@ -167,11 +167,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I visit a page that doesn't exist")]
 		public void WhenIVisitAPageThatDoesntExist()
 		{
-			WebDriverUtils.NavigateWebDriverToApplication(_driver, BaseUrl + "/this-is-a-page-that-doesnt-exist");
+			WebDriverUtils.NavigateWebDriverToApplication(_driver, "/this-is-a-page-that-doesnt-exist");
 			Thread.Sleep(_pageLoadDelay);
 		}
-
-
-
 	}
 }
