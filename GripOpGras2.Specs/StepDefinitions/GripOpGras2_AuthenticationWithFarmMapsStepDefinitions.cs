@@ -15,7 +15,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
-		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(4);
+		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(8);
 
 		public GripOpGras2_AuthenticationWithFarmMapsStepDefinitions(IWebDriver driver)
 		{
