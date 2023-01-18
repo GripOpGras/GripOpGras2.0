@@ -17,7 +17,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			float re, float reSupplementaryFeedProduct, float expectedVem, float expectedVemSupplementaryFeedProduct,
 			float expectedDm, float expectedDmSupplementaryFeedProduct, float expectedRediff)
 		{
-			Ration ration = new();
+			RationPlaceholder ration = new();
 			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 1", re, vem, appliedVem));
 			ration.ApplyChangesToRationList(GetMappedFeedProduct("product 2", reSupplementaryFeedProduct, vemSupplementaryFeedProduct,
 				appliedVeMbijpord, false));
@@ -37,7 +37,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			float reSupplementaryFeedProduct, float expectedVem, float expectedVemSupplementaryFeedProduct, float expectedDm, float expectedDmSupplementaryFeedProduct,
 			float expectedRediff)
 		{
-			Ration ration = new();
+			RationPlaceholder ration = new();
 			MappedFeedProduct mappeditem1 = GetMappedFeedProduct("product 1", re, vem, 5);
 			MappedFeedProduct mappeditem2 = GetMappedFeedProduct("product 2", reSupplementaryFeedProduct, vemSupplementaryFeedProduct, 5, false);
 			MappedFeedProductGroup mappedcombo = new((mappeditem1, 0.5f), (mappeditem2, 0.5f));
@@ -56,7 +56,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 		public void ApplyChangesToRationListTest()
 		{
 			// Arrange
-			Ration ration = new();
+			RationPlaceholder ration = new();
 			AbstractMappedFoodItem item1 = GetMappedFeedProduct("product 1", 10f, 100f, 10f);
 			AbstractMappedFoodItem item2 = GetMappedFeedProduct("product 2", 20f, 200f, 20f);
 			ration.ApplyChangesToRationList(item1);
@@ -86,7 +86,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 		public void ErrorOnIllegalChangesToRationListTest()
 		{
 			// Arrange
-			Ration ration = new();
+			RationPlaceholder ration = new();
 			AbstractMappedFoodItem item1 = GetMappedFeedProduct("product 1", 10f, 100f, 10f);
 			AbstractMappedFoodItem item2 = GetMappedFeedProduct("product 2", 20f, 200f, 20f);
 			ration.ApplyChangesToRationList(item1);
@@ -108,11 +108,11 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 		public void CloneTest()
 		{
 			// Arrange
-			Ration ration = new();
+			RationPlaceholder ration = new();
 			AbstractMappedFoodItem item1 = GetMappedFeedProduct("product 1", 10f, 100f, 10f);
 			ration.ApplyChangesToRationList(item1);
 			//Act
-			Ration clone = ration.Clone();
+			RationPlaceholder clone = ration.Clone();
 			List<AbstractMappedFoodItem> changes = new()
 			{
 				item1.Clone()

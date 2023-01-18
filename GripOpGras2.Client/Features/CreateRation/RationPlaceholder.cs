@@ -4,12 +4,12 @@ using GripOpGras2.Domain.FeedProducts;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
-	public class Ration
+	public class RationPlaceholder
 	{
 		public IReadOnlyList<AbstractMappedFoodItem> RationList = new List<AbstractMappedFoodItem>();
 
 		//Constructor, with an optional originalReference. When not given, it wil create a reference to self.
-		public Ration(Ration? reference = null, float? grassIntake = null, FeedAnalysis? grassAnalysis = null)
+		public RationPlaceholder(RationPlaceholder? reference = null, float? grassIntake = null, FeedAnalysis? grassAnalysis = null)
 		{
 			OriginalRefference = reference ?? this;
 			if (grassIntake != null && grassAnalysis != null)
@@ -77,7 +77,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		}
 
 		//Reference to the original class, so clones can be matched.
-		public Ration? OriginalRefference { get; }
+		public RationPlaceholder? OriginalRefference { get; }
 
 		//adds or subtracts the amount of applied VEM to the RationList
 		public void ApplyChangesToRationList(List<AbstractMappedFoodItem> rationChanges)
@@ -87,7 +87,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public void ApplyChangesToRationList(params AbstractMappedFoodItem[] rationChanges)
 		{
-			Ration newRation = Clone();
+			RationPlaceholder newRation = Clone();
 			List<AbstractMappedFoodItem> newList = RationList.ToList();
 			foreach (AbstractMappedFoodItem foodItem in rationChanges)
 			{
@@ -110,9 +110,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 			RationList = newList;
 		}
 
-		public Ration Clone()
+		public RationPlaceholder Clone()
 		{
-			Ration clone = new(OriginalRefference, GrassKgdm, GrassFeedAnalysis);
+			RationPlaceholder clone = new(OriginalRefference, GrassKgdm, GrassFeedAnalysis);
 			foreach (AbstractMappedFoodItem item in RationList) clone.ApplyChangesToRationList(item.Clone());
 
 			return clone;

@@ -15,7 +15,7 @@
 	{
 		public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
 			List<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, Ration currentRation)
+			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, RationPlaceholder currentRation)
 		{
 			List<ImprovementRapport> improvementRapportOptions = new();
 			//foreach product that has a RE/KG that isn't equal to the targeted Value, check if it can be replaced by another product.

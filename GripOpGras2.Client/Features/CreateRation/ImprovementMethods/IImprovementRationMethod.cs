@@ -12,6 +12,6 @@
 	{
 		List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
 			List<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, Ration currentRation);
+			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, RationPlaceholder currentRation);
 	}
 }

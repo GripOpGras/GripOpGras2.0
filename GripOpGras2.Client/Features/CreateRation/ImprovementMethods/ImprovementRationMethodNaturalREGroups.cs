@@ -8,7 +8,7 @@
 	{
 		public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
 			List<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, Ration currentRation)
+			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, RationPlaceholder currentRation)
 		{
 			List<ImprovementRapport> improvementRapportOptions = new();
 			foreach (AbstractMappedFoodItem foodItem in currentRation.RationList.Where(x => x.REdiffPerVem < 0.001f))
@@ -25,7 +25,7 @@
 					oldItem,
 					newItem
 				};
-				Ration rationWithChanges = currentRation.Clone();
+				RationPlaceholder rationWithChanges = currentRation.Clone();
 				rationWithChanges.ApplyChangesToRationList(changes);
 				ImprovementRapport improvementRapport = new(changes, targetValues, currentRation);
 				if (improvementRapport.KgdmChangePerVem != 0)

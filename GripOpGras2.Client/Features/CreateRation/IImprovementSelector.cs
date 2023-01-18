@@ -4,7 +4,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 {
 	public interface IImprovementSelector
 	{
-		void Initialize(ref Ration currentRation,
+		void Initialize(ref RationPlaceholder currentRation,
 			ref TargetValues targetValues);
 
 		List<AbstractMappedFoodItem> DetermineImprovementRationsWithSupplementaryFeedProduct(
@@ -21,11 +21,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 			new ImprovementRationMethodGrassReNuterilizer()
 		};
 
-		private Ration _currentRation = null!;
+		private RationPlaceholder _currentRation = null!;
 
 		private TargetValues _targetValues = null!;
 
-		public void Initialize(ref Ration currentRation, ref TargetValues targetValues)
+		public void Initialize(ref RationPlaceholder currentRation, ref TargetValues targetValues)
 		{
 			_currentRation = currentRation;
 			_targetValues = targetValues;
@@ -57,21 +57,21 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			improvementMethods ??= _basicImprovementMethods;
 			Console.WriteLine("Improvementselector: Run Improvement Algorithm");
-			Ration testRation = TestImprovements(improvementRapports,
+			RationPlaceholder testRationPlaceholder = TestImprovements(improvementRapports,
 				out Dictionary<ImprovementRapport, float> firstRoundChanges, _currentRation);
 			List<AbstractMappedFoodItem> changeList =
 				firstRoundChanges.SelectMany(x => SetVemPerFoodItem(x.Key, x.Value)).ToList();
-			if (testRation.TotalDm < _targetValues.TargetedMaxKgDm
-			    && testRation.TotalDmSupplementaryFeedProduct < _targetValues.TargetedMaxKgDmSupplementaryFeedProduct)
+			if (testRationPlaceholder.TotalDm < _targetValues.TargetedMaxKgDm
+			    && testRationPlaceholder.TotalDmSupplementaryFeedProduct < _targetValues.TargetedMaxKgDmSupplementaryFeedProduct)
 			{
 				ImprovementRapport[] newRapports = improvementMethods.SelectMany(x => x.FindImprovementRationMethod(
 						_targetValues,
 						(List<AbstractMappedFoodItem>)availableFeedProducts,
 						availableReNaturalFeedProductGroups,
-						testRation.Clone()))
+						testRationPlaceholder.Clone()))
 					.ToArray();
-				Ration testRation2 = TestImprovements(newRapports,
-					out Dictionary<ImprovementRapport, float> secondRoundChanges, testRation);
+				RationPlaceholder testRation2 = TestImprovements(newRapports,
+					out Dictionary<ImprovementRapport, float> secondRoundChanges, testRationPlaceholder);
 				List<AbstractMappedFoodItem> secondChangeList =
 					secondRoundChanges.SelectMany(x => SetVemPerFoodItem(x.Key, x.Value)).ToList();
 				//combine Lists
@@ -88,11 +88,11 @@ namespace GripOpGras2.Client.Features.CreateRation
 			return changeList;
 		}
 
-		private Ration TestImprovements(ImprovementRapport[] improvementRapports1,
-			out Dictionary<ImprovementRapport, float> dictionary, Ration testRation)
+		private RationPlaceholder TestImprovements(ImprovementRapport[] improvementRapports1,
+			out Dictionary<ImprovementRapport, float> dictionary, RationPlaceholder testRationPlaceholder)
 		{
-			testRation = testRation.Clone();
-			float kgChangeNeeded = _targetValues.TargetedMaxKgDm - testRation.TotalDm;
+			testRationPlaceholder = testRationPlaceholder.Clone();
+			float kgChangeNeeded = _targetValues.TargetedMaxKgDm - testRationPlaceholder.TotalDm;
 			Console.WriteLine(
 				$"Improvementselector | improvementround | Amount of rapports: {improvementRapports1.Length}");
 			dictionary = new Dictionary<ImprovementRapport, float>();
@@ -101,24 +101,24 @@ namespace GripOpGras2.Client.Features.CreateRation
 				improvementRapports1.OrderBy(x => x.KgdmChangePerKgSupplementaryFeedProduct).Reverse();
 			foreach (ImprovementRapport rapport in orderedByKgdmPerVem)
 			{
-				float maxChangeInVem = rapport.GetMaxChangeInVem(testRation);
+				float maxChangeInVem = rapport.GetMaxChangeInVem(testRationPlaceholder);
 				float changeInVemRequired = kgChangeNeeded / rapport.KgdmChangePerVem;
 				float maxChangeForKgDmSupplementaryFeedProduct =
 					(_targetValues.TargetedMaxKgDmSupplementaryFeedProduct -
-					 testRation.TotalDmSupplementaryFeedProduct) / rapport.KgdmSupplementaryFeedProductChangePerVem;
+					 testRationPlaceholder.TotalDmSupplementaryFeedProduct) / rapport.KgdmSupplementaryFeedProductChangePerVem;
 				Console.WriteLine(
 					$"Improvementselector | improvementround | testrapport: maxChangeInVem: {maxChangeInVem} changeInVemRequired: {changeInVemRequired}, maxChangeForKgDmSupplementaryFeedProduct: {maxChangeForKgDmSupplementaryFeedProduct}");
 				float changeInVem = new float[] { maxChangeInVem, changeInVemRequired, maxChangeForKgDmSupplementaryFeedProduct }.Min();
 				if (changeInVem < 0) changeInVem = 0;
 				dictionary.Add(rapport, changeInVem);
-				testRation.ApplyChangesToRationList(SetVemPerFoodItem(rapport, changeInVem));
+				testRationPlaceholder.ApplyChangesToRationList(SetVemPerFoodItem(rapport, changeInVem));
 				Console.WriteLine(
 					$"Improvementselector | improvementround | testrapport: amount of change: {changeInVem}");
 			}
 
 			Console.WriteLine("Improvementselector | improvementround | returning improved ration:");
-			testRation.PrintProducts();
-			return testRation;
+			testRationPlaceholder.PrintProducts();
+			return testRationPlaceholder;
 		}
 
 		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithSupplementaryFeedProduct(

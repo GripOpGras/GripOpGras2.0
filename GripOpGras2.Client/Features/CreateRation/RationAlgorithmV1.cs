@@ -28,7 +28,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		///     This property will be used to save and fill the ration with possible products. It has a .Clone get, to make sure
 		///     the ration won't be changed by accident.
 		/// </summary>
-		public Ration CurrentRation = null!;
+		public RationPlaceholder CurrentRation = null!;
 
 		public TargetValues TargetValues = null!;
 
@@ -67,7 +67,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			TargetValues = new TargetValues(herd, milkProductionAnalysis);
 			//check if the nessesary values are set. TODO: make use of standard values if FeedAnalysis is not set.
 			if (grazingActivity?.Plot?.FeedAnalysis != null)
-				CurrentRation = new Ration(grassIntake: totalGrassIntake,
+				CurrentRation = new RationPlaceholder(grassIntake: totalGrassIntake,
 					grassAnalysis: grazingActivity.Plot.FeedAnalysis);
 
 			//add products

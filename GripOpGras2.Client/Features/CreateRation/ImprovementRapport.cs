@@ -20,10 +20,10 @@
 
 
 		public ImprovementRapport(List<AbstractMappedFoodItem> changesPerVem, TargetValues targetValues,
-			Ration currentRation)
+			RationPlaceholder currentRation)
 		{
 			_targetValues = targetValues;
-			Ration currentRationClone = currentRation.Clone();
+			RationPlaceholder currentRationClone = currentRation.Clone();
 			ChangesPerVem = changesPerVem.Select(x => x.Clone()).ToList();
 			float totalKgSupplementaryFeedProductPerVem =
 				changesPerVem.Sum(x => x.AppliedVem * x.KgdmSupplementaryFeedProductPerVem);
@@ -52,7 +52,7 @@
 		/// </summary>
 		/// <param name="ration"></param>
 		/// <returns></returns>
-		public float GetChangeInVemRequired(Ration ration)
+		public float GetChangeInVemRequired(RationPlaceholder ration)
 		{
 			float kgOversupply = ration.TotalDm - _targetValues.TargetedMaxKgDm;
 			return kgOversupply / -KgdmChangePerVem;
@@ -63,7 +63,7 @@
 		/// </summary>
 		/// <param name="ration"></param>
 		/// <returns>The max value that could be applied, without getting an negative value inside of the ration.</returns>
-		public float GetMaxChangeInVem(Ration ration)
+		public float GetMaxChangeInVem(RationPlaceholder ration)
 		{
 			List<float> changelist = new();
 			foreach (AbstractMappedFoodItem item in ChangesPerVem)
