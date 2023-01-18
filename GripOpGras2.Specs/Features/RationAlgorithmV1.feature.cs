@@ -196,7 +196,7 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create a ration for a herd, when having two roughage products and three supplemen" +
             "tary product")]
-        [NUnit.Framework.TestCaseAttribute("silo 1-2019", "161.56", "861.56", "maissilo 2018", "81.82", "959.39", "PERSPULP 24%", "95.24", "1037.62", "GEPLETTE TARWE", "117.14", "1219.29", "TARWE MEEL", "121.11", "1240", "59", "123.9", "903.81", "180", "25.4", "725.7", "806.58", "259.6", "309.41", "151925", "162053.33", "998870", "1098757", null)]
+        [NUnit.Framework.TestCaseAttribute("silo 1-2019", "161.56", "861.56", "maissilo 2018", "81.82", "959.39", "PERSPULP 24%", "95.24", "1037.62", "GEPLETTE TARWE", "117.14", "1219.29", "TARWE MEEL", "121.11", "1240", "59", "123.9", "903.81", "180", "1498.6", "725.7", "806.58", "259.6", "309.41", "151925", "162053.33", "998870", "1098757", null)]
         public void CreateARationForAHerdWhenHavingTwoRoughageProductsAndThreeSupplementaryProduct(
                     string roughage1, 
                     string protein_Roughage1, 
