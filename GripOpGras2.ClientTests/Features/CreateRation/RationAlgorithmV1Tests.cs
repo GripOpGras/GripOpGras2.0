@@ -1,5 +1,7 @@
-﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
+﻿using System.Security.Cryptography.X509Certificates;
+using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Client.Features.CreateRation;
+using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -451,23 +453,289 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			Assert.Contains(prod2.Name, group2.GetProducts().Select(x => x.Key.Name).ToList());
 		}
 
-		[Test()]
-		public void FindImprovementRationMethodGrassReNuterilizerTest()
-		{
-			Assert.Fail();
-		}
-
-		[Test()]
-		public void FindImprovementRationMethodNaturalReGroupsTest()
-		{
-			Assert.Fail();
-		}
-
-		[Test()]
-		public void ImprovementRationMethodChangeTargetedCoveragesTest()
-		{
-			Assert.Fail();
-		}
-
 	}
+
+
+	[TestClass()]
+	[TestFixture]
+	public class RationAlgorithmV1Tests_testplan
+	{
+		public Herd herd => new()
+		{
+			Name = "Herd1",
+			NumberOfAnimals = 55,
+			Type = "Koe"
+		};
+		public MilkProductionAnalysis getmilkProductionAnalysis(float lMilk = 1498.6f)
+		{
+			return new MilkProductionAnalysis
+			{
+				Date = DateTime.Now,
+				Amount = lMilk
+			};
+		}
+
+
+		public GrazingActivity grazingActivity(float re = 180, float vem = 904, bool hasPlot = true)
+		{
+			return new GrazingActivity()
+			{
+				Herd = herd,
+				Plot = (hasPlot)?new Plot
+				{
+					FeedAnalysis = new FeedAnalysis
+					{
+						Date = DateTime.Now,
+						DryMatter = 80,
+						Re = re,
+						Vem = vem
+					}
+				}:null,
+			};
+		}
+
+
+
+		RationAlgorithmV1 rationAlgorithm = new();
+		[Test]
+		public void TestMaxKgDmIsRespected()
+		{
+			//Arange
+			FeedProduct product1 = GetFeedProduct("prod1", 140, 50);
+			FeedProduct product2 = GetFeedProduct("prod2", 160, 50);
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			algorithm.SetUp(new[] { product1, product2 }, herd, 124, getmilkProductionAnalysis(),
+				grazingActivity(vem: 50));
+			algorithm.RunAlgorithm();
+
+			//Assert
+			Assert.AreEqual(20, rationAlgorithm.TargetValues.TargetedMaxKgDmIntakePerCow/45, "targetedMaxKgDm should be 20 in order to make the test work");
+			Assert.LessOrEqual(20,algorithm.CurrentRation.TotalDm, "ration should never be more than targeted amount of 20 per cow");
+		}
+
+		[Test]
+		public void TestMaxKgDmSupplementeryProductIsRespected()
+		{
+			//Arange
+			List<FeedProduct> products = new();
+			products.Add(GetFeedProduct("prod1",161,50));
+			products.Add(GetFeedProduct("prod2",82,50));
+			products.Add(GetFeedProduct("bijprod1",95,1037,false));
+			products.Add(GetFeedProduct("bijprod1",117.14f,1219.29f,false));
+			products.Add(GetFeedProduct("bijprod1",180,1240,false));
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			algorithm.SetUp(products,herd,13,getmilkProductionAnalysis(),grazingActivity(180,50));
+			algorithm.RunAlgorithm();
+			//Assert
+			Assert.AreEqual(4.5f, algorithm.TargetValues.TargetedMaxKgDmSupplementaryFeedProductPerCow, "the max intake per cow is based on 4.5KG in this test");
+			Assert.LessOrEqual(4.5f, algorithm.CurrentRation.TotalDmSupplementaryFeedProduct/45, "ratioin should never give more than the targeted amount of 4.5 KG supplementary products per cow");
+			Assert.AreEqual(20, rationAlgorithm.TargetValues.TargetedMaxKgDmIntakePerCow/45, "targetedMaxKgDm should be 20 in order to make the test work");
+			Assert.LessOrEqual(20,algorithm.CurrentRation.TotalDm, "ration should never be more than targeted amount of 20 per cow");
+
+		}
+
+		public class ImprovementMethodForTesting : IImprovementRationMethod
+		{
+			public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues, List<AbstractMappedFoodItem> availableFeedProducts,
+				List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, RationPlaceholder currentRation)
+			{
+				ImprovementRapport rapport1 = new(availableFeedProducts, targetValues, currentRation.Clone());
+				ImprovementRapport rapport2 = new(availableReNaturalFeedProductGroups, targetValues, currentRation.Clone());
+				return new List<ImprovementRapport>() { rapport1, rapport2 };
+			}
+		}
+		public float getVEMfromKgPerThousandVem(float kg)
+		{
+			return 1000 / kg;
+		}
+
+		[Test]
+		[TestCase(false,2500,2500,0)]
+		[TestCase(false,6000,2500,0)]
+		[TestCase(true,2500,2500,0)]
+		[TestCase(true,3000,1000,2000)]
+		[TestCase(true,6000,0,3333.3f)]
+		public void TestAlgorithmImprovementSelection(bool productBIsHalfRoughage, float VemToChange, float expectedVemImprovementA,
+			float expectedVemImprovementB)
+		{
+			//Arange
+			AbstractMappedFoodItem productToReplace = GetMappedFeedProduct("replacable", 150, getVEMfromKgPerThousandVem(3),VemToChange);
+			AbstractMappedFoodItem prodAa = GetMappedFeedProduct("ProdA", 150, getVEMfromKgPerThousandVem(1), 0,false);
+			AbstractMappedFoodItem prodBa = GetMappedFeedProduct("ProdBa", 150, getVEMfromKgPerThousandVem(1.5f), 0, false);
+			AbstractMappedFoodItem prodBb = GetMappedFeedProduct("ProdBb", 150, getVEMfromKgPerThousandVem(1.5f), 0, true);
+
+			AbstractMappedFoodItem GroupA = new MappedFeedProductGroup((prodAa,1));
+			AbstractMappedFoodItem GroupB = (productBIsHalfRoughage)? new MappedFeedProductGroup((prodBa,1),(prodBb,1)):new MappedFeedProductGroup((prodBa,1));
+
+			RationPlaceholder currentration = new RationPlaceholder(
+				grassIntake: 10,
+				grassAnalysis: new FeedAnalysis() { Vem = getVEMfromKgPerThousandVem(3), Re = 150 });
+			currentration.ApplyChangesToRationList(productToReplace);
+			Console.WriteLine($"prod0 kgdm per 1000 ve: {productToReplace.KgdMperVem*1000}");
+			Console.WriteLine($"prodA kgdm per 1000 ve: {GroupA.KgdMperVem*1000}");
+			Console.WriteLine($"prodB kgdm per 1000 ve: {GroupB.KgdMperVem*1000}");
+			Console.WriteLine($"replacableProduct applied VEM: {currentration.RationList.First().AppliedVem}");
+
+
+			TargetValues targetValues = new(new Herd() { NumberOfAnimals = 1 }, getmilkProductionAnalysis(1),targetedMaxKgDmIntakePerCow: VemToChange / getVEMfromKgPerThousandVem(3) + 10f - 5f, targetedMaxAmountOfSupplementaryFeedProductInKgPerCow:5);//max DM: existing KG product + KG grass + KG to improve
+			targetValues.TargetedVem = currentration.TotalVem;
+
+			List<AbstractMappedFoodItem> changesPerVemMethodA = new List<AbstractMappedFoodItem>();
+			AbstractMappedFoodItem changeReplaceMethA = productToReplace.Clone();
+			changeReplaceMethA.SetAppliedVem(-1);
+			AbstractMappedFoodItem changeGroupA = GroupA.Clone();
+			changeGroupA.SetAppliedVem(1);
+			changesPerVemMethodA.Add(changeReplaceMethA);
+			changesPerVemMethodA.Add(changeGroupA);
+
+			List<AbstractMappedFoodItem> changesPerVemMethodB = new List<AbstractMappedFoodItem>();
+			AbstractMappedFoodItem changeReplaceMethB = productToReplace.Clone();
+			changeReplaceMethB.SetAppliedVem(-1);
+			AbstractMappedFoodItem changeGroupB = GroupB.Clone();
+			changeGroupB.SetAppliedVem(1);
+			changesPerVemMethodB.Add(changeReplaceMethB);
+			changesPerVemMethodB.Add(changeGroupB);
+
+			ImprovementSelectorV1 selector = new();
+			List<AbstractMappedFoodItem> availablFoodGroups = new List<AbstractMappedFoodItem>()
+				{ changeGroupA, changeGroupB};
+
+			//Act
+			selector.Initialize(currentRation:ref currentration,targetValues:ref targetValues);
+			currentration.PrintProducts();
+			Console.WriteLine($"current: VEM =  {currentration.TotalVem}, targetVEM = {targetValues.TargetedVem}, currentDM = {currentration.TotalDm}, targetDM = {targetValues.TargetedMaxKgDm}");
+			List<AbstractMappedFoodItem> finalchanges = selector.DetermineImprovementRationsWithSupplementaryFeedProduct(availablFoodGroups,availablFoodGroups, improvementMethods: new ImprovementRationMethodNaturalReGroups());
+			currentration.ApplyChangesToRationList(finalchanges);
+			currentration.PrintProducts();
+			//Assert
+			Assert.AreEqual(currentration.TotalVem, targetValues.TargetedVem,1);
+			Assert.AreEqual(targetValues.TargetedMaxKgDm,currentration.TotalDm, 1);
+			Assert.IsNotEmpty(finalchanges);
+			AbstractMappedFoodItem? resultGroupA = finalchanges.FirstOrDefault(x => x.OriginalReference == changeGroupA.OriginalReference);
+			AbstractMappedFoodItem? resultGroupB = finalchanges.FirstOrDefault(x => x.OriginalReference == changeGroupB.OriginalReference);
+			if (expectedVemImprovementA == 0)
+			{
+				Assert.IsNull(resultGroupA, $"resultGroupA is not null, but {resultGroupA?.GetProductsForConsole()}");
+			}
+			else
+			{
+				Assert.NotNull(resultGroupA, "resultGroupA != null");
+				Assert.AreEqual(expectedVemImprovementA, resultGroupA!.AppliedVem, 2f, "Group A");
+			}
+
+			if (expectedVemImprovementB == 0)
+			{
+				Assert.IsNull(resultGroupB, $"resultGroupB is not null, but {resultGroupB?.GetProductsForConsole()}");
+			}
+			else
+			{
+				Assert.NotNull(resultGroupB, "resultGroupB != null");
+				Assert.AreEqual(expectedVemImprovementB, resultGroupB!.AppliedVem, 2f, "Group B");
+			}
+		}
+
+		[Test]
+		public void TestImprovementRationWithoutBetterSupplementeryProducts()
+		{
+			//Arange
+			List<FeedProduct> products = new();
+			products.Add(GetFeedProduct("prod1",161,861));
+			products.Add(GetFeedProduct("prod2",82,960));
+			products.Add(GetFeedProduct("bijprod1",95,800,false));
+			products.Add(GetFeedProduct("bijprod1",117.14f,801,false));
+			products.Add(GetFeedProduct("bijprod1",180,802,false));
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			algorithm.SetUp(products,herd,13,getmilkProductionAnalysis(),grazingActivity(180,50));
+			algorithm.RunAlgorithm();
+			//Assert
+			Assert.AreSame(0,algorithm.CurrentRation.TotalDmSupplementaryFeedProduct, "Bijporducten zouden niet gebruikt moeten zijn als ze minder efficient zijn");
+		}
+
+		[Test]
+		public void RationAlgorithmWithoutGrassTest(GrazingActivity? grazingActivity)
+		{
+			//Arange
+			List<FeedProduct> products = new();
+			products.Add(GetFeedProduct("prod1",161,861));
+			products.Add(GetFeedProduct("prod2",82,960));
+			products.Add(GetFeedProduct("bijprod1",95,1037,false));
+			products.Add(GetFeedProduct("bijprod1",117.14f,1219.29f,false));
+			products.Add(GetFeedProduct("bijprod1",180,1240,false));
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			algorithm.SetUp(products,herd,0,getmilkProductionAnalysis(),grazingActivity:null);
+			algorithm.RunAlgorithm();
+			//Assert
+			Assert.Pass("Ration should pass if there is no grass eaten.");
+		}
+
+		[Test]
+		[TestCase(120,130,140,true)]
+		[TestCase(150,148,155,false)]
+		[TestCase(155,210,210,false)]
+		[TestCase(180,185,210,true)]
+		public void TestProductREValues(float prod1Re, float prod2Re, float prod3Re, bool shouldThrowExcption)
+		{
+			//Arange
+			List<FeedProduct> products = new();
+			products.Add(GetFeedProduct("prod1",prod1Re,1037));
+			products.Add(GetFeedProduct("prod2",prod2Re,960));
+			products.Add(GetFeedProduct("bijprod1",prod3Re,1219,false));
+			RationAlgorithmV1 algorithm = new();
+			//Assert
+			if (shouldThrowExcption)
+			{
+				Assert.Throws<RationAlgorithmException>(() => algorithm.SetUp(products,herd, 124,getmilkProductionAnalysis(),grazingActivity:null));
+				Assert.Throws<RationAlgorithmException>(algorithm.RunAlgorithm);
+			}
+			else
+			{
+				algorithm.SetUp(products,herd, 124,getmilkProductionAnalysis(),grazingActivity:null);
+				algorithm.RunAlgorithm();
+			}
+			Assert.LessOrEqual(180,algorithm.CurrentRation.TotalRe/algorithm.CurrentRation.TotalDm, "RE should not be above 180g/KgDm");
+			Assert.GreaterOrEqual(140,algorithm.CurrentRation.TotalRe/algorithm.CurrentRation.TotalDm, "RE should not be under 140g/KgDm");
+		}
+
+		[Test]
+		public void TestTooMuchVEMForGrass()
+		{
+			//Arange
+			List<FeedProduct> products = new()
+			{
+				GetFeedProduct("prod1", 161, 861),
+				GetFeedProduct("prod2", 130, 960),
+				GetFeedProduct("prod3", 120,1100 ),
+				GetFeedProduct("bijprod1",95,1037,false),
+				GetFeedProduct("bijprod1",117.14f,1219.29f,false),
+				GetFeedProduct("bijprod1",180,1240,false)
+			};
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			algorithm.SetUp(products,herd,400,getmilkProductionAnalysis(),grazingActivity:grazingActivity(re:210));
+			algorithm.RunAlgorithm();
+			//Assert
+			Console.WriteLine($"{algorithm.CurrentRation.TotalVem},{algorithm.TargetValues.TargetedVem}");
+			Assert.Pass("This test is correct as long as the dynamic RE issn't implemented.");
+		}
+
+		[Test]
+		public void ExpectErrorOnRationWithouthProducts()
+		{
+			//Arange
+			List<FeedProduct> products = new();
+			RationAlgorithmV1 algorithm = new();
+			//Act
+			Assert.Throws<RationAlgorithmException>(
+				delegate
+				{ algorithm.CreateRationAsync(products, herd, 123, getmilkProductionAnalysis(), grazingActivity());
+				});
+
+
+		}
+	}
+
 }

@@ -45,23 +45,23 @@ else
 
 	<div class="form-group">
 		<label>Number of cows</label>
-		<input class="form-control" @bind="_herd.NumberOfAnimals"/>
+        <input class="form-control" @bind="_herd.NumberOfAnimals" id="NumberOfCows" />
 	</div>
 	<div class="form-group">
 		<label>Total amount of milk produced in liters by the herd</label>
-		<input class="form-control" @bind="_milkProduced.Amount"/>
+		<input class="form-control" @bind="_milkProduced.Amount" id="milkProduced"/>
 	</div>
 	<div class="form-group">
 		<label>Total net grass intake in kg dm</label>
-		<input class="form-control" @bind="_grassIntakeInKgDm"/>
+		<input class="form-control" @bind="_grassIntakeInKgDm" id="grassInputInKgDm"/>
 	</div>
 	<div class="form-group">
 		<label>Amount of VEM in each kg dm of grass</label>
-		<input class="form-control" @bind="_vemInGrass"/>
+        <input class="form-control" @bind="_vemInGrass" id="grassVem" />
 	</div>
 	<div class="form-group">
 		<label>Amount of RE in each kg dm of grass in grams</label>
-		<input class="form-control" @bind="_reInGrassInGrams"/>
+        <input class="form-control" @bind="_reInGrassInGrams" id="grassRe" />
 	</div>
 	<br/>
 	<div>

@@ -96,7 +96,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				if (itemInRationList != null)
 				{
 					itemInRationList.SetAppliedVem(itemInRationList.AppliedVem + foodItem.AppliedVem);
-					if (itemInRationList.AppliedVem < 0) throw new Exception("Applied VEM cannot be negative");
+					if (itemInRationList.AppliedVem < 0) throw new Exception($"Applied VEM cannot be negative.\nItem to change: Vem: {foodItem.AppliedVem}, product: {foodItem.GetProductsForConsole()}\nNew applied vem: {itemInRationList.AppliedVem}");
 				}
 				else
 				{
@@ -107,6 +107,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				}
 			}
 
+			newList.RemoveAll(x => x.AppliedVem == 0);
 			RationList = newList;
 		}
 

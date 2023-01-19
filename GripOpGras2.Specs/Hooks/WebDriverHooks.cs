@@ -18,7 +18,9 @@ namespace GripOpGras2.Specs.Hooks
 		public void CreateWebDriver()
 		{
 			ChromeOptions chromeOptions = new();
-			chromeOptions.AddArgument("headless");
+			chromeOptions.AddArgument("--headless");
+			chromeOptions.AddArgument("--disable-gpu");
+			chromeOptions.AddArgument("--window-size=1920,5000");
 			string projectPath = Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName;
 			ChromeDriver driver = new(projectPath + @"\Drivers\", chromeOptions);
 			driver.Manage().Window.Maximize();

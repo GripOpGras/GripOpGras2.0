@@ -1,4 +1,4 @@
-﻿<table class="table table-bordered">
+﻿<table class="table table-bordered" id="RationResult">
 	<thead>
 	<tr>
 		<th scope="col">Product</th>
@@ -12,16 +12,16 @@
 	{
 		<tr>
 			<th scope="row">Grass intake</th>
-			<td>@Ration.GrassIntake</td>
+                <td id="KGDmGrassResult">@Ration.GrassIntake</td>
 			@if (Ration.Plot != null)
 			{
-				<td>@CalculateAmountOfVem(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
-				<td>@CalculateAmountOfReInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td id="GrassVemResult">@CalculateAmountOfVem(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td id="GrassReResult">@CalculateAmountOfReInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
 			}
 			else
 			{
-				<td>0</td>
-				<td>0</td>
+                    <td id="GrassVemResult">0</td>
+                    <td id="GrassReResult">0</td>
 			}
 		</tr>
 
@@ -30,7 +30,7 @@
                 @foreach (KeyValuePair<FeedProduct, float> feedProduct in Ration.FeedProducts)
                 {
 				<tr>
-					<th scope="row">@feedProduct.Key.Name</th>
+					<th scope="row" id="RationProductName">@feedProduct.Key.Name</th>
 					<td>@feedProduct.Value</td>
 					<td>@CalculateAmountOfVem(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>
 					<td>@CalculateAmountOfReInKg(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>

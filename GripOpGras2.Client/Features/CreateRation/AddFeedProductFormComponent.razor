@@ -12,20 +12,23 @@
 		<InputNumber @bind-Value="_feedProductToAdd.Re" class="form-control" id="RE"/>
 	</div>
 	<div class="form-group">
-		<label for="ProductTypeName">Type</label>
+		<label for="ProductTypeName">Type:</label>
 		<InputRadioGroup @bind-Value="@_feedProductToAdd.ProductTypeName">
 			<br>
 			@foreach (string productType in _productTypes)
 			{
-				<InputRadio Value="productType"/>
-				@productType
-				<br>
+
+                <span id="@productType"><InputRadio Value="productType" /></span>
+
+                @productType
+
+                <br />
 			}
 		</InputRadioGroup>
 	</div>
 
 	<br/>
-	<input type="submit" class="btn btn-primary" value="Add product"/>
+	<input type="submit" class="btn btn-primary" value="Add product" id="submit_feedproduct"/>
 </EditForm>
 
 @code {
