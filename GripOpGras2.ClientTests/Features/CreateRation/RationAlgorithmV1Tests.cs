@@ -338,7 +338,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 		[TestCase(170, 1800, 160, 1200, 140, 1200, 180,
 			"bijprod")] //prod 1 en 2 hebben allebei net als het gras een overschot. #Taiga issue: #199
 		[TestCase(170, 1800, 149, 1200, 100, 1200, 200, "prod2")] //ruwvoer gaat altijd voor bijvoer producten.
-		[TestCase(170, 1800, 150, 1200, 100, 1200, 150, "prod1")]
+		[TestCase(170, 1800, 150, 1200, 100, 1200, 140, "prod1")]
 		[TestCase(160, 1800, 170, 1800, 100, 1200, 130, "prod2")]
 		public void GetGrassReNuturalizerFeedProductTest(float rEperDMprod1, float vemPerDMprod1, float rEperDMprod2,
 			float vemPerDMprod2, float rEperDmSupplementaryFeedProduct, float vemPerDmSupplementaryFeedProduct,
@@ -519,9 +519,9 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			algorithm.RunAlgorithm();
 
 			//Assert
-			Assert.AreEqual(20, _rationAlgorithm.TargetValues.TargetedMaxKgDmIntakePerCow / 45,
+			Assert.AreEqual(20, algorithm.TargetValues.TargetedMaxKgDmIntakePerCow,
 				"targetedMaxKgDm should be 20 in order to make the test work");
-			Assert.LessOrEqual(20, algorithm.CurrentRation.TotalDm,
+			Assert.LessOrEqual(algorithm.CurrentRation.TotalDm, 20,
 				"ration should never be more than targeted amount of 20 per cow");
 		}
 
@@ -544,11 +544,11 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			//Assert
 			Assert.AreEqual(4.5f, algorithm.TargetValues.TargetedMaxKgDmSupplementaryFeedProductPerCow,
 				"the max intake per cow is based on 4.5KG in this test");
-			Assert.LessOrEqual(4.5f, algorithm.CurrentRation.TotalDmSupplementaryFeedProduct / 45,
+			Assert.LessOrEqual(algorithm.CurrentRation.TotalDmSupplementaryFeedProduct / 45, 4.5f,
 				"ratioin should never give more than the targeted amount of 4.5 KG supplementary products per cow");
-			Assert.AreEqual(20, _rationAlgorithm.TargetValues.TargetedMaxKgDmIntakePerCow / 45,
+			Assert.AreEqual(20, algorithm.TargetValues.TargetedMaxKgDmIntakePerCow / 45,
 				"targetedMaxKgDm should be 20 in order to make the test work");
-			Assert.LessOrEqual(20, algorithm.CurrentRation.TotalDm,
+			Assert.LessOrEqual(algorithm.CurrentRation.TotalDm, 20,
 				"ration should never be more than targeted amount of 20 per cow");
 		}
 
@@ -672,12 +672,14 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			algorithm.SetUp(products, herd, 13, getmilkProductionAnalysis(), grazingActivity(180, 50));
 			algorithm.RunAlgorithm();
 			//Assert
-			Assert.AreSame(0, algorithm.CurrentRation.TotalDmSupplementaryFeedProduct,
+			Assert.AreEqual(0, algorithm.CurrentRation.TotalDmSupplementaryFeedProduct,
 				"Bijporducten zouden niet gebruikt moeten zijn als ze minder efficient zijn");
 		}
 
 		[Test]
-		public void RationAlgorithmWithoutGrassTest(GrazingActivity? grazingActivity)
+		[TestCase(false)]
+		[TestCase(true)]
+		public void RationAlgorithmWithoutGrassTest(bool grazingActivity)
 		{
 			//Arange
 			List<FeedProduct> products = new()
@@ -689,11 +691,15 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 				GetFeedProduct("bijprod1", 180, 1240, false)
 			};
 			RationAlgorithmV1 algorithm = new();
-			//Act
-			algorithm.SetUp(products, herd, 0, getmilkProductionAnalysis(), grazingActivity: null);
-			algorithm.RunAlgorithm();
+
+
 			//Assert
-			Assert.Pass("Ration should pass if there is no grass eaten.");
+			Assert.DoesNotThrow(() =>
+			{
+				algorithm.SetUp(products, herd, 0, getmilkProductionAnalysis(),
+					grazingActivity: (grazingActivity) ? this.grazingActivity() : null);
+				algorithm.RunAlgorithm();
+			});
 		}
 
 		[Test]
@@ -714,20 +720,21 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			//Assert
 			if (shouldThrowExcption)
 			{
-				Assert.Throws<RationAlgorithmException>(() =>
-					algorithm.SetUp(products, herd, 124, getmilkProductionAnalysis(), grazingActivity: null));
-				Assert.Throws<RationAlgorithmException>(algorithm.RunAlgorithm);
+				Assert.Catch<RationAlgorithmException>(() =>
+				{
+					algorithm.SetUp(products, herd, 0, getmilkProductionAnalysis(), grazingActivity: grazingActivity());
+					algorithm.RunAlgorithm();
+				});
 			}
 			else
 			{
-				algorithm.SetUp(products, herd, 124, getmilkProductionAnalysis(), grazingActivity: null);
+				algorithm.SetUp(products, herd, 0, getmilkProductionAnalysis(), grazingActivity: grazingActivity());
 				algorithm.RunAlgorithm();
+				Assert.LessOrEqual(180, algorithm.CurrentRation.TotalRe / algorithm.CurrentRation.TotalDm,
+					"RE should not be above 180g/KgDm");
+				Assert.GreaterOrEqual(140, algorithm.CurrentRation.TotalRe / algorithm.CurrentRation.TotalDm,
+					"RE should not be under 140g/KgDm");
 			}
-
-			Assert.LessOrEqual(180, algorithm.CurrentRation.TotalRe / algorithm.CurrentRation.TotalDm,
-				"RE should not be above 180g/KgDm");
-			Assert.GreaterOrEqual(140, algorithm.CurrentRation.TotalRe / algorithm.CurrentRation.TotalDm,
-				"RE should not be under 140g/KgDm");
 		}
 
 		[Test]
