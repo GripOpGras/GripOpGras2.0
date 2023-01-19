@@ -17,12 +17,13 @@
 			<br>
 			@foreach (string productType in _productTypes)
 			{
+				<span id="@productType">
+					<InputRadio Value="productType"/>
+				</span>
 
-                <span id="@productType"><InputRadio Value="productType" /></span>
+				@productType
 
-                @productType
-
-                <br />
+				<br/>
 			}
 		</InputRadioGroup>
 	</div>

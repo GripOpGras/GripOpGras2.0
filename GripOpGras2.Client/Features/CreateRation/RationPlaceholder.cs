@@ -9,7 +9,8 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public IReadOnlyList<AbstractMappedFoodItem> RationList = new List<AbstractMappedFoodItem>();
 
 		//Constructor, with an optional originalReference. When not given, it wil create a reference to self.
-		public RationPlaceholder(RationPlaceholder? reference = null, float? grassIntake = null, FeedAnalysis? grassAnalysis = null)
+		public RationPlaceholder(RationPlaceholder? reference = null, float? grassIntake = null,
+			FeedAnalysis? grassAnalysis = null)
 		{
 			OriginalRefference = reference ?? this;
 			if (grassIntake != null && grassAnalysis != null)
@@ -41,9 +42,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 		private float GrassKgdm { get; }
 
 		private float GrassREdiff { get; }
-
-
-		//public Herd GrassHerd{ get; private set; }
 
 		//public float totalVEM  
 		public float TotalVem
@@ -96,7 +94,9 @@ namespace GripOpGras2.Client.Features.CreateRation
 				if (itemInRationList != null)
 				{
 					itemInRationList.SetAppliedVem(itemInRationList.AppliedVem + foodItem.AppliedVem);
-					if (itemInRationList.AppliedVem < 0) throw new Exception($"Applied VEM cannot be negative.\nItem to change: Vem: {foodItem.AppliedVem}, product: {foodItem.GetProductsForConsole()}\nNew applied vem: {itemInRationList.AppliedVem}");
+					if (itemInRationList.AppliedVem < 0)
+						throw new Exception(
+							$"Applied VEM cannot be negative.\nItem to change: Vem: {foodItem.AppliedVem}, product: {foodItem.GetProductsForConsole()}\nNew applied vem: {itemInRationList.AppliedVem}");
 				}
 				else
 				{

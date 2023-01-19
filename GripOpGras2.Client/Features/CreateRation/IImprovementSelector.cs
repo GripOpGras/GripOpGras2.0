@@ -36,7 +36,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups,
 			params IImprovementRationMethod[] improvementMethods)
 		{
-			ImprovementRapport[] improvementRapports = improvementMethods.Select(delegate(IImprovementRationMethod x)
+			ImprovementRapport[] improvementRapports = improvementMethods.Select(delegate (IImprovementRationMethod x)
 				{
 					Console.WriteLine($"Improvementselector | DetermineImprovements | By improvementmethod: {x.GetType().FullName}");
 					return x.FindImprovementRationMethod(_targetValues,
@@ -89,14 +89,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 			}
 
 			Console.WriteLine("Improvementselector: Improvementrounds ended.");
-			changeList.RemoveAll( x=> x.AppliedVem == 0f);
+			changeList.RemoveAll(x => x.AppliedVem == 0f);
 			return changeList;
 		}
 
 		private RationPlaceholder TestImprovements(IEnumerable<ImprovementRapport> orderedImprovements,
 			out Dictionary<ImprovementRapport, float> dictionary, RationPlaceholder testRationPlaceholder)
 		{
-			testRationPlaceholder = testRationPlaceholder;
 			Console.WriteLine(
 				$"Improvementselector | improvementround | Amount of rapports: {orderedImprovements.Count()}");
 			dictionary = new Dictionary<ImprovementRapport, float>();
@@ -113,7 +112,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					maxChangeForKgDmSupplementaryFeedProduct = float.MaxValue;
 				Console.WriteLine(
 					$"Improvementselector | improvementround | testrapport: maxChangeInVem: {maxChangeInVem} changeInVemRequired: {changeInVemRequired}, maxChangeForKgDmSupplementaryFeedProduct: {maxChangeForKgDmSupplementaryFeedProduct}");
-				float changeInVem = new float[] { maxChangeInVem, changeInVemRequired, maxChangeForKgDmSupplementaryFeedProduct }.Min();
+				float changeInVem = new[] { maxChangeInVem, changeInVemRequired, maxChangeForKgDmSupplementaryFeedProduct }.Min();
 				if (changeInVem < 0) changeInVem = 0;
 				dictionary.Add(rapport, changeInVem);
 				testRationPlaceholder.PrintProducts();

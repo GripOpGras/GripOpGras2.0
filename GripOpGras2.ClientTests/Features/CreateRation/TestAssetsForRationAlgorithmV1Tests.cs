@@ -66,7 +66,6 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 				};
 			}
 
-
 			RationAlgorithmV1 rationAlgorithm = new();
 			// Act
 			Assert.DoesNotThrow(() => rationAlgorithm.SetUp(feedProducts: feedProducts, herd: herd,

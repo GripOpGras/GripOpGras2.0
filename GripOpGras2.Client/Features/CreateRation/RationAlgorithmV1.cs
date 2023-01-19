@@ -1,8 +1,8 @@
-﻿using System.Globalization;
-using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
+﻿using GripOpGras2.Client.Data.Exceptions.RationAlgorithmExceptions;
 using GripOpGras2.Client.Features.CreateRation.ImprovementMethods;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
+using System.Globalization;
 
 namespace GripOpGras2.Client.Features.CreateRation
 {
@@ -98,7 +98,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 				return;
 			}
 
-			;
 			//fill ration with feed product to get RE on the targeted level.
 			CurrentRation.ApplyChangesToRationList(GetGrassReNeutralizerFeedProduct());
 			Console.WriteLine("RationAlgorithm | RunAlgorithm: Ration after applying grassREnuturalizerFeedProduct");
@@ -180,7 +179,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 				? AvailableFeedProducts
 				: AvailableFeedProducts.Where(x => x.SupplmenteryPartOfTotalVem == 0);
 
-			//Check if products are availlable
+			//Check if products are available
 			if (!products.Any() && allowSupplementaryFeedProducts)
 			{
 				Console.WriteLine(
@@ -218,7 +217,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 			return new List<AbstractMappedFoodItem> { productclone };
 		}
 
-
 		public List<AbstractMappedFoodItem> GenerateReNaturalFeedProductGroups()
 		{
 			List<AbstractMappedFoodItem> naturalFeedProductGroups = new();
@@ -226,13 +224,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 			naturalFeedProductGroups.AddRange(AvailableFeedProducts.Where(x => x.REdiffPerVem == 0)
 				.Select(x => new MappedFeedProductGroup((x, 1f))).ToList());
 			foreach (AbstractMappedFoodItem product in AvailableFeedProducts.Where(x => x.REdiffPerVem < 0))
-			foreach (AbstractMappedFoodItem? product2 in AvailableFeedProducts.Where(x => x.REdiffPerVem > 0))
-			{
-				float prod2PerProd1 = product.REdiffPerVem / -product2.REdiffPerVem;
-				naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
-				Console.WriteLine(
-					$"RationAlgorithm | GenerateRENaturalFeedProductGroups: group created, product 1 RE/vem: {product.REdiffPerVem}, product 2 RE/vem: {product2.REdiffPerVem}, product 2 per product 1 in VEM: {prod2PerProd1}. Part Supplementary prod 1: {product.SupplmenteryPartOfTotalVem}, prod2: {product2.SupplmenteryPartOfTotalVem}");
-			}
+				foreach (AbstractMappedFoodItem? product2 in AvailableFeedProducts.Where(x => x.REdiffPerVem > 0))
+				{
+					float prod2PerProd1 = product.REdiffPerVem / -product2.REdiffPerVem;
+					naturalFeedProductGroups.Add(new MappedFeedProductGroup((product, 1f), (product2, prod2PerProd1)));
+					Console.WriteLine(
+						$"RationAlgorithm | GenerateRENaturalFeedProductGroups: group created, product 1 RE/vem: {product.REdiffPerVem}, product 2 RE/vem: {product2.REdiffPerVem}, product 2 per product 1 in VEM: {prod2PerProd1}. Part Supplementary prod 1: {product.SupplmenteryPartOfTotalVem}, prod2: {product2.SupplmenteryPartOfTotalVem}");
+				}
 
 			if (naturalFeedProductGroups.Count == 0)
 				throw new NoPossibleReNaturalProductGroupsException(TargetValues.TargetedREcoveragePerKgDm.ToString());

@@ -1,17 +1,10 @@
-using System;
-using System.Collections.ObjectModel;
 using GripOpGras2.Domain;
 using GripOpGras2.Domain.FeedProducts;
-using GripOpGras2.Specs.Data;
-using GripOpGras2.Specs.Data.Exceptions.SeleniumExceptions;
-using GripOpGras2.Specs.Data.Exceptions.SpecFlowTestExceptions;
 using GripOpGras2.Specs.Utils;
-using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
-using TechTalk.SpecFlow;
+using System.Collections.ObjectModel;
 
 namespace GripOpGras2.Specs.StepDefinitions
 {
@@ -20,19 +13,9 @@ namespace GripOpGras2.Specs.StepDefinitions
 	{
 		private readonly IWebDriver _driver;
 
-		private const string BaseUrl = "http://localhost:4200";
-
-		private readonly FarmMapsTestAccount _farmMapsTestAccount;
-
-		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(1);
-
 		public GripOpGras2_TestRationFromFrondEndStepDefinitions(IWebDriver driver)
 		{
 			_driver = driver;
-
-			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
-			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
-			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException(nameof(FarmMapsTestAccount));
 		}
 
 		[Given(@"I am on the home page")]
@@ -47,38 +30,30 @@ namespace GripOpGras2.Specs.StepDefinitions
 		{
 			List<FeedProduct> products = new()
 			{
-				new Roughage()
-					{ Available = true, Name = "Prod1", FeedAnalysis = new FeedAnalysis() { Vem = 861, Re = 161 } },
-				new Roughage()
-					{ Available = true, Name = "Prod2", FeedAnalysis = new FeedAnalysis() { Vem = 960, Re = 82 } },
-				new Roughage()
-					{ Available = true, Name = "Prod3", FeedAnalysis = new FeedAnalysis() { Vem = 835, Re = 140 } },
-				new Roughage()
-					{ Available = true, Name = "Prod4", FeedAnalysis = new FeedAnalysis() { Vem = 928, Re = 120 } },
-				new Roughage()
-					{ Available = true, Name = "Prod5", FeedAnalysis = new FeedAnalysis() { Vem = 874, Re = 156 } }
+				new Roughage { Available = true, Name = "Prod1", FeedAnalysis = new FeedAnalysis { Vem = 861, Re = 161 } },
+				new Roughage { Available = true, Name = "Prod2", FeedAnalysis = new FeedAnalysis { Vem = 960, Re = 82 } },
+				new Roughage { Available = true, Name = "Prod3", FeedAnalysis = new FeedAnalysis { Vem = 835, Re = 140 } },
+				new Roughage { Available = true, Name = "Prod4", FeedAnalysis = new FeedAnalysis { Vem = 928, Re = 120 } },
+				new Roughage { Available = true, Name = "Prod5", FeedAnalysis = new FeedAnalysis { Vem = 874, Re = 156 } }
 			};
 
 			List<FeedProduct> supplementaryFeedProducts = new()
 			{
-				new SupplementaryFeedProduct()
+				new SupplementaryFeedProduct
 				{
-					Available = true, Name = "Bijproduct1", FeedAnalysis = new FeedAnalysis() { Vem = 1037, Re = 95 }
+					Available = true, Name = "Bijproduct1", FeedAnalysis = new FeedAnalysis { Vem = 1037, Re = 95 }
 				},
-				new SupplementaryFeedProduct()
+				new SupplementaryFeedProduct
 				{
 					Available = true, Name = "Bijprod2",
-					FeedAnalysis = new FeedAnalysis() { Vem = 1219.29f, Re = 117.14f }
+					FeedAnalysis = new FeedAnalysis { Vem = 1219.29f, Re = 117.14f }
 				},
-				new SupplementaryFeedProduct()
-					{ Available = true, Name = "Bijprod3", FeedAnalysis = new FeedAnalysis() { Vem = 1240, Re = 121 } },
-				new SupplementaryFeedProduct()
-					{ Available = true, Name = "Bijprod4", FeedAnalysis = new FeedAnalysis() { Vem = 1130, Re = 105 } },
-				new SupplementaryFeedProduct()
-					{ Available = true, Name = "Bijprod5", FeedAnalysis = new FeedAnalysis() { Vem = 1320, Re = 130 } }
+				new SupplementaryFeedProduct { Available = true, Name = "Bijprod3", FeedAnalysis = new FeedAnalysis { Vem = 1240, Re = 121 } },
+				new SupplementaryFeedProduct { Available = true, Name = "Bijprod4", FeedAnalysis = new FeedAnalysis { Vem = 1130, Re = 105 } },
+				new SupplementaryFeedProduct { Available = true, Name = "Bijprod5", FeedAnalysis = new FeedAnalysis { Vem = 1320, Re = 130 } }
 			};
 
-			List<FeedProduct> chosenFeedProducts = new List<FeedProduct>();
+			List<FeedProduct> chosenFeedProducts = new();
 
 			chosenFeedProducts.AddRange(products.GetRange(0, p0));
 
@@ -122,7 +97,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[When(@"I request the ration")]
 		public void WhenIRequestTheRation()
 		{
-			Actions actions = new Actions(_driver);
 			IWebElement createRationButton = _driver.FindElement(By.Id("CreateRationButton"));
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 
@@ -132,8 +106,8 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"the page should contain a Ration within (.*) seconds")]
 		public void ThenThePageShouldContainARationWithinSeconds(float p0)
 		{
-			WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(p0));
-			IWebElement ration = wait.Until(drv => drv.FindElement(By.Id("RationResult")));
+			WebDriverWait wait = new(_driver, TimeSpan.FromSeconds(p0));
+			wait.Until(drv => drv.FindElement(By.Id("RationResult")));
 		}
 
 		[Then(@"The ration should contain (.*) products")]

@@ -15,7 +15,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 
 		public float REperVem { get; protected set; }
 
-		public float REperVemSupplmenteryFeedProduct { get; protected set; }
+		public float REperVemSupplementaryFeedProduct { get; protected set; }
 
 		public float AppliedVem { get; private set; }
 
@@ -34,7 +34,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 		public abstract Dictionary<FeedProduct, float> GetProducts();
 
 		public abstract AbstractMappedFoodItem Clone();
-
 
 		public void SetAppliedVem(float vem)
 		{
@@ -59,32 +58,28 @@ namespace GripOpGras2.Client.Features.CreateRation
 	{
 		private readonly FeedProduct _containingFeedProduct;
 
-		private readonly bool _isSupplementaryFeedProduct;
-
 		public MappedFeedProduct(FeedProduct feedProduct, float reTarget = 150)
 		{
 			if (feedProduct.FeedAnalysis == null) throw new GripOpGras2Exception("FeedAnalysis cannot be null");
 			if (feedProduct.FeedAnalysis.Vem == null) throw new GripOpGras2Exception("VEM cannot be null");
 			if (feedProduct.FeedAnalysis.Re == null) throw new GripOpGras2Exception("RE cannot be null");
-			_isSupplementaryFeedProduct = feedProduct.GetType() == typeof(SupplementaryFeedProduct);
+			bool isSupplementaryFeedProduct = feedProduct.GetType() == typeof(SupplementaryFeedProduct);
 			KgdMperVem = (float)(1f / feedProduct.FeedAnalysis.Vem);
-			KgdmSupplementaryFeedProductPerVem = _isSupplementaryFeedProduct ? KgdMperVem : 0;
+			KgdmSupplementaryFeedProductPerVem = isSupplementaryFeedProduct ? KgdMperVem : 0;
 			REperVem = (float)(feedProduct.FeedAnalysis.Re / feedProduct.FeedAnalysis.Vem);
-			REperVemSupplmenteryFeedProduct = _isSupplementaryFeedProduct ? REperVem : 0;
+			REperVemSupplementaryFeedProduct = isSupplementaryFeedProduct ? REperVem : 0;
 			REdiffPerVem = (float)((feedProduct.FeedAnalysis.Re - reTarget) / feedProduct.FeedAnalysis.Vem);
-			REdiffPerVemSupplementaryFeedProduct = _isSupplementaryFeedProduct ? REdiffPerVem : 0;
-			SupplmenteryPartOfTotalVem = _isSupplementaryFeedProduct ? 1 : 0;
+			REdiffPerVemSupplementaryFeedProduct = isSupplementaryFeedProduct ? REdiffPerVem : 0;
+			SupplmenteryPartOfTotalVem = isSupplementaryFeedProduct ? 1 : 0;
 			SetAppliedVem(0);
 			OriginalReference = this;
 			_containingFeedProduct = feedProduct;
 		}
 
-
 		public override Dictionary<FeedProduct, float> GetProducts()
 		{
 			return new Dictionary<FeedProduct, float> { { _containingFeedProduct, AppliedKgdm } };
 		}
-
 
 		public override AbstractMappedFoodItem Clone()
 		{
@@ -115,13 +110,13 @@ namespace GripOpGras2.Client.Features.CreateRation
 			KgdmSupplementaryFeedProductPerVem =
 				products.Sum(x => x.FoodItem.KgdmSupplementaryFeedProductPerVem * x.partOfGroupInVEM) / totalVem;
 			REperVem = products.Sum(x => x.FoodItem.REperVem * x.partOfGroupInVEM) / totalVem;
-			REperVemSupplmenteryFeedProduct =
-				products.Sum(x => x.FoodItem.REperVemSupplmenteryFeedProduct * x.partOfGroupInVEM) / totalVem;
+			REperVemSupplementaryFeedProduct =
+				products.Sum(x => x.FoodItem.REperVemSupplementaryFeedProduct * x.partOfGroupInVEM) / totalVem;
 			REdiffPerVem = products.Sum(x => x.FoodItem.REdiffPerVem * x.partOfGroupInVEM) / totalVem;
 			REdiffPerVemSupplementaryFeedProduct =
 				products.Sum(x => x.FoodItem.REdiffPerVemSupplementaryFeedProduct * x.partOfGroupInVEM) / totalVem;
 			SupplmenteryPartOfTotalVem = products.Sum(x => x.FoodItem.SupplmenteryPartOfTotalVem * x.partOfGroupInVEM) /
-			                             totalVem;
+										 totalVem;
 			SetAppliedVem(0);
 			OriginalReference = this;
 			//fixing the partOfGroupInVem so that it combines to a maximum of 1
@@ -138,7 +133,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 		{
 			Dictionary<FeedProduct, float> products = new();
 			foreach ((AbstractMappedFoodItem? foodItem, float partOfGroupInVem) in
-			         _sourceProducts) //sourceproducts. use this PartOfGroupInVem.
+					 _sourceProducts) //sourceproducts. use this PartOfGroupInVem.
 			{
 				AbstractMappedFoodItem productCustomized = foodItem.Clone();
 				productCustomized.SetAppliedVem(partOfGroupInVem * AppliedVem);

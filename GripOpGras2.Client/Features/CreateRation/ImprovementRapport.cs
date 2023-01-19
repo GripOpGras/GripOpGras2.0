@@ -18,7 +18,6 @@
 
 		private readonly TargetValues _targetValues;
 
-
 		public ImprovementRapport(List<AbstractMappedFoodItem> changesPerVem, TargetValues targetValues,
 			RationPlaceholder currentRation)
 		{
@@ -73,8 +72,9 @@
 					ration.RationList.FirstOrDefault(x => x.OriginalReference == item.OriginalReference);
 				if (existingItem != null)
 				{
-					changelist.Add(-existingItem.AppliedVem/item.AppliedVem);
-				} else return 0;
+					changelist.Add(-existingItem.AppliedVem / item.AppliedVem);
+				}
+				else return 0;
 			}
 
 			return !changelist.Any() ? float.MaxValue : changelist.Min();

@@ -16,6 +16,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
 		private readonly TimeSpan _pageLoadTimeSpan = TimeSpan.FromSeconds(8);
+
 		private readonly WebDriverWait _webDriverWait;
 
 		public GripOpGras2_AuthenticationWithFarmMapsStepDefinitions(IWebDriver driver)
@@ -23,7 +24,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 			_driver = driver;
 			_webDriverWait = new WebDriverWait(_driver, _pageLoadTimeSpan);
 
-			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
+			IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
 			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException(nameof(FarmMapsTestAccount));
 		}
