@@ -124,13 +124,10 @@ this.ScenarioInitialize(scenarioInfo);
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("The user requests an ration from the home page and gets an error message")]
-        [NUnit.Framework.TestCaseAttribute("0", null)]
-        [NUnit.Framework.TestCaseAttribute("1", null)]
-        public void TheUserRequestsAnRationFromTheHomePageAndGetsAnErrorMessage(string amountProducts, string[] exampleTags)
+        public void TheUserRequestsAnRationFromTheHomePageAndGetsAnErrorMessage()
         {
-            string[] tagsOfScenario = exampleTags;
+            string[] tagsOfScenario = ((string[])(null));
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            argumentsOfScenario.Add("amountProducts", amountProducts);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("The user requests an ration from the home page and gets an error message", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 15
 this.ScenarioInitialize(scenarioInfo);
@@ -149,8 +146,8 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("I am on the home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 18
- testRunner.And(string.Format("I have {0} Products and 0 Supplementary Feedproducts that should be able to make " +
-                            "a correct Ration", amountProducts), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("I have 1 Products and 0 Supplementary Feedproducts that should be able to make a " +
+                        "correct Ration", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 19
  testRunner.And("I have a herd with 59 cows which have produced a total of 5000.6 L milk", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
