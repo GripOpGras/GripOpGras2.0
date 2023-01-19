@@ -149,5 +149,12 @@ namespace GripOpGras2.Specs.StepDefinitions
 			IWebElement KgGrassResult = _driver.FindElement(By.Id("KGDmGrassResult"));
 			Assert.AreEqual(p0.ToString(), KgGrassResult.Text);
 		}
+
+		[Then(@"the page should contain an error message within (.*) seconds")]
+		public void ThenThePageShouldContainANErrorMessage(float p0)
+		{
+			WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(p0));
+			IWebElement errorElement = wait.Until(drv => drv.FindElement(By.Id("errorCard")));
+		}
 	}
 }
