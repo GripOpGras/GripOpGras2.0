@@ -71,7 +71,10 @@
 				if (item.AppliedVem > 0) continue;
 				AbstractMappedFoodItem? existingItem =
 					ration.RationList.FirstOrDefault(x => x.OriginalReference == item.OriginalReference);
-				if (existingItem != null) changelist.Add(-existingItem.AppliedVem/item.AppliedVem);
+				if (existingItem != null)
+				{
+					changelist.Add(-existingItem.AppliedVem/item.AppliedVem);
+				} else return 0;
 			}
 
 			return !changelist.Any() ? float.MaxValue : changelist.Min();
