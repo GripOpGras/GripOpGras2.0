@@ -1,0 +1,69 @@
+﻿<table class="table table-bordered" id="RationResult">
+	<thead>
+	<tr>
+		<th scope="col">Product</th>
+		<th scope="col">kg dm</th>
+		<th scope="col">VEM</th>
+		<th scope="col">RE in kg</th>
+	</tr>
+	</thead>
+	<tbody>
+	@if (Ration != null)
+	{
+		<tr>
+			<th scope="row">Grass intake</th>
+                <td id="KGDmGrassResult">@Ration.GrassIntake</td>
+			@if (Ration.Plot != null)
+			{
+				<td id="GrassVemResult">@CalculateAmountOfVem(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+				<td id="GrassReResult">@CalculateAmountOfReInKg(Ration.Plot.FeedAnalysis, Ration.GrassIntake)</td>
+			}
+			else
+			{
+                    <td id="GrassVemResult">0</td>
+                    <td id="GrassReResult">0</td>
+			}
+		</tr>
+
+		@if (Ration?.FeedProducts != null)
+		{
+                @foreach (KeyValuePair<FeedProduct, float> feedProduct in Ration.FeedProducts)
+                {
+				<tr>
+					<th scope="row" id="RationProductName">@feedProduct.Key.Name</th>
+					<td>@feedProduct.Value</td>
+					<td>@CalculateAmountOfVem(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>
+					<td>@CalculateAmountOfReInKg(feedProduct.Key.FeedAnalysis, feedProduct.Value)</td>
+				</tr>
+			}
+		}
+	}
+	</tbody>
+</table>
+
+@code {
+
+	[Parameter]
+	public FeedRation? Ration { get; set; }
+
+	private float CalculateAmountOfVem(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
+	{
+		if (feedAnalysis?.Vem == null || dmIntakeInKg is null or 0)
+		{
+			return 0;
+		}
+
+		return (float)(dmIntakeInKg * feedAnalysis.Vem);
+	}
+
+	private float CalculateAmountOfReInKg(FeedAnalysis? feedAnalysis, float? dmIntakeInKg)
+	{
+		if (feedAnalysis?.Re == null || dmIntakeInKg is null or 0)
+		{
+			return 0;
+		}
+
+		return (float)(dmIntakeInKg * feedAnalysis.Re / 1000);
+	}
+
+}

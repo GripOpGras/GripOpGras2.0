@@ -14,66 +14,66 @@
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? RE { get; set; }
+		public float? Re { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? RVET { get; set; }
+		public float? Rvet { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? SUI { get; set; }
+		public float? Sui { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? ZET { get; set; }
+		public float? Zet { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? RC { get; set; }
+		public float? Rc { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? NDF { get; set; }
+		public float? Ndf { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? ADF { get; set; }
+		public float? Adf { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? ADL { get; set; }
+		public float? Adl { get; set; }
 
 		/// <summary>
 		/// In /kg dm.
 		/// </summary>
-		public float? VEM { get; set; }
+		public float? Vem { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? DVE07 { get; set; }
+		public float? Dve07 { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? OEB07 { get; set; }
+		public float? Oeb07 { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? FOS { get; set; }
+		public float? Fos { get; set; }
 
 		/// <summary>
 		/// In g/kg dm.
 		/// </summary>
-		public float? RAS { get; set; }
+		public float? Ras { get; set; }
 	}
 }

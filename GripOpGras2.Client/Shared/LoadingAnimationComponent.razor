@@ -1,0 +1,17 @@
+﻿<div>
+	<div class="text-center pt-3" style="color: green; font-size: 18pt">
+		@Text
+	</div>
+	<div class="text-center mt-3">
+		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+			  style="font-size: 20pt; width: 38px; height: 38px; color: green">
+		</span>
+	</div>
+</div>
+
+@code {
+
+	[Parameter]
+	public string Text { get; set; } = string.Empty;
+
+}

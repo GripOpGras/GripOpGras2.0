@@ -4,7 +4,7 @@ using GripOpGras2.Domain;
 namespace GripOpGras2.Specs.StepDefinitions
 {
 	[Binding]
-	public class GripOpGras2_CalculateGrassIntakeV1StepDefinitions
+	public class GripOpGras2CalculateGrassIntakeV1StepDefinitions
 	{
 		private readonly CalculateGrassIntakeV1 _calculateGrassIntakeV1 = new();
 

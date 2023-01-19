@@ -1,0 +1,75 @@
+﻿@inject IRationAlgorithm RationAlgorithm
+
+<button class="btn btn-primary" @onclick="CreateRation" id="CreateRationButton">Create ration</button>
+
+@code {
+	[Parameter]
+	public EventCallback<Exception> ExceptionEventCallback { get; set; }
+
+	[Parameter]
+	public EventCallback<bool> ChangeCreatingRationState { get; set; }
+	
+	[Parameter]
+	public EventCallback<FeedRation> OnRationCreated { get; set; }
+
+	[Parameter]
+	[EditorRequired]
+	public List<FeedProduct> FeedProducts { get; set; } = new();
+	
+	[Parameter]
+	[EditorRequired]
+	public Herd Herd { get; set; } = new();
+	
+	[Parameter]
+	[EditorRequired]
+	public float ReInGrassInGrams { get; set; }
+	
+	[Parameter]
+	[EditorRequired]
+	public float VemInGrass { get; set; }	
+	
+	[Parameter]
+	[EditorRequired]
+	public float GrassIntakeInKgDm { get; set; }	
+	
+	[Parameter]
+	[EditorRequired]
+	public MilkProductionAnalysis MilkProduced { get; set; } = new();
+
+	private bool _isRunning;
+
+	private async Task CreateRation()
+	{
+		if (_isRunning)
+		{
+			return;
+		}
+
+		_isRunning = true;
+		await ChangeCreatingRationState.InvokeAsync(_isRunning);
+
+		// Give Blazor WebAssembly time to update the ui
+		await Task.Delay(1);
+
+		GrazingActivity grazingActivity = new() { From = default, To = default, Herd = Herd, Plot = new Plot { FeedAnalysis = new FeedAnalysis { Re = ReInGrassInGrams, Vem = VemInGrass } } };
+
+		FeedRation? feedRation = null;
+		
+		try
+		{
+			feedRation = await RationAlgorithm.CreateRationAsync(FeedProducts, Herd, GrassIntakeInKgDm, MilkProduced, grazingActivity);
+		}
+		catch (Exception e)
+		{
+			await ExceptionEventCallback.InvokeAsync(e);
+		}
+
+		if (feedRation != null)
+		{
+			await OnRationCreated.InvokeAsync(feedRation);
+		}
+
+		_isRunning = false;
+		await ChangeCreatingRationState.InvokeAsync(_isRunning);
+	}
+}

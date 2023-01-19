@@ -1,8 +1,109 @@
 ﻿@page "/"
 <VisitorsTracking/>
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Create test ration</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (_isRunningFeedRationAlgorithm)
+{
+	<LoadingAnimationComponent Text="Creating ration"/>
+}
+else
+{
+	@if (_errorMessage != string.Empty)
+	{
+		<div class="card text-white bg-danger mb-3">
+			<div class="card-body">
+                <h5 class="card-title" id="errorCard">Error</h5>
+				<p class="card-text">@_errorMessage</p>
+			</div>
+		</div>
+	}
+	@if (_feedRation != null)
+	{
+		<br/>
 
-Welcome to your new app.
+		<h1>Ration</h1>
+		<RationWidgetComponent Ration="@_feedRation"/>
+	}
+
+	<h1>Data</h1>
+
+	<h5>Add feed product</h5>
+	<AddFeedProductFormComponent OnFeedProductAdded="@OnFeedProductAdded" ExceptionEventCallback="@OnException"/>
+
+	<br/>
+
+	@if (_feedProducts.Any())
+	{
+		<h5>Products</h5>
+		<AvailableFeedProductsTableComponent FeedProducts="@_feedProducts" />
+	}
+
+	<br/>
+
+	<h5>Other data</h5>
+
+	<div class="form-group">
+		<label>Number of cows</label>
+        <input class="form-control" @bind="_herd.NumberOfAnimals" id="NumberOfCows" />
+	</div>
+	<div class="form-group">
+		<label>Total amount of milk produced in liters by the herd</label>
+		<input class="form-control" @bind="_milkProduced.Amount" id="milkProduced"/>
+	</div>
+	<div class="form-group">
+		<label>Total net grass intake in kg dm</label>
+		<input class="form-control" @bind="_grassIntakeInKgDm" id="grassInputInKgDm"/>
+	</div>
+	<div class="form-group">
+		<label>Amount of VEM in each kg dm of grass</label>
+        <input class="form-control" @bind="_vemInGrass" id="grassVem" />
+	</div>
+	<div class="form-group">
+		<label>Amount of RE in each kg dm of grass in grams</label>
+        <input class="form-control" @bind="_reInGrassInGrams" id="grassRe" />
+	</div>
+	<br/>
+	<div>
+		<CreateRationButtonComponent ExceptionEventCallback="@OnException" ChangeCreatingRationState="isRunning => _isRunningFeedRationAlgorithm = isRunning" OnRationCreated="OnRationCreated" FeedProducts="_feedProducts" GrassIntakeInKgDm="_grassIntakeInKgDm" Herd="_herd" MilkProduced="_milkProduced" ReInGrassInGrams="_reInGrassInGrams" VemInGrass="_vemInGrass"/>
+	</div>
+	<br/>
+}
+
+@code {
+
+	private bool _isRunningFeedRationAlgorithm;
+
+	private FeedRation? _feedRation;
+
+	private readonly Herd _herd = new();
+
+	private readonly List<FeedProduct> _feedProducts = new();
+
+	private readonly MilkProductionAnalysis _milkProduced = new();
+
+	private float _grassIntakeInKgDm;
+
+	private float _vemInGrass;
+
+	private float _reInGrassInGrams;
+
+	private string _errorMessage = string.Empty;
+
+	private void OnFeedProductAdded(FeedProduct feedProduct)
+	{
+		_feedProducts.Add(feedProduct);
+	}
+
+	private void OnException(Exception e)
+	{
+		_errorMessage = e.Message;
+	}
+
+	private void OnRationCreated(FeedRation feedRation)
+	{
+		_feedRation = feedRation;
+		_errorMessage = string.Empty;
+	}
+
+}

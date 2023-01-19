@@ -1,0 +1,26 @@
+﻿<table class="table table-bordered">
+	<thead>
+	<tr>
+		<th scope="col">Product</th>
+		<th scope="col">VEM</th>
+		<th scope="col">RE</th>
+		<th scope="col">Type</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (FeedProduct feedProduct in FeedProducts)
+	{
+		<tr>
+			<th scope="row">@feedProduct.Name</th>
+			<td>@feedProduct.FeedAnalysis!.Vem</td>
+			<td>@feedProduct.FeedAnalysis!.Re</td>
+			<td>@feedProduct.GetType().Name</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public List<FeedProduct> FeedProducts { get; set; } = new();
+}

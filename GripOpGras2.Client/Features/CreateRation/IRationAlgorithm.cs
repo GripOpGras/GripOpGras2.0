@@ -6,10 +6,15 @@ namespace GripOpGras2.Client.Features.CreateRation
 	public interface IRationAlgorithm
 	{
 		/// <summary>
-		/// Calculates the ration for the herd.
+		///     Calculates the ration for the herd.
 		/// </summary>
+		/// <param name="feedProducts"></param>
+		/// <param name="herd"></param>
 		/// <param name="totalGrassIntake">The total grass intake of the herd in kg dm.</param>
-		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd, float totalGrassIntake,
+		/// <param name="milkProductionAnalysis"></param>
+		/// <param name="grazingActivity"></param>
+		public Task<FeedRation> CreateRationAsync(IReadOnlyList<FeedProduct> feedProducts, Herd herd,
+			float totalGrassIntake,
 			MilkProductionAnalysis milkProductionAnalysis, GrazingActivity? grazingActivity);
 	}
 }
