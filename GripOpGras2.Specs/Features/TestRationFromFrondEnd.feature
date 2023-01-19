@@ -1,8 +1,6 @@
 ﻿Feature: GripOpGras2.TestRationFromFrondEnd
 
-A short summary of the feature
 
-@tag1
 Scenario: The user requests an ration from the home page
 	Given that I am logged into the application
 	And I am on the home page

@@ -33,7 +33,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
 			_farmMapsTestAccount = account ?? throw new MissingUserSecretsException(nameof(FarmMapsTestAccount));
-
 		}
 
 		[Given(@"I am on the home page")]
@@ -93,7 +92,6 @@ namespace GripOpGras2.Specs.StepDefinitions
 				IWebElement reInput = _driver.FindElement(By.Id("RE"));
 				reInput.SendKeys(product.FeedAnalysis.Re.ToString());
 				IWebElement rationInputSpan = _driver.FindElement(By.Id($"{product.GetType().Name}"));
-				Console.WriteLine(product.GetType().Name);
 				IWebElement rationInput = rationInputSpan.FindElement(By.ClassName("valid"));
 				rationInput.Click();
 				IWebElement addButton = _driver.FindElement(By.Id("submit_feedproduct"));
@@ -102,55 +100,54 @@ namespace GripOpGras2.Specs.StepDefinitions
 		}
 
 		[Given(@"I have a herd with (.*) cows which have produced a total of (.*) L milk")]
-        public void GivenIHaveAHerdWithCowsWhichHaveProducedATotalOfLMilk(float p0, float p1)
-        {
-	        IWebElement numberOfCowsInput = _driver.FindElement(By.Id("NumberOfCows"));
+		public void GivenIHaveAHerdWithCowsWhichHaveProducedATotalOfLMilk(float p0, float p1)
+		{
+			IWebElement numberOfCowsInput = _driver.FindElement(By.Id("NumberOfCows"));
 			numberOfCowsInput.SendKeys(p0.ToString());
 			IWebElement lmilkInput = _driver.FindElement(By.Id("milkProduced"));
 			lmilkInput.SendKeys(p1.ToString());
-        }
+		}
 
 		[Given(@"the herd has grazed (.*) KG Dm of grass with (.*) VEM and (.*) Re per Kg Dm")]
-        public void GivenTheHerdHasGrazedKgDmOfGrass(float p0, float p1, float p2)
-        {
-	        IWebElement grassIntakeInput = _driver.FindElement(By.Id("grassInputInKgDm"));
+		public void GivenTheHerdHasGrazedKgDmOfGrass(float p0, float p1, float p2)
+		{
+			IWebElement grassIntakeInput = _driver.FindElement(By.Id("grassInputInKgDm"));
 			grassIntakeInput.SendKeys(p0.ToString());
 			IWebElement grassVEMInput = _driver.FindElement(By.Id("grassVem"));
 			grassVEMInput.SendKeys(p1.ToString());
 			IWebElement grassREInput = _driver.FindElement(By.Id("grassRe"));
 			grassREInput.SendKeys(p2.ToString());
-        }
+		}
 
-        [When(@"I request the ration")]
-        public void WhenIRequestTheRation()
-        {
+		[When(@"I request the ration")]
+		public void WhenIRequestTheRation()
+		{
 			Actions actions = new Actions(_driver);
 			IWebElement createRationButton = _driver.FindElement(By.Id("CreateRationButton"));
 			Thread.Sleep(TimeSpan.FromSeconds(1));
 
 			createRationButton.Click();
-        }
+		}
 
-        [Then(@"the page should contain a Ration within (.*) seconds")]
-        public void ThenThePageShouldContainARationWithinSeconds(float p0)
-        {
-	        WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(p0));
-	        IWebElement ration = wait.Until(drv => drv.FindElement(By.Id("RationResult")));
-        }
+		[Then(@"the page should contain a Ration within (.*) seconds")]
+		public void ThenThePageShouldContainARationWithinSeconds(float p0)
+		{
+			WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(p0));
+			IWebElement ration = wait.Until(drv => drv.FindElement(By.Id("RationResult")));
+		}
 
-        [Then(@"The ration should contain (.*) products")]
-        public void ThenTheRationShouldContainProducts(int p0)
-        {
-	        ReadOnlyCollection<IWebElement>? productResults = _driver.FindElements(By.Id("RationProductName"));
-	        Assert.AreEqual(p0,productResults.Count);
-        }
+		[Then(@"The ration should contain (.*) products")]
+		public void ThenTheRationShouldContainProducts(int p0)
+		{
+			ReadOnlyCollection<IWebElement>? productResults = _driver.FindElements(By.Id("RationProductName"));
+			Assert.AreEqual(p0, productResults.Count);
+		}
 
-        [Then(@"The ration should contain (.*) KG grass")]
-        public void ThenTheRationShouldContainKGGrass(int p0)
-        {
-	        IWebElement KgGrassResult = _driver.FindElement(By.Id("KGDmGrassResult"));
-	        Assert.AreEqual(p0.ToString(),KgGrassResult.Text);
-        }
-    }
-
+		[Then(@"The ration should contain (.*) KG grass")]
+		public void ThenTheRationShouldContainKGGrass(int p0)
+		{
+			IWebElement KgGrassResult = _driver.FindElement(By.Id("KGDmGrassResult"));
+			Assert.AreEqual(p0.ToString(), KgGrassResult.Text);
+		}
+	}
 }
