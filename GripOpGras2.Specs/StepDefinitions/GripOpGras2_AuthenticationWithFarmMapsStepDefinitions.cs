@@ -4,6 +4,7 @@ using GripOpGras2.Specs.Data.Exceptions.SpecFlowTestExceptions;
 using GripOpGras2.Specs.Utils;
 using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace GripOpGras2.Specs.StepDefinitions
 {
@@ -14,11 +15,13 @@ namespace GripOpGras2.Specs.StepDefinitions
 
 		private readonly FarmMapsTestAccount _farmMapsTestAccount;
 
-		private readonly TimeSpan _pageLoadDelay = TimeSpan.FromSeconds(8);
+		private readonly TimeSpan _pageLoadTimeSpan = TimeSpan.FromSeconds(8);
+		private readonly WebDriverWait _webDriverWait;
 
 		public GripOpGras2_AuthenticationWithFarmMapsStepDefinitions(IWebDriver driver)
 		{
 			_driver = driver;
+			_webDriverWait = new WebDriverWait(_driver, _pageLoadTimeSpan);
 
 			IConfigurationRoot? config = new ConfigurationBuilder().AddUserSecrets<FarmMapsTestAccount>().Build();
 			FarmMapsTestAccount? account = config.GetSection(nameof(FarmMapsTestAccount)).Get<FarmMapsTestAccount>();
@@ -78,7 +81,13 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"I will have to be redirected to the home page of the application")]
 		public void ThenIWillHaveToBeRedirectedToTheHomePageOfTheApplication()
 		{
-			Thread.Sleep(_pageLoadDelay);
+			// Wait until url contains the home page url
+			_webDriverWait.Until(d =>
+			{
+				Uri url = new(d.Url);
+				return url.LocalPath == "/";
+			});
+
 			Uri driverUrl = new(_driver.Url);
 			driverUrl.LocalPath.Should().Be("/");
 		}
@@ -86,7 +95,7 @@ namespace GripOpGras2.Specs.StepDefinitions
 		[Then(@"the page should show my email address")]
 		public void ThenThePageShouldShowMyEmailAddress()
 		{
-			_driver.PageSource.Should().Contain(_farmMapsTestAccount.Username);
+			_webDriverWait.Until(d => d.PageSource.Contains(_farmMapsTestAccount.Username));
 		}
 
 		[When(@"I enter an incorrect username and password")]
@@ -111,20 +120,18 @@ namespace GripOpGras2.Specs.StepDefinitions
 		{
 			WebDriverUtils.NavigateWebDriverToApplication(_driver);
 
-			WebDriverUtils.LoginToApplication(_driver, _farmMapsTestAccount, _pageLoadDelay);
+			WebDriverUtils.LoginToApplication(_driver, _farmMapsTestAccount, _pageLoadTimeSpan);
 		}
 
 		[Given(@"that I am currently on the home page")]
 		public void GivenThatIAmCurrentlyOnTheHomePage()
 		{
 			WebDriverUtils.NavigateWebDriverToApplication(_driver);
-			Thread.Sleep(_pageLoadDelay);
-			Uri driverUrl = new(_driver.Url);
-
-			if (driverUrl.LocalPath != "/")
+			_webDriverWait.Until(d =>
 			{
-				throw new UnexpectedPageUrlException(_driver.Url, "home page");
-			}
+				Uri url = new(d.Url);
+				return url.LocalPath == "/";
+			});
 		}
 
 		[When(@"I click the logout button")]
@@ -154,7 +161,11 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void WhenIVisitTheTestPage()
 		{
 			WebDriverUtils.NavigateWebDriverToApplication(_driver, "/testpage");
-			Thread.Sleep(_pageLoadDelay);
+			_webDriverWait.Until(d =>
+			{
+				Uri url = new(d.Url);
+				return url.LocalPath == "/testpage";
+			});
 		}
 
 		[Then(@"the page should show my farms")]
@@ -168,7 +179,11 @@ namespace GripOpGras2.Specs.StepDefinitions
 		public void WhenIVisitAPageThatDoesntExist()
 		{
 			WebDriverUtils.NavigateWebDriverToApplication(_driver, "/this-is-a-page-that-doesnt-exist");
-			Thread.Sleep(_pageLoadDelay);
+			_webDriverWait.Until(d =>
+			{
+				Uri url = new(d.Url);
+				return url.LocalPath == "/this-is-a-page-that-doesnt-exist";
+			});
 		}
 	}
 }

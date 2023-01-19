@@ -1,6 +1,7 @@
 ﻿using GripOpGras2.Specs.Data;
 using GripOpGras2.Specs.Data.Exceptions.SeleniumExceptions;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace GripOpGras2.Specs.Utils
 {
@@ -40,10 +41,11 @@ namespace GripOpGras2.Specs.Utils
 			driver.FindElement(By.Id("Password")).SendKeys(farmMapsTestAccount.Password);
 			driver.FindElement(By.ClassName("btn-primary")).Click();
 
-			// Give the application time to load
-			Thread.Sleep(pageLoadDelay);
-
-			if (!driver.PageSource.Contains(farmMapsTestAccount.Username))
+			try
+			{
+				new WebDriverWait(driver, pageLoadDelay).Until(d => d.PageSource.Contains(farmMapsTestAccount.Username));
+			}
+			catch (WebDriverTimeoutException)
 			{
 				throw new SeleniumException("Could not verify that the user is logged in.");
 			}
