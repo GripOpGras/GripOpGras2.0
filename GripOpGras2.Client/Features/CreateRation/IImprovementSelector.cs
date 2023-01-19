@@ -73,7 +73,7 @@ namespace GripOpGras2.Client.Features.CreateRation
 					(List<AbstractMappedFoodItem>)availableFeedProducts,
 					availableReNaturalFeedProductGroups,
 					testRationPlaceholder.Clone())).OrderBy(x => x.KgdmChangePerVem);
-				RationPlaceholder testRation2 = TestImprovements(newRapports,
+				TestImprovements(newRapports,
 					out Dictionary<ImprovementRapport, float> secondRoundChanges, testRationPlaceholder);
 				List<AbstractMappedFoodItem> secondChangeList =
 					secondRoundChanges.SelectMany(x => SetVemPerFoodItem(x.Key, x.Value)).ToList();
@@ -124,15 +124,6 @@ namespace GripOpGras2.Client.Features.CreateRation
 			Console.WriteLine("Improvementselector | improvementround | returning improved ration:");
 			testRationPlaceholder.PrintProducts();
 			return testRationPlaceholder;
-		}
-
-		public List<AbstractMappedFoodItem> DetermineImprovemendRationsWithSupplementaryFeedProduct(
-			IReadOnlyList<AbstractMappedFoodItem> availableFeedProducts,
-			List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups,
-			params ImprovementRapport[] improvementRapports)
-		{
-			return RunImprovementAlgorithm(improvementRapports, availableFeedProducts,
-				availableReNaturalFeedProductGroups, null);
 		}
 
 		private static List<AbstractMappedFoodItem> SetVemPerFoodItem(ImprovementRapport rapport, float vem)

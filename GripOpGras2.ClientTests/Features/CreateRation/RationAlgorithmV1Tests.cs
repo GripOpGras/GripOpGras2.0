@@ -552,20 +552,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 				"ration should never be more than targeted amount of 20 per cow");
 		}
 
-		public class ImprovementMethodForTesting : IImprovementRationMethod
-		{
-			public List<ImprovementRapport> FindImprovementRationMethod(TargetValues targetValues,
-				List<AbstractMappedFoodItem> availableFeedProducts,
-				List<AbstractMappedFoodItem> availableReNaturalFeedProductGroups, RationPlaceholder currentRation)
-			{
-				ImprovementRapport rapport1 = new(availableFeedProducts, targetValues, currentRation.Clone());
-				ImprovementRapport rapport2 = new(availableReNaturalFeedProductGroups, targetValues,
-					currentRation.Clone());
-				return new List<ImprovementRapport> { rapport1, rapport2 };
-			}
-		}
-
-		public float getVEMfromKgPerThousandVem(float kg)
+		public float GetVeMfromKgPerThousandVem(float kg)
 		{
 			return 1000 / kg;
 		}
@@ -582,12 +569,12 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 		{
 			//Arange
 			AbstractMappedFoodItem productToReplace =
-				GetMappedFeedProduct("replacable", 150, getVEMfromKgPerThousandVem(3), VemToChange);
-			AbstractMappedFoodItem prodAa = GetMappedFeedProduct("ProdA", 150, getVEMfromKgPerThousandVem(1), 0, false);
+				GetMappedFeedProduct("replacable", 150, GetVeMfromKgPerThousandVem(3), VemToChange);
+			AbstractMappedFoodItem prodAa = GetMappedFeedProduct("ProdA", 150, GetVeMfromKgPerThousandVem(1), 0, false);
 			AbstractMappedFoodItem prodBa =
-				GetMappedFeedProduct("ProdBa", 150, getVEMfromKgPerThousandVem(1.5f), 0, false);
+				GetMappedFeedProduct("ProdBa", 150, GetVeMfromKgPerThousandVem(1.5f), 0, false);
 			AbstractMappedFoodItem prodBb =
-				GetMappedFeedProduct("ProdBb", 150, getVEMfromKgPerThousandVem(1.5f), 0, true);
+				GetMappedFeedProduct("ProdBb", 150, GetVeMfromKgPerThousandVem(1.5f), 0, true);
 
 			AbstractMappedFoodItem GroupA = new MappedFeedProductGroup((prodAa, 1));
 			AbstractMappedFoodItem GroupB = (productBIsHalfRoughage)
@@ -596,7 +583,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 
 			RationPlaceholder currentration = new(
 				grassIntake: 10,
-				grassAnalysis: new FeedAnalysis { Vem = getVEMfromKgPerThousandVem(3), Re = 150 });
+				grassAnalysis: new FeedAnalysis { Vem = GetVeMfromKgPerThousandVem(3), Re = 150 });
 			currentration.ApplyChangesToRationList(productToReplace);
 			Console.WriteLine($"prod0 kgdm per 1000 ve: {productToReplace.KgdMperVem * 1000}");
 			Console.WriteLine($"prodA kgdm per 1000 ve: {GroupA.KgdMperVem * 1000}");
@@ -604,7 +591,7 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			Console.WriteLine($"replacableProduct applied VEM: {currentration.RationList.First().AppliedVem}");
 
 			TargetValues targetValues = new(new Herd { NumberOfAnimals = 1 }, getmilkProductionAnalysis(1),
-				targetedMaxKgDmIntakePerCow: VemToChange / getVEMfromKgPerThousandVem(3) + 10f - 5f,
+				targetedMaxKgDmIntakePerCow: VemToChange / GetVeMfromKgPerThousandVem(3) + 10f - 5f,
 				targetedMaxAmountOfSupplementaryFeedProductInKgPerCow:
 				5); //max DM: existing KG product + KG grass + KG to improve
 			targetValues.TargetedVem = currentration.TotalVem;
