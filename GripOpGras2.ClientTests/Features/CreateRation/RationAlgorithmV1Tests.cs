@@ -504,8 +504,6 @@ namespace GripOpGras2.ClientTests.Features.CreateRation
 			};
 		}
 
-		private readonly RationAlgorithmV1 _rationAlgorithm = new();
-
 		[Test]
 		public void TestMaxKgDmIsRespected()
 		{
