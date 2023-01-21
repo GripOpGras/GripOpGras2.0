@@ -14,7 +14,7 @@ namespace GripOpGras2.Server
 
 			builder.Services.AddHttpClient("FarmMapsApi", client =>
 			{
-				client.BaseAddress = new Uri(builder.Configuration["FarmMapsApiBaseUrl"]);
+				client.BaseAddress = new Uri(builder.Configuration["FarmMapsBaseUrl"]);
 			});
 			builder.Services.AddHttpClient("FarmMapsAccount", client =>
 			{
