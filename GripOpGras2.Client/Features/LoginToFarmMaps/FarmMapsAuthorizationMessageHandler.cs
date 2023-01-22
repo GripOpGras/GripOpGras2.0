@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
-namespace GripOpGras2.Client.Features.FarmMapsLogin
+namespace GripOpGras2.Client.Features.LoginToFarmMaps
 {
 	/// <summary>
 	/// A MessageHandler that attaches the FarmMaps OIDC access token to outgoing HTTP requests that target the FarmMaps domains.
@@ -9,12 +9,14 @@ namespace GripOpGras2.Client.Features.FarmMapsLogin
 	public class FarmMapsAuthorizationMessageHandler : AuthorizationMessageHandler
 	{
 		public FarmMapsAuthorizationMessageHandler(IAccessTokenProvider provider,
-			NavigationManager navigationManager)
+			NavigationManager navigationManager, IConfiguration configuration)
 			: base(provider, navigationManager)
 		{
-			// TODO set these urls in appsetting.json
+			string farmMapsBaseUrl = configuration.GetValue<string>("FarmMapsBaseUrl");
+			string farmMapsAccountsUrl = configuration.GetValue<string>("FarmMapsAccountBaseUrl");
+
 			ConfigureHandler(
-				authorizedUrls: new[] { "https://accounts.test.farmmaps.eu", "https://test.farmmaps.eu" }
+				authorizedUrls: new[] { farmMapsBaseUrl, farmMapsAccountsUrl }
 			);
 		}
 	}
